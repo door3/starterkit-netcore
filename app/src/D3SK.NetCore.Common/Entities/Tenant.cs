@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace D3SK.NetCore.Common.Domain
+namespace D3SK.NetCore.Common.Entities
 {
-    interface ISystemAction
+    class Tenant
     {
     }
 }
