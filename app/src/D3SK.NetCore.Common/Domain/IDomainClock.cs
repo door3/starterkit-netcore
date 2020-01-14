@@ -4,7 +4,7 @@ using System.Text;
 
 namespace D3SK.NetCore.Common.Domain
 {
-    interface IDomainSystem
+    public interface IDomainClock
     {
     }
 }
