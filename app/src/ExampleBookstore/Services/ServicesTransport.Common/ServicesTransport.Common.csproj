@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>ExampleBookstore.Services.ServicesTransport.Common</AssemblyName>
+    <RootNamespace>ExampleBookstore.Services.ServicesTransport.Common</RootNamespace>
+  </PropertyGroup>
+
+</Project>

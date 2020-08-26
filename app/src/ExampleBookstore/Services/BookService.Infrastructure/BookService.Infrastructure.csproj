@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\D3SK.NetCore.Infrastructure\D3SK.NetCore.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\ExampleBookstore.Infrastructure\ExampleBookstore.Infrastructure.csproj" />
+    <ProjectReference Include="..\BookService.Domain\BookService.Domain.csproj" />
+  </ItemGroup>
+
+</Project>

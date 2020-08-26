@@ -4,7 +4,7 @@ using System.Text;
 
 namespace D3SK.NetCore.Common.Entities
 {
-    public interface IReferenceCodeEntity : IReferenceCodeEntity<int>
+    public interface IReferenceCodeEntity : IReferenceCodeEntity<string>
     {
     }
 

@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>ExampleBookstore.ServicesGateway.Api</AssemblyName>
+    <RootNamespace>ExampleBookstore.ServicesGateway.Api</RootNamespace>
+  </PropertyGroup>
+
+</Project>
