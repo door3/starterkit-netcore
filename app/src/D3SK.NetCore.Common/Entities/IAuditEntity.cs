@@ -4,18 +4,29 @@ using System.Text;
 
 namespace D3SK.NetCore.Common.Entities
 {
-    public interface IAuditEntity : IEntityBase
+    public interface IAuditEntityBase : IEntityBase
     {
         DateTimeOffset CreatedDate { get; }
 
-        string CreatedByUser { get; }
-
         DateTimeOffset LastModifiedDate { get; }
 
-        string LastModifiedByUser { get; }
+        void OnAdded(DateTimeOffset createdDate, object createdByUser);
 
-        void OnAdded(DateTimeOffset createdDate, string createdByUser);
+        void OnUpdated(DateTimeOffset lastModifiedDate, object lastModifiedByUser);
+    }
 
-        void OnUpdated(DateTimeOffset lastModifiedDate, string lastModifiedByUser);
+    public interface IAuditEntity : IAuditEntity<int?>
+    {
+    }
+
+    public interface IAuditEntity<TUserKey> : IAuditEntityBase
+    {
+        TUserKey CreatedByUser { get; }
+        
+        TUserKey LastModifiedByUser { get; }
+
+        void OnAdded(DateTimeOffset createdDate, TUserKey createdByUser);
+
+        void OnUpdated(DateTimeOffset lastModifiedDate, TUserKey lastModifiedByUser);
     }
 }

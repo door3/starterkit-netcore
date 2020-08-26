@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>ExampleBookstore.Services.BookService.Domain</AssemblyName>
+    <RootNamespace>ExampleBookstore.Services.BookService.Domain</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\D3SK.NetCore.Common\D3SK.NetCore.Common.csproj" />
+    <ProjectReference Include="..\..\..\D3SK.NetCore.Domain\D3SK.NetCore.Domain.csproj" />
+    <ProjectReference Include="..\..\ExampleBookstore.Domain\ExampleBookstore.Domain.csproj" />
+  </ItemGroup>
+
+</Project>
