@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using D3SK.NetCore.Common.Queries;
 
 namespace D3SK.NetCore.Common.Extensions

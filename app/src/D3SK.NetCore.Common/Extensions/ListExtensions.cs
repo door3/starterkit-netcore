@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
+using D3SK.NetCore.Common.Entities;
+using D3SK.NetCore.Common.Utilities;
 
 namespace D3SK.NetCore.Common.Extensions
 {
@@ -34,13 +36,7 @@ namespace D3SK.NetCore.Common.Extensions
             list.NotNull(nameof(list));
             action.NotNull(nameof(action));
 
-            var newList = new List<TReturnType>();
-            foreach (var item in list)
-            {
-                newList.Add(action(item));
-            }
-
-            return newList;
+            return list.Select(action).ToList();
         }
 
         public static async Task ForEachAsync<T>(this IList<T> list, Func<T, Task> action)
@@ -65,6 +61,7 @@ namespace D3SK.NetCore.Common.Extensions
             return newList;
         }
 
+        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         public static void ForEach<T>(this IEnumerable<T> list, Action<T> action)
         {
             list.NotNull(nameof(list));
@@ -135,8 +132,8 @@ namespace D3SK.NetCore.Common.Extensions
         public static T[,] ToMultidimensionalArray<T>(this IList<T[]> arrays)
         {
             var minorLength = arrays[0].Length;
-            T[,] ret = new T[arrays.Count, minorLength];
-            for (int i = 0; i < arrays.Count; i++)
+            var ret = new T[arrays.Count, minorLength];
+            for (var i = 0; i < arrays.Count; i++)
             {
                 var array = arrays[i];
                 if (array.Length != minorLength)
@@ -144,7 +141,7 @@ namespace D3SK.NetCore.Common.Extensions
                     throw new ArgumentException
                         ("All arrays must be the same length");
                 }
-                for (int j = 0; j < minorLength; j++)
+                for (var j = 0; j < minorLength; j++)
                 {
                     ret[i, j] = array[j];
                 }
@@ -164,7 +161,7 @@ namespace D3SK.NetCore.Common.Extensions
             return list;
         }
 
-        public static T TryGet<T>(this IList<T> source, int index, T defaultValue = default(T))
+        public static T TryGet<T>(this IList<T> source, int index, T defaultValue = default)
         {
             if (source == null) return defaultValue;
 
@@ -185,11 +182,12 @@ namespace D3SK.NetCore.Common.Extensions
 
         public static bool IsAtLeast<T>(this IEnumerable<T> source, int atLeastNum, Func<T, bool> predicate = null)
         {
-            if (source == null) return atLeastNum > 0 ? false : true;
+            if (source == null) return atLeastNum <= 0;
             source = predicate == null ? source : source.Where(predicate);
             return source.Count() >= atLeastNum;
         }
 
+        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         public static IEnumerable<T> AtLeast<T>(this IEnumerable<T> source, int atLeastNum,
             string argumentName = null)
         {
@@ -202,6 +200,14 @@ namespace D3SK.NetCore.Common.Extensions
             return source;
         }
 
+        public static bool IsNoMoreThan<T>(this IEnumerable<T> source, int noMoreThan, Func<T, bool> predicate = null)
+        {
+            if (source == null) return noMoreThan == 0;
+            source = predicate == null ? source : source.Where(predicate);
+            return source.Count() <= noMoreThan;
+        }
+        
+        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         public static IEnumerable<T> NoMoreThan<T>(this IEnumerable<T> source, int noMoreThan, string argumentName = null)
         {
             source.NotNull(nameof(argumentName));
@@ -211,14 +217,7 @@ namespace D3SK.NetCore.Common.Extensions
             }
             return source;
         }
-
-        public static bool IsNoMoreThan<T>(this IEnumerable<T> source, int noMoreThan, Func<T, bool> predicate = null)
-        {
-            if (source == null) return noMoreThan == 0;
-            source = predicate == null ? source : source.Where(predicate);
-            return source.Count() <= noMoreThan;
-        }
-
+        
         public static bool IsEmpty<T>(this IEnumerable<T> source)
         {
             return source == null || !source.Any();
@@ -235,6 +234,7 @@ namespace D3SK.NetCore.Common.Extensions
             return source.Where(x => x != null);
         }
 
+        [SuppressMessage("ReSharper", "PossibleMultipleEnumeration")]
         public static void TryAddRange<T>(this IList<T> source, IEnumerable<T> collection)
         {
             if (source == null || collection == null || !collection.Any()) return;
