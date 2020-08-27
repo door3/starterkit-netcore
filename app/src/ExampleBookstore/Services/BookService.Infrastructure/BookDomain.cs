@@ -11,11 +11,11 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace BookService.Infrastructure
 {
-    public class BookDomain : ExampleBookstoreDomain<BookDomain>, IBookDomain
+    public class BookDomain : ExampleBookstoreDomain<IBookDomain>, IBookDomain
     {
         public BookDomain(
-            IQueryDomainRole<BookDomain> queryRole,
-            ICommandDomainRole<BookDomain> commandRole,
+            IQueryDomainRole<IBookDomain> queryRole,
+            ICommandDomainRole<IBookDomain> commandRole,
             IHandleDomainMiddlewareStrategy<IDomainEvent> eventStrategy,
             IHandleDomainMiddlewareStrategy<IValidationEvent> validationStrategy)
             : base(queryRole, commandRole, eventStrategy, validationStrategy)

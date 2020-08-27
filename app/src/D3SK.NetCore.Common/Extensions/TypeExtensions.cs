@@ -130,9 +130,7 @@ namespace D3SK.NetCore.Common.Extensions
 
         public static T CopyAs<T>(this object source) where T : class
         {
-            if (source == null) return null;
-
-            return JsonHelper.Deserialize<T>(JsonHelper.Serialize(source));
+            return source == null ? null : JsonHelper.Deserialize<T>(JsonHelper.Serialize(source));
         }
 
         public static bool CrudeCompare(this object source, object compare)
