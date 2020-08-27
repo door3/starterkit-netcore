@@ -65,7 +65,11 @@ namespace D3SK.NetCore.Api
             services.AddCors(options =>
             {
                 options.AddPolicy(AllowAllCorsPolicy,
-                    builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader().AllowCredentials());
+                    builder =>
+                        builder.SetIsOriginAllowed(_ => true)
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .AllowCredentials());
             });
 
             // controllers

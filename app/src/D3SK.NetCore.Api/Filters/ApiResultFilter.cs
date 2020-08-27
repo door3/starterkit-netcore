@@ -4,30 +4,33 @@ using System.Threading.Tasks;
 using System.Web.Http.Filters;
 using D3SK.NetCore.Api.Controllers;
 using D3SK.NetCore.Api.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
+using ActionFilterAttribute = System.Web.Http.Filters.ActionFilterAttribute;
 
 namespace D3SK.NetCore.Api.Filters
 {
-    public class ApiResultFilter : ActionFilterAttribute
+    public class ApiResultFilter : IAsyncResultFilter
     {
-        public override void OnActionExecuted(HttpActionExecutedContext context)
+        public async Task OnResultExecutionAsync(ResultExecutingContext context, ResultExecutionDelegate next)
         {
-            if (context.ActionContext.ControllerContext.ControllerDescriptor.ControllerType == typeof(ApiResponseControllerBase))
+            if (context.Controller is ApiResponseControllerBase apiController)
             {
-                var controller = context.ActionContext.ControllerContext.Controller as ApiResponseControllerBase;
-                context.Response.TryGetContentValue(out object data);
-
-                var apiResponse = new ApiResponse
+                if (context.Result is ObjectResult objResult)
                 {
-                    Code = controller.ResponseCode,
-                    Data = data,
-                    Messages = controller.ExceptionManager.Messages
-                };
+                    var apiResponse = new ApiResponse()
+                    {
+                        Code = apiController.ResponseCode,
+                        Data = objResult.Value,
+                        Messages = apiController.ExceptionManager.Messages
+                    };
 
-                var statusCode = context.Response.StatusCode;
-                context.Response = context.Request.CreateResponse(statusCode, apiResponse);
+                    objResult.Value = apiResponse;
+                    objResult.DeclaredType = typeof(ApiResponse);
+                }
             }
 
-            base.OnActionExecuted(context);
+            await next();
         }
     }
 }
