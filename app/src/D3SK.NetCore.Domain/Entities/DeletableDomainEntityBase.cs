@@ -22,6 +22,7 @@ namespace D3SK.NetCore.Domain.Entities
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
     public abstract class DeletableDomainEntityBase<TTenantKey, TKey, TUserKey> : TenantEntityBase<TTenantKey, TKey>, IDomainEntity, IAuditEntity<TUserKey>
     {
+        [JsonIgnore]
         public IList<IDomainEvent> DomainEvents { get; } = new List<IDomainEvent>();
 
         public DateTimeOffset CreatedDate { get; private set; }

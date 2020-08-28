@@ -34,11 +34,12 @@ namespace ExampleBookstore.Services.BookService.Api.Controllers
         [HttpPost]
         [ProducesResponseType((int) HttpStatusCode.Created)]
         public async Task<IActionResult> CreateBook([FromServices] IBookCreateCommand command,
-            [FromBody] EntityCreateCommandRequest<Book> request)
+            [FromBody] EntityCreateCommandRequest<Book> request, ApiVersion version)
         {
             request.SetCommand(command);
             await DomainInstance.RunCommandAsync(command);
-            return CreatedAtRoute(nameof(GetBook), new {id = command.CurrentItem.Id}, request.CurrentItem);
+            return CreatedAtRoute(nameof(GetBook), new {id = command.CurrentItem.Id, version = $"{version}"},
+                request.CurrentItem);
         }
     }
 }

@@ -2,9 +2,9 @@
 using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Common.Queries;
 using D3SK.NetCore.Common.Stores;
+using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Stores;
-using Newtonsoft.Json;
 
 namespace D3SK.NetCore.Api.Models
 {
@@ -56,7 +56,7 @@ namespace D3SK.NetCore.Api.Models
             base.SetQuery(query);
             if (!string.IsNullOrWhiteSpace(Filters))
             {
-                query.Filters = JsonConvert.DeserializeObject<IList<QueryFilter>>(Filters);
+                query.Filters = JsonHelper.Deserialize<IList<QueryFilter>>(Filters);
             }
         }
     }
@@ -77,7 +77,7 @@ namespace D3SK.NetCore.Api.Models
             base.SetQuery(query);
             if (!string.IsNullOrWhiteSpace(SelectProperties))
             {
-                query.SelectProperties = JsonConvert.DeserializeObject<IList<string>>(SelectProperties);
+                query.SelectProperties = JsonHelper.Deserialize<IList<string>>(SelectProperties);
             }
 
             query.Distinct = Distinct;
