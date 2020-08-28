@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using D3SK.NetCore.Common.Entities;
+using D3SK.NetCore.Common.Stores;
 
 namespace ExampleBookstore.Services.BookService.Domain.Entities
 {
@@ -9,10 +10,12 @@ namespace ExampleBookstore.Services.BookService.Domain.Entities
     {
         public int BookId { get; set; }
 
+        [UpdateStrategy(NullOnAdd = true)]
         public Book Book { get; set; }
 
         public int AuthorId { get; set; }
 
+        [UpdateStrategy(NullOnAdd = true)]
         public Author Author { get; set; }
 
         public BookAuthor()

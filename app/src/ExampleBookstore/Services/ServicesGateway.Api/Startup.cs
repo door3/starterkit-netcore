@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ExampleBookstore.ServicesGateway.Api
+namespace ExampleBookstore.Services.ServicesGateway.Api
 {
     public class Startup
     {

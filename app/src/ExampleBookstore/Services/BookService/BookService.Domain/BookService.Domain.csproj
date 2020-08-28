@@ -7,9 +7,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\D3SK.NetCore.Common\D3SK.NetCore.Common.csproj" />
-    <ProjectReference Include="..\..\..\D3SK.NetCore.Domain\D3SK.NetCore.Domain.csproj" />
-    <ProjectReference Include="..\..\ExampleBookstore.Domain\ExampleBookstore.Domain.csproj" />
+    <ProjectReference Include="..\..\..\..\D3SK.NetCore.Domain\D3SK.NetCore.Domain.csproj" />
+    <ProjectReference Include="..\..\..\ExampleBookstore.Domain\ExampleBookstore.Domain.csproj" />
   </ItemGroup>
 
 </Project>

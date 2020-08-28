@@ -4,9 +4,11 @@ using System.Data.Common;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using D3SK.NetCore.Common;
 using D3SK.NetCore.Common.Entities;
 using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Common.Stores;
+using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Entities;
 using D3SK.NetCore.Domain.Events;
@@ -18,18 +20,28 @@ namespace D3SK.NetCore.Infrastructure.Stores
 {
     public abstract class DomainDbStoreBase : DbContext, ITransactionStore
     {
-        protected readonly IDomainDbStoreManager Manager;
-        
-        public int? TenantId => Manager.TenantManager.TenantId;
+        protected IDomainInstance DomainInstance { get; }
+
+        protected ITenantManager TenantManager { get; }
+
+        protected IClock CurrentClock { get; set; }
+
+        public int? TenantId => TenantManager.TenantId;
 
         public IStoreTransaction CurrentTransaction { get; protected set; }
 
         public bool IsInTransaction { get; protected set; }
 
-        protected DomainDbStoreBase(DbContextOptions options, IDomainDbStoreManager manager)
+        protected DomainDbStoreBase(
+            DbContextOptions options, 
+            IDomainInstance domainInstance,
+            ITenantManager tenantManager,
+            IClock currentClock)
             : base(options)
         {
-            Manager = manager.NotNull(nameof(manager));
+            DomainInstance = domainInstance.NotNull(nameof(domainInstance));
+            TenantManager = tenantManager.NotNull(nameof(tenantManager));
+            CurrentClock = currentClock.NotNull(nameof(currentClock));
         }
         
         protected virtual void OnTransactionCommitted(object sender, EventArgs e)
@@ -146,12 +158,12 @@ namespace D3SK.NetCore.Infrastructure.Stores
 
             foreach (var entity in added)
             {
-                entity.OnAdded(Manager.Clock.UtcNow, null);
+                entity.OnAdded(CurrentClock.UtcNow, null);
             }
 
             foreach (var entity in modified)
             {
-                entity.OnUpdated(Manager.Clock.UtcNow, null);
+                entity.OnUpdated(CurrentClock.UtcNow, null);
             }
         }
         
@@ -165,7 +177,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
 
                 foreach (var domainEvent in domainEvents)
                 {
-                    await Manager.DomainInstance.PublishEventAsync(domainEvent);
+                    await DomainInstance.PublishEventAsync(domainEvent);
                 }
 
                 domainEntities = GetDomainEntities();
@@ -186,6 +198,31 @@ namespace D3SK.NetCore.Infrastructure.Stores
         private IList<IDomainEntity> GetDomainEntities()
         {
             return ChangeTracker.Entries().Select(x => x.Entity).OfType<IDomainEntity>().ToList();
+        }
+
+        protected EntityTypeBuilder<T> ApplyDeletedAndTenantIdFilter<T>(EntityTypeBuilder<T> source)
+            where T : class, ISoftDeleteEntity, ITenantEntity<int>
+        {
+            return source.HasQueryFilter(x => !x.IsDeleted && x.TenantId == TenantId);
+        }
+
+        protected EntityTypeBuilder<T> ApplyDeletedAndTenantAllowNullIdFilter<T>(EntityTypeBuilder<T> source)
+            where T : class, ISoftDeleteEntity, ITenantEntity<int?>
+        {
+
+            return source.HasQueryFilter(x => !x.IsDeleted && (x.TenantId == null || x.TenantId == TenantId));
+        }
+
+        protected EntityTypeBuilder<T> ApplyTenantIdFilter<T>(EntityTypeBuilder<T> source)
+            where T : class, ITenantEntity<int>
+        {
+            return source.HasQueryFilter(x => x.TenantId == TenantId);
+        }
+
+        protected EntityTypeBuilder<T> ApplyTenantAllowNullIdFilter<T>(EntityTypeBuilder<T> source)
+            where T : class, ITenantEntity<int?>
+        {
+            return source.HasQueryFilter(x => x.TenantId == null || x.TenantId == TenantId);
         }
     }
 }

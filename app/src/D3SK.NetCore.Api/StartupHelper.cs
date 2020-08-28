@@ -118,7 +118,7 @@ namespace D3SK.NetCore.Api
             app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
 
-        public static async Task MigrateDbStoresAsync(IWebHost host, params Type[] storeTypes)
+        public static async Task MigrateDbStoresAsync(IHost host, params Type[] storeTypes)
         {
             using (var serviceScope = host.Services.CreateScope())
             {
@@ -136,7 +136,7 @@ namespace D3SK.NetCore.Api
             }
         }
 
-        public static IWebHost MigrateDbStores(this IWebHost source, params Type[] storeTypes)
+        public static IHost MigrateDbStores(this IHost source, params Type[] storeTypes)
         {
             MigrateDbStoresAsync(source, storeTypes).Wait();
             return source;

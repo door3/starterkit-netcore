@@ -14,6 +14,6 @@ namespace ExampleBookstore.Services.BookService.Domain.Entities
 
         public DateTimeOffset? DateOfBirth { get; set; }
 
-        public ICollection<BookAuthor> Books = new HashSet<BookAuthor>();
+        public ICollection<BookAuthor> Books { get; set; } = new HashSet<BookAuthor>();
     }
 }

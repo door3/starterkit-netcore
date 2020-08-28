@@ -12,7 +12,7 @@ namespace D3SK.NetCore.Infrastructure.Utilities
 
         public TenantManager(ResolvedTenant resolvedTenant)
         {
-            TenantId = resolvedTenant.TenantId;
+            TenantId = resolvedTenant?.TenantId;
         }
 
         public virtual void SetTenantId(int? tenantId)

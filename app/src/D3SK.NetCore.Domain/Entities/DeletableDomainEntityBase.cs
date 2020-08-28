@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text;
+using System.Text.Json.Serialization;
 using D3SK.NetCore.Common.Entities;
 using D3SK.NetCore.Domain.Events;
 

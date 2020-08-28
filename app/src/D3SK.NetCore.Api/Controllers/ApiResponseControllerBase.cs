@@ -1,8 +1,4 @@
-﻿using System.Net;
-using System.Net.Http;
-using System.Web.Http;
-using System.Web.Http.Results;
-using D3SK.NetCore.Api.Models;
+﻿using D3SK.NetCore.Api.Models;
 using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Common.Utilities;
 using Microsoft.AspNetCore.Mvc;

@@ -35,6 +35,8 @@ namespace D3SK.NetCore.Common.Stores
         where TStore : IQueryStore
     {
         Task<IList<dynamic>> GetAsync(IProjectionStoreQuery query);
+
+        Task<IList<dynamic>> GetAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, int, dynamic>> selector);
     }
 
 }
