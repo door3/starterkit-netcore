@@ -7,8 +7,8 @@ using Microsoft.EntityFrameworkCore;
 namespace D3SK.NetCore.Infrastructure.Stores
 {
 
-    public abstract class DbStoreContainerBase<TStore, TDbStore> : StoreContainerBase<TStore>, IQueryContainer<TStore>
-        where TStore : IQueryStore
+    public abstract class DbStoreContainerBase<TStore, TDbStore> : StoreContainerBase<TStore>
+        where TStore : IStore
         where TDbStore : DbContext, TStore
     {
         protected readonly TDbStore DbStore;

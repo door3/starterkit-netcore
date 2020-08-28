@@ -1,9 +1,32 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
-    <AssemblyName>ExampleBookstore.ServicesGateway.Api</AssemblyName>
-    <RootNamespace>ExampleBookstore.ServicesGateway.Api</RootNamespace>
+    <AssemblyName>ExampleBookstore.Services.ServicesGateway.Api</AssemblyName>
+    <RootNamespace>ExampleBookstore.Services.ServicesGateway.Api</RootNamespace>
   </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="3.1.7">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Abstractions" Version="3.1.7" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\D3SK.NetCore.Api\D3SK.NetCore.Api.csproj" />
+    <ProjectReference Include="..\..\..\D3SK.NetCore.Common\D3SK.NetCore.Common.csproj" />
+    <ProjectReference Include="..\..\..\D3SK.NetCore.Domain\D3SK.NetCore.Domain.csproj" />
+    <ProjectReference Include="..\..\..\D3SK.NetCore.Infrastructure\D3SK.NetCore.Infrastructure.csproj" />
+    <ProjectReference Include="..\..\ExampleBookstore.Domain\ExampleBookstore.Domain.csproj" />
+    <ProjectReference Include="..\..\ExampleBookstore.Infrastructure\ExampleBookstore.Infrastructure.csproj" />
+    <ProjectReference Include="..\BookService\BookService.Api\BookService.Api.csproj" />
+    <ProjectReference Include="..\BookService\BookService.Domain\BookService.Domain.csproj" />
+    <ProjectReference Include="..\BookService\BookService.Infrastructure\BookService.Infrastructure.csproj" />
+    <ProjectReference Include="..\ServicesTransport.Common\ServicesTransport.Common.csproj" />
+    <ProjectReference Include="..\ServicesTransport.Infrastructure\ServicesTransport.Infrastructure.csproj" />
+  </ItemGroup>
+
 
 </Project>

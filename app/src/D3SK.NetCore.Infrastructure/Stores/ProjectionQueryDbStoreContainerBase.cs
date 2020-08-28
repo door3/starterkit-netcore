@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Linq.Dynamic.Core;
+using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using D3SK.NetCore.Common.Entities;
@@ -32,5 +34,12 @@ namespace D3SK.NetCore.Infrastructure.Stores
             return await items.ToDynamicListAsync();
         }
 
+        public virtual async Task<IList<dynamic>> GetAsync(Expression<Func<T, bool>> predicate,
+            Expression<Func<T, int, dynamic>> selector)
+        {
+            var items = DbStore.Set<T>().Where(predicate).Select(selector);
+
+            return await items.ToDynamicListAsync();
+        }
     }
 }

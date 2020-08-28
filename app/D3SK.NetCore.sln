@@ -9,29 +9,29 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "D3SK.NetCore.Domain", "src\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "D3SK.NetCore.Infrastructure", "src\D3SK.NetCore.Infrastructure\D3SK.NetCore.Infrastructure.csproj", "{140D3B32-B81A-4956-8FC1-5905E5A0F17C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BookstoreExample", "BookstoreExample", "{61FC6453-AF13-4CC3-A843-8A3228C34D28}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ExampleBookstore", "ExampleBookstore", "{61FC6453-AF13-4CC3-A843-8A3228C34D28}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{EB8D9AC7-ED8D-4792-BB31-B18BEB0A237A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleBookstore.Domain", "src\ExampleBookstore\ExampleBookstore.Domain\ExampleBookstore.Domain.csproj", "{647D0F73-A793-4E24-BABA-2803A66ED546}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleBookstore.Domain", "src\ExampleBookstore\ExampleBookstore.Domain\ExampleBookstore.Domain.csproj", "{647D0F73-A793-4E24-BABA-2803A66ED546}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ExampleBookstore.Infrastructure", "src\ExampleBookstore\ExampleBookstore.Infrastructure\ExampleBookstore.Infrastructure.csproj", "{08A41F6F-A40F-4B86-8DAC-95681729A553}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ExampleBookstore.Infrastructure", "src\ExampleBookstore\ExampleBookstore.Infrastructure\ExampleBookstore.Infrastructure.csproj", "{08A41F6F-A40F-4B86-8DAC-95681729A553}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BookService", "BookService", "{C211073C-31C5-45B3-B0E1-508A7D6CE347}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookService.Domain", "src\ExampleBookstore\Services\BookService.Domain\BookService.Domain.csproj", "{828CD872-90A8-4801-9E84-CC38C8928E19}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookService.Domain", "src\ExampleBookstore\Services\BookService\BookService.Domain\BookService.Domain.csproj", "{828CD872-90A8-4801-9E84-CC38C8928E19}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookService.Api", "src\ExampleBookstore\Services\BookService.Api\BookService.Api.csproj", "{76816FA4-BDC8-4FE6-84F4-E9E8F89103FE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookService.Infrastructure", "src\ExampleBookstore\Services\BookService\BookService.Infrastructure\BookService.Infrastructure.csproj", "{BFC1720D-A174-443F-9284-F7CC413E3149}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookService.Infrastructure", "src\ExampleBookstore\Services\BookService.Infrastructure\BookService.Infrastructure.csproj", "{BFC1720D-A174-443F-9284-F7CC413E3149}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesTransport.Common", "src\ExampleBookstore\Services\ServicesTransport.Common\ServicesTransport.Common.csproj", "{EA088FD1-F86B-4A74-9ECD-4FC64B843C93}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesGateway.Api", "src\ExampleBookstore\Services\ServicesGateway.Api\ServicesGateway.Api.csproj", "{F7244E81-3FD8-4036-9532-2D1B872682E7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesTransport.Infrastructure", "src\ExampleBookstore\Services\ServicesTransport.Infrastructure\ServicesTransport.Infrastructure.csproj", "{34F87129-C953-45A1-8C69-3B6E5C5237BE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesTransport.Common", "src\ExampleBookstore\Services\ServicesTransport.Common\ServicesTransport.Common.csproj", "{EA088FD1-F86B-4A74-9ECD-4FC64B843C93}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "D3SK.NetCore.Api", "src\D3SK.NetCore.Api\D3SK.NetCore.Api.csproj", "{E0DECFFE-1743-4951-9316-F5D5AA57B028}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ServicesTransport.Infrastructure", "src\ExampleBookstore\Services\ServicesTransport.Infrastructure\ServicesTransport.Infrastructure.csproj", "{34F87129-C953-45A1-8C69-3B6E5C5237BE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ServicesGateway.Api", "src\ExampleBookstore\Services\ServicesGateway.Api\ServicesGateway.Api.csproj", "{8BACDA79-4E10-4B2F-8234-56658FC43322}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "D3SK.NetCore.Api", "src\D3SK.NetCore.Api\D3SK.NetCore.Api.csproj", "{E0DECFFE-1743-4951-9316-F5D5AA57B028}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BookService.Api", "src\ExampleBookstore\Services\BookService\BookService.Api\BookService.Api.csproj", "{26CDF62C-6A55-4D3A-BAFF-229444A98581}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -63,18 +63,10 @@ Global
 		{828CD872-90A8-4801-9E84-CC38C8928E19}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{828CD872-90A8-4801-9E84-CC38C8928E19}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{828CD872-90A8-4801-9E84-CC38C8928E19}.Release|Any CPU.Build.0 = Release|Any CPU
-		{76816FA4-BDC8-4FE6-84F4-E9E8F89103FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{76816FA4-BDC8-4FE6-84F4-E9E8F89103FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{76816FA4-BDC8-4FE6-84F4-E9E8F89103FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{76816FA4-BDC8-4FE6-84F4-E9E8F89103FE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BFC1720D-A174-443F-9284-F7CC413E3149}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BFC1720D-A174-443F-9284-F7CC413E3149}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BFC1720D-A174-443F-9284-F7CC413E3149}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BFC1720D-A174-443F-9284-F7CC413E3149}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F7244E81-3FD8-4036-9532-2D1B872682E7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F7244E81-3FD8-4036-9532-2D1B872682E7}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F7244E81-3FD8-4036-9532-2D1B872682E7}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F7244E81-3FD8-4036-9532-2D1B872682E7}.Release|Any CPU.Build.0 = Release|Any CPU
 		{EA088FD1-F86B-4A74-9ECD-4FC64B843C93}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{EA088FD1-F86B-4A74-9ECD-4FC64B843C93}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{EA088FD1-F86B-4A74-9ECD-4FC64B843C93}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -87,6 +79,14 @@ Global
 		{E0DECFFE-1743-4951-9316-F5D5AA57B028}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E0DECFFE-1743-4951-9316-F5D5AA57B028}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E0DECFFE-1743-4951-9316-F5D5AA57B028}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8BACDA79-4E10-4B2F-8234-56658FC43322}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8BACDA79-4E10-4B2F-8234-56658FC43322}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8BACDA79-4E10-4B2F-8234-56658FC43322}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8BACDA79-4E10-4B2F-8234-56658FC43322}.Release|Any CPU.Build.0 = Release|Any CPU
+		{26CDF62C-6A55-4D3A-BAFF-229444A98581}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{26CDF62C-6A55-4D3A-BAFF-229444A98581}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{26CDF62C-6A55-4D3A-BAFF-229444A98581}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{26CDF62C-6A55-4D3A-BAFF-229444A98581}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -97,11 +97,11 @@ Global
 		{08A41F6F-A40F-4B86-8DAC-95681729A553} = {61FC6453-AF13-4CC3-A843-8A3228C34D28}
 		{C211073C-31C5-45B3-B0E1-508A7D6CE347} = {EB8D9AC7-ED8D-4792-BB31-B18BEB0A237A}
 		{828CD872-90A8-4801-9E84-CC38C8928E19} = {C211073C-31C5-45B3-B0E1-508A7D6CE347}
-		{76816FA4-BDC8-4FE6-84F4-E9E8F89103FE} = {C211073C-31C5-45B3-B0E1-508A7D6CE347}
 		{BFC1720D-A174-443F-9284-F7CC413E3149} = {C211073C-31C5-45B3-B0E1-508A7D6CE347}
-		{F7244E81-3FD8-4036-9532-2D1B872682E7} = {EB8D9AC7-ED8D-4792-BB31-B18BEB0A237A}
 		{EA088FD1-F86B-4A74-9ECD-4FC64B843C93} = {EB8D9AC7-ED8D-4792-BB31-B18BEB0A237A}
 		{34F87129-C953-45A1-8C69-3B6E5C5237BE} = {EB8D9AC7-ED8D-4792-BB31-B18BEB0A237A}
+		{8BACDA79-4E10-4B2F-8234-56658FC43322} = {EB8D9AC7-ED8D-4792-BB31-B18BEB0A237A}
+		{26CDF62C-6A55-4D3A-BAFF-229444A98581} = {C211073C-31C5-45B3-B0E1-508A7D6CE347}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {45822BD7-7FA8-42C3-906E-70606AAB9E96}

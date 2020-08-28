@@ -4,10 +4,14 @@ using System.Text;
 
 namespace D3SK.NetCore.Common.Utilities
 {
-    public interface ITenantManager
+    public interface ITenantManager : ITenantManager<int?>
     {
-        int? TenantId { get; }
+    }
 
-        void SetTenantId(int tenantId);
+    public interface ITenantManager<TKey>
+    {
+        TKey TenantId { get; }
+
+        void SetTenantId(TKey tenantId);
     }
 }

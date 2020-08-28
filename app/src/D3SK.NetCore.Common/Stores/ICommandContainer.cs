@@ -14,7 +14,7 @@ namespace D3SK.NetCore.Common.Stores
     {
     }
 
-    public interface ICommandContainer<T, out TStore> : ICommandContainer<TStore>
+    public interface ICommandContainer<in T, out TStore> : ICommandContainer<TStore>
         where T : class, IEntityBase
         where TStore : ICommandStore
     {

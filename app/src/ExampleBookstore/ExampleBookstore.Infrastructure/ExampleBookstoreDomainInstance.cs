@@ -6,10 +6,10 @@ using ExampleBookstore.Domain;
 
 namespace ExampleBookstore.Infrastructure
 {
-    public class ExampleBookstoreDomainInstance<TDomain> : DomainInstanceBase<TDomain>, IExampleBookstoreDomainInstance<TDomain>
+    public abstract class ExampleBookstoreDomainInstance<TDomain> : DomainInstanceBase<TDomain>, IExampleBookstoreDomainInstance<TDomain>
         where TDomain : IExampleBookstoreDomain
     {
-        public ExampleBookstoreDomainInstance(IServiceProvider serviceProvider, TDomain domain) 
+        protected ExampleBookstoreDomainInstance(IServiceProvider serviceProvider, TDomain domain) 
             : base(serviceProvider, domain)
         {
         }
