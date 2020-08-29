@@ -2,17 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using D3SK.NetCore.Common;
 using D3SK.NetCore.Domain.Events;
 using D3SK.NetCore.Common.Extensions;
-using D3SK.NetCore.Common.Queries;
-using D3SK.NetCore.Common.Utilities;
-using D3SK.NetCore.Domain.Models;
-using D3SK.NetCore.Infrastructure.Utilities;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
 
 namespace D3SK.NetCore.Infrastructure.Domain
 {

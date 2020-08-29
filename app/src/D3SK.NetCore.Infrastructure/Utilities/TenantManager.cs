@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using D3SK.NetCore.Common.Utilities;
+﻿using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain.Models;
 
 namespace D3SK.NetCore.Infrastructure.Utilities

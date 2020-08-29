@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using D3SK.NetCore.Common.Entities;
 using D3SK.NetCore.Common.Extensions;
@@ -13,7 +11,7 @@ using Microsoft.Extensions.Options;
 namespace D3SK.NetCore.Infrastructure.Features
 {
     public abstract class EntityProjectionQueryBase<TDomain, T, TQueryStore, TQueryContainer>
-        : ProjectionStoreQueryBase<TDomain>, IEntityProjectionQuery<TDomain>
+        : ProjectionStoreQueryBase<TDomain>, IEntityProjectionQuery<TDomain, T>
         where TDomain : IDomain
         where T : class, IEntityBase
         where TQueryStore : IQueryStore

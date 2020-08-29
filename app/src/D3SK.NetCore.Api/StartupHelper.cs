@@ -1,21 +1,19 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using System.Threading.Tasks;
 using D3SK.NetCore.Api.Filters;
-using D3SK.NetCore.Common.Queries;
 using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain.Models;
 using D3SK.NetCore.Infrastructure.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using Serilog;
 using Serilog.Events;
 
@@ -78,6 +76,10 @@ namespace D3SK.NetCore.Api
                 options.Filters.Add(typeof(ApiExceptionFilter));
                 options.Filters.Add(
                     new ResponseCacheAttribute() {NoStore = true, Location = ResponseCacheLocation.None});
+            }).AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                options.SerializerSettings.ContractResolver = new NewtonsoftPrivateSetterContractResolver();
             });
 
             services.AddApiVersioning(options => { options.AssumeDefaultVersionWhenUnspecified = true; });

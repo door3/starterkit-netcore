@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using D3SK.NetCore.Common.Stores;
 using D3SK.NetCore.Infrastructure.Extensions;
@@ -24,7 +21,8 @@ namespace BookService.Infrastructure.Stores
             if (includes == StoreQueryIncludes.None)
                 return item;
 
-            await DbStore.Entry(item).Collection(x => x.Authors).Query().Include(x => x.Author).LoadAsync();
+            await DbStore.Entry(item).Collection(x => x.Authors).Query()
+                .Include(x => x.Author).LoadAsync();
             return item;
         }
 

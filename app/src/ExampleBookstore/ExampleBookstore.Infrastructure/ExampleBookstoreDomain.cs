@@ -1,14 +1,7 @@
 ﻿using ExampleBookstore.Domain;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using D3SK.NetCore.Common.Extensions;
-using D3SK.NetCore.Common.Stores;
 using D3SK.NetCore.Domain;
-using D3SK.NetCore.Domain.Entities;
 using D3SK.NetCore.Domain.Events;
 using D3SK.NetCore.Infrastructure.Domain;
-using D3SK.NetCore.Infrastructure.Stores;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
 

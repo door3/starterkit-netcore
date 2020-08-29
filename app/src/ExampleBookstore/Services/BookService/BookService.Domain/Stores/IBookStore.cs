@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using D3SK.NetCore.Common.Stores;
+﻿using D3SK.NetCore.Common.Stores;
 
 namespace ExampleBookstore.Services.BookService.Domain.Stores
 {

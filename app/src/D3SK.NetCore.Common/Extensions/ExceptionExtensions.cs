@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 
 namespace D3SK.NetCore.Common.Extensions
 {

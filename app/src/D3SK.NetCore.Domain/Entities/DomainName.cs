@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 using D3SK.NetCore.Common.Entities;
 
 namespace D3SK.NetCore.Domain.Entities

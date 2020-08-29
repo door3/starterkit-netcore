@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using D3SK.NetCore.Domain;
+﻿using D3SK.NetCore.Domain;
 
 namespace ExampleBookstore.Domain
 {

@@ -3,7 +3,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -246,8 +245,8 @@ namespace D3SK.NetCore.Infrastructure.Stores
                         UpdateStrategy = p.GetCustomAttribute<UpdateStrategyAttribute>(),
                         FullName = GetFullObjectName(p, namePrefix)
                     })
-                .Where(p => p.UpdateStrategy.EnableUpdating &&
-                            (shouldFilterProps &&
+                .Where(p => (p.UpdateStrategy?.EnableUpdating ?? true) &&
+                            (!shouldFilterProps ||
                              options.PropertiesToUpdate.Contains(p.FullName, StringComparer.OrdinalIgnoreCase)))
                 .ToList();
 

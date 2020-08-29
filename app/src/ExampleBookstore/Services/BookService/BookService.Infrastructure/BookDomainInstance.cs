@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using ExampleBookstore.Domain;
 using ExampleBookstore.Infrastructure;
 using ExampleBookstore.Services.BookService.Domain;
 
