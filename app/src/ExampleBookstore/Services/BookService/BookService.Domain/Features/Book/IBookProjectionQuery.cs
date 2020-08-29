@@ -1,10 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using D3SK.NetCore.Domain.Features;
-using D3SK.NetCore.Domain.Stores;
+﻿using D3SK.NetCore.Domain.Features;
 
-namespace ExampleBookstore.Services.BookService.Domain.Features
+namespace ExampleBookstore.Services.BookService.Domain.Features.Book
 {
     public interface IBookProjectionQuery : IEntityProjectionQuery<IBookDomain>
     {
