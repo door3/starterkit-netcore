@@ -12,7 +12,6 @@ using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Entities;
 using D3SK.NetCore.Domain.Events;
-using D3SK.NetCore.Domain.Stores;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

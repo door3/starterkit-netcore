@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading.Tasks;
-using D3SK.NetCore.Common.Entities;
 using D3SK.NetCore.Common.Utilities;
 
 namespace D3SK.NetCore.Common.Extensions

@@ -1,5 +1,4 @@
-﻿using System;
-using D3SK.NetCore.Common.Queries;
+﻿using D3SK.NetCore.Common.Queries;
 
 namespace D3SK.NetCore.Common.Extensions
 {

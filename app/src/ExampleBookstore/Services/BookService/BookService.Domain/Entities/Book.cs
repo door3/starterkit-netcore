@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using D3SK.NetCore.Common.Entities;
 using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Domain.Entities;

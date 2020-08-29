@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using D3SK.NetCore.Domain.Events;
 
 namespace D3SK.NetCore.Infrastructure.Events

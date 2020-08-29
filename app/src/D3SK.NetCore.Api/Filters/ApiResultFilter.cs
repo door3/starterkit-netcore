@@ -1,6 +1,4 @@
-﻿using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using D3SK.NetCore.Api.Controllers;
 using D3SK.NetCore.Api.Models;
 using Microsoft.AspNetCore.Mvc;

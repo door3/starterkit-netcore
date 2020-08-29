@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using D3SK.NetCore.Api.Models;
 using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Common.Models;
