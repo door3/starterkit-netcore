@@ -24,7 +24,8 @@ namespace BookService.Infrastructure.Stores
             if (includes == StoreQueryIncludes.None)
                 return item;
 
-            await DbStore.Entry(item).Collection(x => x.Authors).Query().Include(x => x.Author).LoadAsync();
+            await DbStore.Entry(item).Collection(x => x.Authors).Query()
+                .Include(x => x.Author).LoadAsync();
             return item;
         }
 

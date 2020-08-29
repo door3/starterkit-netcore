@@ -13,7 +13,7 @@ using Microsoft.Extensions.Options;
 namespace D3SK.NetCore.Infrastructure.Features
 {
     public abstract class EntityProjectionQueryBase<TDomain, T, TQueryStore, TQueryContainer>
-        : ProjectionStoreQueryBase<TDomain>, IEntityProjectionQuery<TDomain>
+        : ProjectionStoreQueryBase<TDomain>, IEntityProjectionQuery<TDomain, T>
         where TDomain : IDomain
         where T : class, IEntityBase
         where TQueryStore : IQueryStore

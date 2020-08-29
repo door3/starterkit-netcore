@@ -10,9 +10,10 @@ namespace D3SK.NetCore.Domain.Features
     {
     }
 
-    public interface IEntityProjectionQuery<TDomain> : IAsyncQueryFeature<TDomain, IList<object>>,
+    public interface IEntityProjectionQuery<TDomain, T> : IAsyncQueryFeature<TDomain, IList<object>>,
         IProjectionStoreQueryFeature
         where TDomain : IDomain
+        where T : class, IEntityBase
     {
     }
 }

@@ -20,7 +20,7 @@ namespace D3SK.NetCore.Api.Controllers
         where T : class, IEntity<int>
         where TCountQuery : IEntityCountQuery<TDomain, T>
         where TQuery : IEntityQuery<TDomain, T>
-        where TProjectionQuery : IEntityProjectionQuery<TDomain>
+        where TProjectionQuery : IEntityProjectionQuery<TDomain, T>
         where TCreate : IEntityCreateCommand<TDomain, T>
         where TUpdate : IEntityUpdateCommand<TDomain, T>
         where TDelete : IEntityDeleteCommand<TDomain, T, int>
@@ -39,7 +39,7 @@ namespace D3SK.NetCore.Api.Controllers
         where T : class, IEntity<TKey>
         where TCountQuery : IEntityCountQuery<TDomain, T>
         where TQuery : IEntityQuery<TDomain, T>
-        where TProjectionQuery : IEntityProjectionQuery<TDomain>
+        where TProjectionQuery : IEntityProjectionQuery<TDomain, T>
         where TCreate : IEntityCreateCommand<TDomain, T>
         where TUpdate : IEntityUpdateCommand<TDomain, T>
         where TDelete : IEntityDeleteCommand<TDomain, T, TKey>
