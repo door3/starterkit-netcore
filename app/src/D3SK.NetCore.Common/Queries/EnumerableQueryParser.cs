@@ -33,7 +33,7 @@ namespace D3SK.NetCore.Common.Queries
                 ? $"@{parameters.Count}"
                 : ParseFilterValue(filter.Value, filter.PropertyType);
 
-            var parameterValue = filter.Value is double ? Convert.ToDecimal(filter.Value) : filter.Value;
+            var parameterValue = ConvertParameterValue(filter.Value);
             parameters.Add(parameterValue);
 
             var isList = filter.PropertyType == QueryFilterPropertyTypes.List;
@@ -134,6 +134,16 @@ namespace D3SK.NetCore.Common.Queries
                         return filterValue.ToString();
                 }
             }
+        }
+
+        private static object ConvertParameterValue(object filterValue)
+        {
+            return filterValue switch
+            {
+                double _ => Convert.ToDecimal(filterValue),
+                DateTime date => new DateTimeOffset(date),
+                _ => filterValue
+            };
         }
     }
 }
