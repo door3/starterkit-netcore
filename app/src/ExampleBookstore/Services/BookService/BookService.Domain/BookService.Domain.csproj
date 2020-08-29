@@ -12,7 +12,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Author\" />
+    <Folder Include="Features\AuthorFeatures\" />
   </ItemGroup>
 
 </Project>

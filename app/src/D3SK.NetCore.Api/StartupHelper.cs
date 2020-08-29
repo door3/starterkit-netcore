@@ -16,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Newtonsoft.Json;
 using Serilog;
 using Serilog.Events;
 
@@ -78,6 +79,10 @@ namespace D3SK.NetCore.Api
                 options.Filters.Add(typeof(ApiExceptionFilter));
                 options.Filters.Add(
                     new ResponseCacheAttribute() {NoStore = true, Location = ResponseCacheLocation.None});
+            }).AddNewtonsoftJson(options =>
+            {
+                options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
+                options.SerializerSettings.ContractResolver = new NewtonsoftPrivateSetterContractResolver();
             });
 
             services.AddApiVersioning(options => { options.AssumeDefaultVersionWhenUnspecified = true; });

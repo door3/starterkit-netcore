@@ -12,13 +12,14 @@ using D3SK.NetCore.Domain.Extensions;
 using ExampleBookstore.Services.BookService.Domain;
 using ExampleBookstore.Services.BookService.Domain.Entities;
 using ExampleBookstore.Services.BookService.Domain.Features;
-using ExampleBookstore.Services.BookService.Domain.Features.Book;
+using ExampleBookstore.Services.BookService.Domain.Features.BookFeatures;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExampleBookstore.Services.BookService.Api.Controllers
 {
-    public class BooksController : EntityControllerBase<IBookDomain, Book, 
-        IBookCountQuery, IBookQuery, IBookProjectionQuery, IBookCreateCommand, IBookUpdateCommand, IBookDeleteCommand>
+    public class BooksController : EntityPatchControllerBase<IBookDomain, Book,
+        IBookCountQuery, IBookQuery, IBookProjectionQuery, IBookCreateCommand, IBookUpdateCommand, IBookDeleteCommand,
+        IBookUpdateCommand>
     {
         public BooksController(IDomainInstance<IBookDomain> instance, IExceptionManager exceptionManager) : base(
             instance, exceptionManager)

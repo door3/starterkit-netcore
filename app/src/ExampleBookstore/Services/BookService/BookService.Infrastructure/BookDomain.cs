@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using BookService.Infrastructure.Features;
-using BookService.Infrastructure.Features.Book;
+using BookService.Infrastructure.Features.BookFeatures;
 using BookService.Infrastructure.Stores;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
@@ -12,7 +12,7 @@ using ExampleBookstore.Infrastructure;
 using ExampleBookstore.Services.BookService.Domain;
 using ExampleBookstore.Services.BookService.Domain.Entities;
 using ExampleBookstore.Services.BookService.Domain.Features;
-using ExampleBookstore.Services.BookService.Domain.Features.Book;
+using ExampleBookstore.Services.BookService.Domain.Features.BookFeatures;
 using ExampleBookstore.Services.BookService.Domain.Stores;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;

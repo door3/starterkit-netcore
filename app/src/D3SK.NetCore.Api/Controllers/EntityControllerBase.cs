@@ -49,7 +49,7 @@ namespace D3SK.NetCore.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<SearchQueryResponse<T>> GetBooks(
+        public virtual async Task<SearchQueryResponse<T>> GetEntities(
             [FromServices] TQuery query,
             [FromServices] TCountQuery countQuery,
             [FromQuery] FromQuerySearchQueryRequest request)
@@ -59,7 +59,7 @@ namespace D3SK.NetCore.Api.Controllers
         }
 
         [HttpPost("search")]
-        public async Task<SearchQueryResponse<T>> SearchPatients(
+        public virtual async Task<SearchQueryResponse<T>> SearchEntities(
             [FromServices] TQuery query,
             [FromServices] TCountQuery countQuery,
             [FromBody] FromBodySearchQueryRequest request)
@@ -69,7 +69,7 @@ namespace D3SK.NetCore.Api.Controllers
         }
 
         [HttpPost("select")]
-        public async Task<SearchQueryResponse<object>> SelectPatients(
+        public virtual async Task<SearchQueryResponse<object>> SelectEntities(
             [FromServices] TProjectionQuery query,
             [FromServices] TCountQuery countQuery,
             [FromBody] FromBodyProjectionSearchQueryRequest request)
@@ -78,8 +78,8 @@ namespace D3SK.NetCore.Api.Controllers
             return await SearchCore(query, countQuery);
         }
 
-        [HttpGet("{id}", Name = nameof(GetBook))]
-        public async Task<T> GetBook([FromServices] TQuery query, [FromRoute] int id)
+        [HttpGet("{id}", Name = nameof(GetEntity))]
+        public virtual async Task<T> GetEntity([FromServices] TQuery query, [FromRoute] int id)
         {
             query.Filters.Add(new QueryFilter(id));
             var result = (await DomainInstance.RunQueryAsync(query)).SingleOrDefault();
@@ -88,23 +88,23 @@ namespace D3SK.NetCore.Api.Controllers
 
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
-        public async Task<IActionResult> CreateBook([FromServices] TCreate command,
+        public virtual async Task<IActionResult> CreateEntity([FromServices] TCreate command,
             [FromBody] EntityCreateCommandRequest<T> request, ApiVersion version)
         {
             request.SetCommand(command);
             await DomainInstance.RunCommandAsync(command);
-            return CreatedAtRoute(nameof(GetBook), new { id = command.CurrentItem.Id, version = $"{version}" },
+            return CreatedAtRoute(nameof(GetEntity), new { id = command.CurrentItem.Id, version = $"{version}" },
                 request.CurrentItem);
         }
 
         [HttpPut("{id}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<IActionResult> UpdatePatient([FromServices] TUpdate command,
+        public virtual async Task<IActionResult> UpdateEntity([FromServices] TUpdate command,
             [FromRoute] TKey id, [FromBody] EntityUpdateCommandRequest<T> request)
         {
             if (!request.CurrentItem.Id.Equals(id)) return BadRequest();
-
+            
             request.SetCommand(command);
             await DomainInstance.RunCommandAsync(command);
             return NoContent();
@@ -112,7 +112,7 @@ namespace D3SK.NetCore.Api.Controllers
 
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        public async Task<IActionResult> DeletePatient([FromServices] TDelete command, [FromRoute] TKey id)
+        public virtual async Task<IActionResult> DeletePatient([FromServices] TDelete command, [FromRoute] TKey id)
         {
             command.EntityId = id;
             await DomainInstance.RunCommandAsync(command);
