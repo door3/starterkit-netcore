@@ -20,10 +20,10 @@ namespace D3SK.NetCore.Domain.Entities
     }
 
     [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
-    public abstract class DeletableDomainEntityBase<TTenantKey, TKey, TUserKey> : TenantEntityBase<TTenantKey, TKey>, IDomainEntity, IAuditEntity<TUserKey>
+    public abstract class DeletableDomainEntityBase<TTenantKey, TKey, TUserKey> : TenantEntityBase<TTenantKey, TKey>,
+        IDomainEntity, IAuditEntity<TUserKey>
     {
-        [JsonIgnore]
-        public IList<IDomainEvent> DomainEvents { get; } = new List<IDomainEvent>();
+        [JsonIgnore] public IList<IDomainEvent> DomainEvents { get; } = new List<IDomainEvent>();
 
         public DateTimeOffset CreatedDate { get; private set; }
 
@@ -68,9 +68,9 @@ namespace D3SK.NetCore.Domain.Entities
         }
 
         public virtual void OnAdded(DateTimeOffset createdDate, object createdByUser)
-            => OnAdded(createdDate, (TUserKey) createdByUser);
+            => OnAdded(createdDate, createdByUser is TUserKey userId ? userId : default);
 
         public virtual void OnUpdated(DateTimeOffset lastModifiedDate, object lastModifiedByUser)
-            => OnAdded(lastModifiedDate, (TUserKey)lastModifiedByUser);
+            => OnAdded(lastModifiedDate, lastModifiedByUser is TUserKey userId ? userId : default);
     }
 }

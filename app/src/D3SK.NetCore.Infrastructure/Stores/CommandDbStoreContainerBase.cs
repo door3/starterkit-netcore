@@ -9,14 +9,30 @@ using Microsoft.EntityFrameworkCore;
 
 namespace D3SK.NetCore.Infrastructure.Stores
 {
-    public abstract class CommandDbStoreContainerBase<T, TStore, TDbStore> : DbStoreContainerBase<TStore, TDbStore>,
-        ICommandContainer<T, TStore>
-        where T : class, IEntity<int>
+    public abstract class CommandDbStoreContainerBase<T, TStore, TDbStore> :
+        CommandDbStoreContainerBase<T, int, TStore, TDbStore> where T : class, IEntity<int>
         where TStore : ICommandStore
         where TDbStore : DbContext, TStore
     {
         protected CommandDbStoreContainerBase(TDbStore store) : base(store)
         {
+        }
+    }
+
+    public abstract class CommandDbStoreContainerBase<T, TKey, TStore, TDbStore> : DbStoreContainerBase<TStore, TDbStore>,
+        ICommandContainer<T, TKey, TStore>
+        where T : class, IEntity<TKey>
+        where TStore : ICommandStore
+        where TDbStore : DbContext, TStore
+    {
+        protected CommandDbStoreContainerBase(TDbStore store) : base(store)
+        {
+        }
+
+        public async Task<T> FindAsync(TKey id)
+        {
+            var item = await DbStore.Set<T>().FindAsync(id);
+            return item != null ? await LoadRelationsAsync(item) : null;
         }
 
         public async Task AddAsync(T item)
@@ -25,7 +41,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
             await DbStore.AddAsync(item);
         }
 
-        public async Task DeleteAsync(int id)
+        public async Task DeleteAsync(TKey id)
         {
             var entity = await DbStore.FindAsync<T>(id);
             DbStore.Remove(entity.NotNull(nameof(entity)));
@@ -42,6 +58,11 @@ namespace D3SK.NetCore.Infrastructure.Stores
             }
 
             DbStore.Entry(dbItem).State = EntityState.Modified;
+        }
+
+        protected virtual Task<T> LoadRelationsAsync(T item)
+        {
+            return item.AsTask();
         }
     }
 }

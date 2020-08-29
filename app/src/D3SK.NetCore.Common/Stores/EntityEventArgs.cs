@@ -32,15 +32,28 @@ namespace D3SK.NetCore.Common.Stores
 
     public class EntityUpdatedEventArgs<T> : EntityEventArgsBase<T> where T : class, IEntityBase
     {
-        public EntityUpdatedEventArgs(T entity) : base(entity)
+        public bool IsModified { get; }
+
+        public EntityUpdatedEventArgs(T entity, bool isModified) : base(entity)
         {
+            IsModified = isModified;
         }
     }
 
     public class EntityPropertyUpdatedEventArgs<T> : EntityEventArgsBase<T> where T : class, IEntityBase
     {
-        public EntityPropertyUpdatedEventArgs(T entity) : base(entity)
+        public string PropertyName { get; set; }
+
+        public object OldValue { get; set; }
+
+        public object NewValue { get; set; }
+
+        public EntityPropertyUpdatedEventArgs(T entity, string propertyName, object newValue, object oldValue) :
+            base(entity)
         {
+            PropertyName = propertyName;
+            NewValue = newValue;
+            OldValue = oldValue;
         }
     }
 }

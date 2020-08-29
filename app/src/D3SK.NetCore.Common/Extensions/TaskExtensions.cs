@@ -18,12 +18,20 @@ namespace D3SK.NetCore.Common.Extensions
 
         public static Task<T> AsTask<T>(this object source)
         {
-            return Task.FromResult((T)source);
+            return Task.FromResult((T) source);
         }
 
         public static Task<T> AsTask<T>(this T source)
         {
-            return Task.FromResult((T)source);
+            return Task.FromResult((T) source);
+        }
+    }
+
+    public static class TaskAction
+    {
+        public static Task Run(Action action)
+        {
+            return Task.CompletedTask.WithAction(action);
         }
     }
 }

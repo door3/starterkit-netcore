@@ -19,9 +19,16 @@ namespace D3SK.NetCore.Common.Stores
         where TStore : ICommandStore
     {
         Task AddAsync(T item);
-
-        Task DeleteAsync(int id);
-
+        
         Task UpdateAsync(T currentItem, T originalItem = null);
+    }
+
+    public interface ICommandContainer<T, in TKey, out TStore> : ICommandContainer<T, TStore>
+        where T : class, IEntity<TKey>
+        where TStore : ICommandStore
+    {
+        Task DeleteAsync(TKey id);
+
+        Task<T> FindAsync(TKey id);
     }
 }

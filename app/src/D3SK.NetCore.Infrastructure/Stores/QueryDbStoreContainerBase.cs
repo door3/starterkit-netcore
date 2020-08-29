@@ -12,8 +12,18 @@ using Microsoft.EntityFrameworkCore;
 
 namespace D3SK.NetCore.Infrastructure.Stores
 {
-    public abstract class QueryDbStoreContainerBase<T, TStore, TDbStore> : DbStoreContainerBase<TStore, TDbStore>, IQueryContainer<T, TStore>
+    public abstract class QueryDbStoreContainerBase<T, TStore, TDbStore> : QueryDbStoreContainerBase<T, int, TStore, TDbStore>
         where T : class, IEntity<int>
+        where TStore : IQueryStore
+        where TDbStore : DbContext, TStore
+    {
+        protected QueryDbStoreContainerBase(TDbStore store) : base(store)
+        {
+        }
+    }
+
+    public abstract class QueryDbStoreContainerBase<T, TKey, TStore, TDbStore> : DbStoreContainerBase<TStore, TDbStore>, IQueryContainer<T, TKey, TStore>
+        where T : class, IEntity<TKey>
         where TStore : IQueryStore
         where TDbStore : DbContext, TStore
     {
@@ -30,7 +40,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
             return await items.CountAsync();
         }
 
-        public virtual async Task<T> GetAsync(int id, string includes = null, bool isTracked = true)
+        public virtual async Task<T> GetAsync(TKey id, string includes = null, bool isTracked = true)
         {
             var item = await DbStore.Set<T>().FindAsync(id);
             return item != null ? await LoadRelationsAsync(item, includes) : null;

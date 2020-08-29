@@ -24,6 +24,11 @@ namespace D3SK.NetCore.Api.Models
         }
     }
 
+    public class EntityCreateCommandRequest<T, TKey> : EntityCreateCommandRequest<T>
+        where T : class, IEntity<TKey>
+    {
+    }
+
     public class EntityUpdateCommandRequest<T> : CommandRequestBase<IEntityUpdateCommand<T>> where T : class, IEntityBase
     {
         public T OriginalItem { get; set; }
@@ -36,5 +41,10 @@ namespace D3SK.NetCore.Api.Models
             command.OriginalItem = OriginalItem;
             command.CurrentItem = CurrentItem;
         }
+    }
+
+    public class EntityUpdateCommandRequest<T, TKey> : EntityUpdateCommandRequest<T>
+        where T : class, IEntity<TKey>
+    {
     }
 }

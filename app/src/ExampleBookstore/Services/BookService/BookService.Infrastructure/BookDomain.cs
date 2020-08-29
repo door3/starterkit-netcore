@@ -54,9 +54,12 @@ namespace BookService.Infrastructure
             services.AddScoped<IDomainInstance<IBookDomain>, BookDomainInstance>();
 
             // features
+            services.AddScoped<IBookCountQuery, BookCountQuery>();
             services.AddScoped<IBookQuery, BookQuery>();
             services.AddScoped<IBookProjectionQuery, BookProjectionQuery>();
             services.AddScoped<IBookCreateCommand, BookCreateCommand>();
+            services.AddScoped<IBookUpdateCommand, BookUpdateCommand>();
+            services.AddScoped<IBookDeleteCommand, BookDeleteCommand>();
 
             // roles
             services.AddTransient<IQueryDomainRole<IBookDomain>, ExampleBookstoreQueryDomainRole<IBookDomain>>();
