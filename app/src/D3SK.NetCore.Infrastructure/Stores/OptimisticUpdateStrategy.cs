@@ -19,7 +19,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
             var entityType = obj.GetType();
             var properties = entityType
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Select(p => new { Property = p, Attribute = p.GetCustomAttribute<UpdateStrategyAttribute>() })
+                .Select(p => new {Property = p, Attribute = p.GetCustomAttribute<UpdateStrategyAttribute>()})
                 .Where(p => p.Attribute != null && p.Attribute.NullOnAdd)
                 .ToList();
             properties.ForEach(p => p.Property.SetValue(obj, null, null));
@@ -30,7 +30,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
                 .ToList();
             collections.ForEach(c =>
             {
-                var list = (IEnumerable)c.GetValue(obj);
+                var list = (IEnumerable) c.GetValue(obj);
                 foreach (var i in list)
                 {
                     SetNullOnAdd(i);
@@ -38,10 +38,15 @@ namespace D3SK.NetCore.Infrastructure.Stores
             });
         }
 
-        public virtual async Task AddEntityAsync<T>(T item, Func<EntityAddedEventArgs<T>, Task> onAddComplete = null)
+        public virtual async Task AddEntityAsync<T>(T item, Func<EntityAddedEventArgs<T>, Task> onAddComplete = null,
+            AddEntityOptions options = null)
             where T : class, IEntityBase
         {
-            SetNullOnAdd(item);
+            options ??= new AddEntityOptions();
+            if (options.SetNullOnAdd)
+            {
+                SetNullOnAdd(item);
+            }
 
             if (onAddComplete == null) return;
 
@@ -49,29 +54,83 @@ namespace D3SK.NetCore.Infrastructure.Stores
             await onAddComplete(eventArgs);
         }
 
-        public virtual async Task DeleteEntityAsync<T>(T item, Func<EntityDeletedEventArgs<T>, Task> onDeleteComplete = null)
+        public virtual async Task DeleteEntityAsync<T>(T item,
+            Func<EntityDeletedEventArgs<T>, Task> onDeleteComplete = null, DeleteEntityOptions options = null)
             where T : class, IEntityBase
         {
+            options ??= new DeleteEntityOptions();
             if (onDeleteComplete == null) return;
 
             var eventArgs = new EntityDeletedEventArgs<T>(item);
             await onDeleteComplete(eventArgs);
         }
 
+        public virtual async Task UpdateEntityAsync<T>(
+            T currentItem,
+            T originalItem = null,
+            T dbItem = null,
+            Func<EntityPropertyUpdatedEventArgs<T>, Task> onPropertyChanged = null,
+            Func<EntityUpdatedEventArgs<T>, Task> onUpdateComplete = null,
+            Func<T, object> getItemId = null,
+            UpdateEntityOptions options = null)
+            where T : class, IEntityBase
+        {
+            currentItem.NotNull(nameof(currentItem));
+            dbItem.NotNull(nameof(dbItem));
+            originalItem ??= dbItem;
+            options ??= new UpdateEntityOptions();
+
+            var modified = false;
+            var entityType = currentItem.GetType();
+            var entityName = GetFullObjectName(entityType);
+
+            if (await UpdateEntityPropertiesAsync(
+                currentItem,
+                null,
+                currentItem,
+                originalItem,
+                dbItem,
+                onPropertyChanged,
+                options))
+            {
+                modified = true;
+            }
+
+            if (await UpdateEntitySetMethodsAsync(
+                currentItem,
+                null,
+                currentItem,
+                originalItem,
+                dbItem,
+                onPropertyChanged,
+                options))
+            {
+                modified = true;
+            }
+
+            if (onUpdateComplete != null)
+            {
+                var eventArgs = new EntityUpdatedEventArgs<T>(currentItem, modified);
+                await onUpdateComplete(eventArgs);
+            }
+        }
+
         public virtual async Task UpdateCollectionAsync<T, TKey>(
             IEnumerable<T> currentItems,
             IEnumerable<T> originalItems,
             IEnumerable<T> dbItems,
-            Func<T, TKey> getItemId = null,
-            Func<TKey, T> findItem = null,
             Func<T, Task> onAddItem = null,
             Func<T, T, T, Task> onUpdateItem = null,
-            Func<T, Task> onDeleteItem = null)
+            Func<T, Task> onDeleteItem = null,
+            Func<T, TKey> getItemId = null,
+            Func<TKey, T> findItem = null,
+            UpdateCollectionOptions options = null)
             where T : class, IEntityBase
         {
             currentItems = currentItems.ToList();
             dbItems = dbItems.ToList();
             originalItems = originalItems?.ToList() ?? dbItems;
+            options ??= new UpdateCollectionOptions();
 
             bool IdsAreEqual(TKey idA, TKey idB) => Equals(idA, idB);
 
@@ -109,87 +168,44 @@ namespace D3SK.NetCore.Infrastructure.Stores
             }
         }
 
-        public virtual async Task UpdateEntityAsync<T>(
-            T currentItem,
-            T originalItem = null,
-            T dbItem = null,
-            Func<EntityPropertyUpdatedEventArgs<T>, Task> onPropertyChanged = null,
-            Func<EntityUpdatedEventArgs<T>, Task> onUpdateComplete = null,
-            bool updateNestedEntitiesAndCollections = false,
-            Func<T, object> getItemId = null)
-            where T : class, IEntityBase
-        {
-            currentItem.NotNull(nameof(currentItem));
-            dbItem.NotNull(nameof(dbItem));
-            originalItem ??= dbItem;
-
-            var modified = false;
-            var entityType = currentItem.GetType();
-            var entityName = GetFullObjectName(entityType);
-
-            if (await UpdateEntityPropertiesAsync(
-                currentItem, 
-                null,
-                currentItem, 
-                originalItem, 
-                dbItem,
-                onPropertyChanged))
-            {
-                modified = true;
-            }
-
-            if (await UpdateEntitySetMethodsAsync(
-                currentItem, 
-                null, 
-                currentItem, 
-                originalItem, 
-                dbItem,
-                onPropertyChanged))
-            {
-                modified = true;
-            }
-
-            if (onUpdateComplete != null)
-            {
-                var eventArgs = new EntityUpdatedEventArgs<T>(currentItem);
-                await onUpdateComplete(eventArgs);
-            }
-        }
-
         public async Task<bool> UpdateCompositeEntityAsync<T, TComposite>(
             T currentRootItem,
             string namePrefix,
             TComposite currentItem,
             TComposite originalItem,
             TComposite dbItem,
-            Func<EntityPropertyUpdatedEventArgs<T>, Task> onPropertyChanged)
+            Func<EntityPropertyUpdatedEventArgs<T>, Task> onPropertyChanged,
+            UpdateEntityOptions options = null)
             where T : class, IEntityBase
             where TComposite : class, ICompositeEntity
         {
             currentItem.NotNull(nameof(currentItem));
             dbItem.NotNull(nameof(dbItem));
             originalItem ??= dbItem;
+            options ??= new UpdateEntityOptions();
 
             var modified = false;
             var entityType = currentItem.GetType();
             if (await UpdateEntityPropertiesAsync(
-                currentRootItem, 
-                namePrefix, 
-                currentItem, 
+                currentRootItem,
+                namePrefix,
+                currentItem,
                 originalItem,
-                dbItem, 
-                onPropertyChanged))
+                dbItem,
+                onPropertyChanged,
+                options))
             {
                 modified = true;
             }
 
             if (await UpdateEntitySetMethodsAsync<T>(
-                currentRootItem, 
-                namePrefix, 
-                currentItem, 
-                originalItem, 
+                currentRootItem,
+                namePrefix,
+                currentItem,
+                originalItem,
                 dbItem,
-                onPropertyChanged))
+                onPropertyChanged,
+                options))
             {
                 modified = true;
             }
@@ -203,16 +219,20 @@ namespace D3SK.NetCore.Infrastructure.Stores
         }
 
         protected virtual async Task<bool> UpdateEntityPropertiesAsync<T>(
-            T currentRootItem, 
+            T currentRootItem,
             string namePrefix,
-            object currentItem, 
-            object originalItem, 
+            object currentItem,
+            object originalItem,
             object dbItem,
-            Func<EntityPropertyUpdatedEventArgs<T>, Task> onPropertyChanged)
-        where T : class, IEntityBase
+            Func<EntityPropertyUpdatedEventArgs<T>, Task> onPropertyChanged,
+            UpdateEntityOptions options = null)
+            where T : class, IEntityBase
         {
+            options ??= new UpdateEntityOptions();
             var entityType = typeof(T);
             var modified = false;
+
+            var shouldFilterProps = options.PropertiesToUpdate?.Any() ?? false;
 
             var properties = entityType
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
@@ -226,7 +246,9 @@ namespace D3SK.NetCore.Infrastructure.Stores
                         UpdateStrategy = p.GetCustomAttribute<UpdateStrategyAttribute>(),
                         FullName = GetFullObjectName(p, namePrefix)
                     })
-                .Where(p => p.UpdateStrategy.EnableUpdating)
+                .Where(p => p.UpdateStrategy.EnableUpdating &&
+                            (shouldFilterProps &&
+                             options.PropertiesToUpdate.Contains(p.FullName, StringComparer.OrdinalIgnoreCase)))
                 .ToList();
 
             foreach (var prop in properties)
@@ -238,10 +260,10 @@ namespace D3SK.NetCore.Infrastructure.Stores
                 if (prop.Property.PropertyType.ImplementsInterface<ICompositeEntity>())
                 {
                     var compositeModified = await UpdateCompositeEntityAsync(
-                        currentRootItem, 
+                        currentRootItem,
                         $"{prop.FullName}.",
                         (ICompositeEntity) newValue,
-                        (ICompositeEntity) oldValue, 
+                        (ICompositeEntity) oldValue,
                         (ICompositeEntity) dbValue,
                         onPropertyChanged);
                     if (compositeModified) modified = true;
@@ -251,9 +273,11 @@ namespace D3SK.NetCore.Infrastructure.Stores
                 if (Equals(oldValue, newValue) || Equals(dbValue, newValue)) continue;
                 if (onPropertyChanged != null)
                 {
-                    var eventArgs = new EntityPropertyUpdatedEventArgs<T>(currentRootItem);
+                    var eventArgs =
+                        new EntityPropertyUpdatedEventArgs<T>(currentRootItem, prop.FullName, newValue, oldValue);
                     await onPropertyChanged(eventArgs);
                 }
+
                 prop.Property.SetValue(dbItem, newValue);
                 modified = true;
             }
@@ -261,14 +285,22 @@ namespace D3SK.NetCore.Infrastructure.Stores
             return modified;
         }
 
-        protected virtual async Task<bool> UpdateEntitySetMethodsAsync<T>(T currentRootItem, string namePrefix,
-            object currentItem, object originalItem, object dbItem,
-            Func<EntityPropertyUpdatedEventArgs<T>, Task> onPropertyChanged)
+        protected virtual async Task<bool> UpdateEntitySetMethodsAsync<T>(
+            T currentRootItem,
+            string namePrefix,
+            object currentItem,
+            object originalItem,
+            object dbItem,
+            Func<EntityPropertyUpdatedEventArgs<T>, Task> onPropertyChanged,
+            UpdateEntityOptions options = null)
             where T : class, IEntityBase
         {
+            options ??= new UpdateEntityOptions();
             var entityType = typeof(T);
             var modified = false;
-            
+
+            var shouldFilterProps = options.PropertiesToUpdate?.Any() ?? false;
+
             var setMethods = entityType.GetMethods(BindingFlags.Instance | BindingFlags.Public)
                 .Select(x => new
                 {
@@ -281,6 +313,10 @@ namespace D3SK.NetCore.Infrastructure.Stores
             foreach (var setter in setMethods)
             {
                 var prop = entityType.GetProperty(setter.Attribute.Property);
+                var propName = GetFullObjectName(prop, namePrefix);
+
+                if (shouldFilterProps &&
+                    options.PropertiesToUpdate.Contains(propName, StringComparer.OrdinalIgnoreCase)) ;
 
                 var dbValue = prop.TryGetValue(dbItem);
                 var oldValue = prop.TryGetValue(originalItem);
@@ -290,10 +326,11 @@ namespace D3SK.NetCore.Infrastructure.Stores
 
                 if (onPropertyChanged != null)
                 {
-                    var propName = GetFullObjectName(prop, namePrefix);
-                    var eventArgs = new EntityPropertyUpdatedEventArgs<T>(currentRootItem);
+                    var eventArgs =
+                        new EntityPropertyUpdatedEventArgs<T>(currentRootItem, propName, newValue, oldValue);
                     await onPropertyChanged(eventArgs);
                 }
+
                 setter.Method.Invoke(dbItem, new[] {newValue});
                 modified = true;
             }

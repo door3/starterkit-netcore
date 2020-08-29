@@ -117,18 +117,6 @@ namespace D3SK.NetCore.Common.Extensions
             return list[RandomHelper.Generator.Next(list.Count)];
         }
 
-        public static void RemoveEntity<T>(this ICollection<T> list, T item) where T : IEntity<int>
-        {
-            RemoveEntity<T, int>(list, item);
-        }
-
-        public static void RemoveEntity<T, TKey>(this ICollection<T> list, T item) where T : IEntity<TKey>
-        {
-            list.NotNull(nameof(list));
-            var listItem = list.Single(x => x.Id.Equals(item.Id));
-            list.Remove(listItem);
-        }
-
         public static T[,] ToMultidimensionalArray<T>(this IList<T[]> arrays)
         {
             var minorLength = arrays[0].Length;

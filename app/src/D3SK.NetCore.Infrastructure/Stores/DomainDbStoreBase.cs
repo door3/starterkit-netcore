@@ -149,10 +149,10 @@ namespace D3SK.NetCore.Infrastructure.Stores
         protected virtual void SetAuditEntityDetails()
         {
             var added = ChangeTracker.Entries().Where(x => x.State == EntityState.Added)
-                .Select(x => x.Entity).OfType<IAuditEntity>();
+                .Select(x => x.Entity).OfType<IAuditEntityBase>();
 
             var modified = ChangeTracker.Entries().Where(x => x.State == EntityState.Modified)
-                .Select(x => x.Entity).OfType<IAuditEntity>();
+                .Select(x => x.Entity).OfType<IAuditEntityBase>();
 
             // TODO: set user id for audit entities
 

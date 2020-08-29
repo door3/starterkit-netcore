@@ -12,10 +12,20 @@ using Microsoft.EntityFrameworkCore;
 
 namespace D3SK.NetCore.Infrastructure.Stores
 {
-
-    public abstract class ProjectionQueryDbStoreContainerBase<T, TStore, TDbStore> : QueryDbStoreContainerBase<T, TStore, TDbStore>,
-        IProjectionQueryContainer<T, TStore>
+    public abstract class ProjectionQueryDbStoreContainerBase<T, TStore, TDbStore> :
+        ProjectionQueryDbStoreContainerBase<T, int, TStore, TDbStore> 
         where T : class, IEntity<int>
+        where TStore : IQueryStore
+        where TDbStore : DbContext, TStore
+    {
+        protected ProjectionQueryDbStoreContainerBase(TDbStore store) : base(store)
+        {
+        }
+    }
+
+    public abstract class ProjectionQueryDbStoreContainerBase<T, TKey, TStore, TDbStore> : QueryDbStoreContainerBase<T, TKey, TStore, TDbStore>,
+        IProjectionQueryContainer<T, TStore>
+        where T : class, IEntity<TKey>
         where TStore : IQueryStore
         where TDbStore : DbContext, TStore
     {

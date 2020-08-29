@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
+using D3SK.NetCore.Common.Utilities;
 
 namespace D3SK.NetCore.Common.Queries
 {
@@ -66,6 +68,7 @@ namespace D3SK.NetCore.Common.Queries
 
         public string Operator { get; set; } = QueryFilterOperators.Equal;
 
+        [JsonConverter(typeof(JsonObjectConverter))]
         public object Value { get; set; }
 
         public IList<QueryFilter> AndFilters { get; set; } = new List<QueryFilter>();
