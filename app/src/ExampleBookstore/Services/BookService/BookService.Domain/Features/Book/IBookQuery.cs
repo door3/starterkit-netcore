@@ -1,14 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using D3SK.NetCore.Domain;
-using D3SK.NetCore.Domain.Features;
-using D3SK.NetCore.Domain.Stores;
-using ExampleBookstore.Services.BookService.Domain.Entities;
+﻿using D3SK.NetCore.Domain.Features;
 
-namespace ExampleBookstore.Services.BookService.Domain.Features
+namespace ExampleBookstore.Services.BookService.Domain.Features.Book
 {
-    public interface IBookQuery : IEntityQuery<IBookDomain, Book>
+    public interface IBookQuery : IEntityQuery<IBookDomain, Entities.Book>
     {
     }
 }

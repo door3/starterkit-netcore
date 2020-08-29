@@ -12,6 +12,7 @@ using D3SK.NetCore.Domain.Extensions;
 using ExampleBookstore.Services.BookService.Domain;
 using ExampleBookstore.Services.BookService.Domain.Entities;
 using ExampleBookstore.Services.BookService.Domain.Features;
+using ExampleBookstore.Services.BookService.Domain.Features.Book;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ExampleBookstore.Services.BookService.Api.Controllers

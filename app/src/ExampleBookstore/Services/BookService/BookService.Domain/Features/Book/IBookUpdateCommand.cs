@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using D3SK.NetCore.Domain.Features;
-using ExampleBookstore.Services.BookService.Domain.Entities;
+﻿using D3SK.NetCore.Domain.Features;
 
-namespace ExampleBookstore.Services.BookService.Domain.Features
+namespace ExampleBookstore.Services.BookService.Domain.Features.Book
 {
-    public interface IBookUpdateCommand : IEntityUpdateCommand<IBookDomain, Book>
+    public interface IBookUpdateCommand : IEntityUpdateCommand<IBookDomain, Entities.Book>
     {
     }
 }
