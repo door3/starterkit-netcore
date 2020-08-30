@@ -47,13 +47,20 @@ namespace D3SK.NetCore.Api.Controllers
         }
 
         [HttpGet]
-        public virtual async Task<SearchQueryResponse<T>> GetEntities(
+        public virtual async Task<IActionResult> GetEntities(
             [FromServices] TQuery query,
             [FromServices] TCountQuery countQuery,
-            [FromQuery] FromQuerySearchQueryRequest request)
+            [FromQuery] FromQuerySearchQueryRequest request,
+            [FromQuery] int? id)
         {
             request?.SetQueryAndCount(query, countQuery);
-            return await SearchCore(query, countQuery);
+            if (id.HasValue)
+            {
+                query.Filters.Add(new QueryFilter(id));
+                return Ok((await DomainInstance.RunQueryAsync(query)).SingleOrDefault());
+            }
+
+            return Ok(await SearchCore(query, countQuery));
         }
 
         [HttpPost("search")]
@@ -76,14 +83,13 @@ namespace D3SK.NetCore.Api.Controllers
             return await SearchCore(query, countQuery);
         }
 
-        [HttpGet("{id}", Name = nameof(GetEntity))]
-        public virtual async Task<T> GetEntity([FromServices] TQuery query, [FromRoute] int id)
+        [HttpGet("{id}")]
+        public virtual async Task<T> GetEntityById([FromServices] TQuery query, [FromRoute] int id)
         {
             query.Filters.Add(new QueryFilter(id));
-            var result = (await DomainInstance.RunQueryAsync(query)).SingleOrDefault();
-            return result;
+            return (await DomainInstance.RunQueryAsync(query)).SingleOrDefault();
         }
-
+        
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         public virtual async Task<IActionResult> CreateEntity([FromServices] TCreate command,
@@ -91,7 +97,7 @@ namespace D3SK.NetCore.Api.Controllers
         {
             request.SetCommand(command);
             await DomainInstance.RunCommandAsync(command);
-            return CreatedAtRoute(nameof(GetEntity), new { id = command.CurrentItem.Id, version = $"{version}" },
+            return CreatedAtRoute(new { id = command.CurrentItem.Id, version = $"{version}" },
                 request.CurrentItem);
         }
 
