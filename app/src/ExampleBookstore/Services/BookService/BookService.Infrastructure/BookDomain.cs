@@ -1,9 +1,11 @@
-﻿using BookService.Infrastructure.Features.BookFeatures;
+﻿using BookService.Infrastructure.Features.AuthorFeatures;
+using BookService.Infrastructure.Features.BookFeatures;
 using BookService.Infrastructure.Stores;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
 using ExampleBookstore.Infrastructure;
 using ExampleBookstore.Services.BookService.Domain;
+using ExampleBookstore.Services.BookService.Domain.Features.AuthorFeatures;
 using ExampleBookstore.Services.BookService.Domain.Features.BookFeatures;
 using ExampleBookstore.Services.BookService.Domain.Stores;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +42,8 @@ namespace BookService.Infrastructure
             services.AddScoped<IBookQueryStore>(provider => provider.GetService<BookDbStore>());
 
             // containers
+            services.AddScoped<IAuthorCommandContainer, AuthorDbCommandContainer>();
+            services.AddScoped<IAuthorQueryContainer, AuthorDbQueryContainer>();
             services.AddScoped<IBookCommandContainer, BookDbCommandContainer>();
             services.AddScoped<IBookQueryContainer, BookDbQueryContainer>();
             
@@ -47,7 +51,15 @@ namespace BookService.Infrastructure
             services.AddSingleton<IBookDomain, BookDomain>();
             services.AddScoped<IDomainInstance<IBookDomain>, BookDomainInstance>();
 
-            // features
+            // author features
+            services.AddScoped<IAuthorCountQuery, AuthorCountQuery>();
+            services.AddScoped<IAuthorQuery, AuthorQuery>();
+            services.AddScoped<IAuthorProjectionQuery, AuthorProjectionQuery>();
+            services.AddScoped<IAuthorCreateCommand, AuthorCreateCommand>();
+            services.AddScoped<IAuthorUpdateCommand, AuthorUpdateCommand>();
+            services.AddScoped<IAuthorDeleteCommand, AuthorDeleteCommand>();
+
+            // book features
             services.AddScoped<IBookCountQuery, BookCountQuery>();
             services.AddScoped<IBookQuery, BookQuery>();
             services.AddScoped<IBookProjectionQuery, BookProjectionQuery>();
