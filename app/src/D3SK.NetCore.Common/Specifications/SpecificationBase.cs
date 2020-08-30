@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Text;
+﻿using System.ComponentModel.DataAnnotations;
 using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Common.Models;
 using D3SK.NetCore.Common.Utilities;

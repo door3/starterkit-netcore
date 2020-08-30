@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using D3SK.NetCore.Common.Extensions;
+﻿using D3SK.NetCore.Common.Extensions;
 
 namespace D3SK.NetCore.Common.Specifications
 {
-    public abstract class UnaryOperatorSpecificationBase : Specification, ISpecification
+    public abstract class UnaryOperatorSpecificationBase : Specification
     {
         protected ISpecification Specification { get; }
 
@@ -16,7 +12,7 @@ namespace D3SK.NetCore.Common.Specifications
         }
     }
 
-    public abstract class UnaryOperatorSpecificationBase<T> : Specification<T>, ISpecification<T>
+    public abstract class UnaryOperatorSpecificationBase<T> : Specification<T>
     {
         protected ISpecification<T> Specification { get; }
 
@@ -26,7 +22,7 @@ namespace D3SK.NetCore.Common.Specifications
         }
     }
 
-    public abstract class AsyncUnaryOperatorSpecificationBase : AsyncSpecification, IAsyncSpecification
+    public abstract class AsyncUnaryOperatorSpecificationBase : AsyncSpecification
     {
         protected IAsyncSpecification Specification { get; }
 
@@ -36,7 +32,7 @@ namespace D3SK.NetCore.Common.Specifications
         }
     }
 
-    public abstract class AsyncUnaryOperatorSpecificationBase<T> : AsyncSpecification<T>, IAsyncSpecification<T>
+    public abstract class AsyncUnaryOperatorSpecificationBase<T> : AsyncSpecification<T>
     {
         protected IAsyncSpecification<T> Specification { get; }
 

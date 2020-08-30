@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading.Tasks;
-using D3SK.NetCore.Common.Extensions;
+﻿using D3SK.NetCore.Common.Extensions;
 
 namespace D3SK.NetCore.Common.Specifications
 {
-    public abstract class ConditionalOperatorSpecificationBase : Specification, ISpecification
+    public abstract class ConditionalOperatorSpecificationBase : Specification
     {
         protected ISpecification Specification1 { get; }
 
@@ -19,7 +15,7 @@ namespace D3SK.NetCore.Common.Specifications
         }
     }
 
-    public abstract class ConditionalOperatorSpecificationBase<T> : Specification<T>, ISpecification<T>
+    public abstract class ConditionalOperatorSpecificationBase<T> : Specification<T>
     {
         protected ISpecification<T> Specification1 { get; }
 
@@ -33,7 +29,7 @@ namespace D3SK.NetCore.Common.Specifications
         }
     }
 
-    public abstract class AsyncConditionalOperatorSpecificationBase : AsyncSpecification, IAsyncSpecification
+    public abstract class AsyncConditionalOperatorSpecificationBase : AsyncSpecification
     {
         protected IAsyncSpecification Specification1 { get; }
 
@@ -47,7 +43,7 @@ namespace D3SK.NetCore.Common.Specifications
         }
     }
 
-    public abstract class AsyncConditionalOperatorSpecificationBase<T> : AsyncSpecification<T>, IAsyncSpecification<T>
+    public abstract class AsyncConditionalOperatorSpecificationBase<T> : AsyncSpecification<T>
     {
         protected IAsyncSpecification<T> Specification1 { get; }
 
