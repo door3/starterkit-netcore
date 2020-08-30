@@ -315,7 +315,10 @@ namespace D3SK.NetCore.Infrastructure.Stores
                 var propName = GetFullObjectName(prop, namePrefix);
 
                 if (shouldFilterProps &&
-                    options.PropertiesToUpdate.Contains(propName, StringComparer.OrdinalIgnoreCase)) ;
+                    !options.PropertiesToUpdate.Contains(propName, StringComparer.OrdinalIgnoreCase))
+                {
+                    continue;
+                }
 
                 var dbValue = prop.TryGetValue(dbItem);
                 var oldValue = prop.TryGetValue(originalItem);
@@ -341,13 +344,11 @@ namespace D3SK.NetCore.Infrastructure.Stores
         {
             switch (obj)
             {
-                case Type _:
+                case Type type:
                 {
-                    var objType = (Type) obj;
-                    return $"{namePrefix}{objType.Name}";
+                    return $"{namePrefix}{type.Name}";
                 }
-                case PropertyInfo _:
-                    var propInfo = (PropertyInfo) obj;
+                case PropertyInfo propInfo:
                     return $"{namePrefix}{propInfo.Name}";
                 default:
                 {
