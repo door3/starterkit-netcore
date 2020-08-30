@@ -124,14 +124,7 @@ namespace D3SK.NetCore.Infrastructure.Extensions
 
         public static bool HasInclude(this IStoreQuery query, string include)
         {
-            var includesList = query?.Includes?.Split(',', StringSplitOptions.RemoveEmptyEntries);
-
-            if (includesList == null || includesList.Any())
-            {
-                return false;
-            }
-
-            return includesList.Contains(include, StringComparer.OrdinalIgnoreCase);
+            return query?.Includes.HasInclude(include) ?? false;
         }
         
         public static bool HasIncludes(this IStoreQuery query)
@@ -155,9 +148,7 @@ namespace D3SK.NetCore.Infrastructure.Extensions
         {
             return !(source.IsEmpty() || source == StoreQueryIncludes.None);
         }
-
-
-
+        
         public static IQueryable<T> Page<T>(this IQueryable<T> source, IPageable pagingInfo)
         {
             source.NotNull(nameof(source));
@@ -168,8 +159,9 @@ namespace D3SK.NetCore.Infrastructure.Extensions
 
         public static void PageWhile<T>(this IEnumerable<T> source, Func<IEnumerable<T>, bool> pageAction, int pageSize = 100)
         {
+            // TODO: redo this, should skip/take and check for empty to end
             var count = source.Count();
-            for (int i = 0; i < count; i += pageSize)
+            for (var i = 0; i < count; i += pageSize)
             {
                 var list = source.Skip(i).Take(pageSize);
                 if (!pageAction(list))
@@ -183,12 +175,9 @@ namespace D3SK.NetCore.Infrastructure.Extensions
         {
             source.NotNull(nameof(source));
 
-            if (projection == null || projection.SelectProperties?.FirstOrDefault() == null)
-            {
-                return source;
-            }
-
-            return source.Select($"new ({projection.SelectProperties.Aggregate((x, y) => x + "," + y)})");
+            return projection?.SelectProperties?.FirstOrDefault() == null
+                ? source
+                : source.Select($"new ({projection.SelectProperties.Aggregate((x, y) => x + "," + y)})");
         }
 
         public static IQueryable<T> Sort<T>(this IQueryable<T> source, ISortable sortInfo, string defaultSortField = "Id")
@@ -200,7 +189,7 @@ namespace D3SK.NetCore.Infrastructure.Extensions
                 return source.OrderBy(defaultSortField);
             }
 
-            var fields = sortInfo?.SortField?.Split(",", StringSplitOptions.RemoveEmptyEntries);
+            var fields = sortInfo.SortField?.Split(",", StringSplitOptions.RemoveEmptyEntries);
             var directions = sortInfo.SortDirection?.Split(",", StringSplitOptions.RemoveEmptyEntries);
 
             var currentDirection = SortDirections.Ascending;
@@ -210,8 +199,14 @@ namespace D3SK.NetCore.Infrastructure.Extensions
                 var field = fields[i].ToPropertyCase();
                 var dir = directions?.Skip(i).FirstOrDefault();
                 currentDirection = dir ?? currentDirection;
-                if (i == 0) ordered = source.OrderBy($"{field} {currentDirection}");
-                else ordered = ordered.ThenBy($"{field} {currentDirection}");
+                if (i == 0)
+                {
+                    ordered = source.OrderBy($"{field} {currentDirection}");
+                }
+                else
+                {
+                    ordered = ordered.ThenBy($"{field} {currentDirection}");
+                }
             }
 
             return ordered;
