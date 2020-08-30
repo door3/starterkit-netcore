@@ -5,6 +5,8 @@ namespace D3SK.NetCore.Infrastructure.Utilities
 {
     public class TenantManager : ITenantManager
     {
+        public bool HasTenantId => TenantId.HasValue;
+
         public int? TenantId { get; private set; }
 
         public TenantManager(ResolvedTenant resolvedTenant)

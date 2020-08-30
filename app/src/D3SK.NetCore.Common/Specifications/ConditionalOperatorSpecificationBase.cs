@@ -1,4 +1,5 @@
 ﻿using D3SK.NetCore.Common.Extensions;
+using D3SK.NetCore.Common.Utilities;
 
 namespace D3SK.NetCore.Common.Specifications
 {
@@ -12,6 +13,13 @@ namespace D3SK.NetCore.Common.Specifications
         {
             Specification1 = specification1.NotNull(nameof(specification1));
             Specification2 = specification2.NotNull(nameof(specification2));
+        }
+
+        public override ISpecification WithExceptionManager(IExceptionManager exceptionManager)
+        {
+            Specification1.WithExceptionManager(exceptionManager);
+            Specification2.WithExceptionManager(exceptionManager);
+            return base.WithExceptionManager(exceptionManager);
         }
     }
 
@@ -27,6 +35,13 @@ namespace D3SK.NetCore.Common.Specifications
             Specification1 = specification1.NotNull(nameof(specification1));
             Specification2 = specification2.NotNull(nameof(specification2));
         }
+
+        public override ISpecification<T> WithExceptionManager(IExceptionManager exceptionManager)
+        {
+            Specification1.WithExceptionManager(exceptionManager);
+            Specification2.WithExceptionManager(exceptionManager);
+            return base.WithExceptionManager(exceptionManager);
+        }
     }
 
     public abstract class AsyncConditionalOperatorSpecificationBase : AsyncSpecification
@@ -41,6 +56,13 @@ namespace D3SK.NetCore.Common.Specifications
             Specification1 = specification1.NotNull(nameof(specification1));
             Specification2 = specification2.NotNull(nameof(specification2));
         }
+
+        public override IAsyncSpecification WithExceptionManager(IExceptionManager exceptionManager)
+        {
+            Specification1.WithExceptionManager(exceptionManager);
+            Specification2.WithExceptionManager(exceptionManager);
+            return base.WithExceptionManager(exceptionManager);
+        }
     }
 
     public abstract class AsyncConditionalOperatorSpecificationBase<T> : AsyncSpecification<T>
@@ -54,6 +76,13 @@ namespace D3SK.NetCore.Common.Specifications
         {
             Specification1 = specification1.NotNull(nameof(specification1));
             Specification2 = specification2.NotNull(nameof(specification2));
+        }
+
+        public override IAsyncSpecification<T> WithExceptionManager(IExceptionManager exceptionManager)
+        {
+            Specification1.WithExceptionManager(exceptionManager);
+            Specification2.WithExceptionManager(exceptionManager);
+            return base.WithExceptionManager(exceptionManager);
         }
     }
 }

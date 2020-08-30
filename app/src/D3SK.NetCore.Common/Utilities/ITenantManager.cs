@@ -6,6 +6,8 @@
 
     public interface ITenantManager<TKey>
     {
+        bool HasTenantId { get; }
+
         TKey TenantId { get; }
 
         void SetTenantId(TKey tenantId);

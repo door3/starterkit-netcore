@@ -9,7 +9,7 @@ namespace D3SK.NetCore.Common.Specifications
     {
         public IExceptionManager ExceptionManager { get; private set; }
 
-        public string ErrorMessage { get; private set; } = "Specification validation error.";
+        public string ErrorMessage { get; private set; }
 
         public int ErrorCode { get; private set; } = ExceptionMessageTypes.DefaultErrorCode;
 
@@ -18,6 +18,8 @@ namespace D3SK.NetCore.Common.Specifications
         protected virtual bool HandleSpecification(bool isSatisfied)
         {
             if (isSatisfied) return true;
+
+            if (ErrorMessage.IsEmpty()) return false;
 
             if (ExceptionManager != null)
             {

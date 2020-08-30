@@ -1,4 +1,5 @@
 ﻿using D3SK.NetCore.Common.Extensions;
+using D3SK.NetCore.Common.Utilities;
 
 namespace D3SK.NetCore.Common.Specifications
 {
@@ -10,6 +11,12 @@ namespace D3SK.NetCore.Common.Specifications
         {
             Specification = specification.NotNull(nameof(specification));
         }
+
+        public override ISpecification WithExceptionManager(IExceptionManager exceptionManager)
+        {
+            Specification.WithExceptionManager(exceptionManager);
+            return base.WithExceptionManager(exceptionManager);
+        }
     }
 
     public abstract class UnaryOperatorSpecificationBase<T> : Specification<T>
@@ -19,6 +26,12 @@ namespace D3SK.NetCore.Common.Specifications
         protected UnaryOperatorSpecificationBase(ISpecification<T> specification)
         {
             Specification = specification.NotNull(nameof(specification));
+        }
+
+        public override ISpecification<T> WithExceptionManager(IExceptionManager exceptionManager)
+        {
+            Specification.WithExceptionManager(exceptionManager);
+            return base.WithExceptionManager(exceptionManager);
         }
     }
 
@@ -30,6 +43,12 @@ namespace D3SK.NetCore.Common.Specifications
         {
             Specification = specification.NotNull(nameof(specification));
         }
+
+        public override IAsyncSpecification WithExceptionManager(IExceptionManager exceptionManager)
+        {
+            Specification.WithExceptionManager(exceptionManager);
+            return base.WithExceptionManager(exceptionManager);
+        }
     }
 
     public abstract class AsyncUnaryOperatorSpecificationBase<T> : AsyncSpecification<T>
@@ -39,6 +58,12 @@ namespace D3SK.NetCore.Common.Specifications
         protected AsyncUnaryOperatorSpecificationBase(IAsyncSpecification<T> specification)
         {
             Specification = specification.NotNull(nameof(specification));
+        }
+
+        public override IAsyncSpecification<T> WithExceptionManager(IExceptionManager exceptionManager)
+        {
+            Specification.WithExceptionManager(exceptionManager);
+            return base.WithExceptionManager(exceptionManager);
         }
     }
 }
