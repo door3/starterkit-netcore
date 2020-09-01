@@ -14,7 +14,8 @@ namespace ExampleBookstore.Infrastructure
         }
     }
 
-    public abstract class ExampleBookstoreDomain<TDomain> : DomainBase<TDomain> where TDomain : IExampleBookstoreDomain
+    public abstract class ExampleBookstoreDomain<TDomain> : DomainBase<TDomain>, IExampleBookstoreDomain
+        where TDomain : IExampleBookstoreDomain
     {
         protected ExampleBookstoreDomain(
             IQueryDomainRole<TDomain> queryRole,

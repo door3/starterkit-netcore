@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System;
+using Newtonsoft.Json;
 using System.Text.Json;
 
 namespace D3SK.NetCore.Common.Utilities
@@ -25,6 +26,14 @@ namespace D3SK.NetCore.Common.Utilities
                 : System.Text.Json.JsonSerializer.Serialize(value, DefaultSerializeOptions);
         }
 
+        public static object Deserialize(string value, Type type = null)
+        {
+            type ??= typeof(object);
+            return UseNewtonsoftJson
+                ? DeserializeNewtonsoft(value)
+                : System.Text.Json.JsonSerializer.Deserialize(value, type, DefaultDeserializeOptions);
+        }
+
         public static T Deserialize<T>(string value)
         {
             return UseNewtonsoftJson
@@ -40,6 +49,11 @@ namespace D3SK.NetCore.Common.Utilities
                     ReferenceLoopHandling = ReferenceLoopHandling.Ignore,
                     ContractResolver = new NewtonsoftPrivateSetterContractResolver()
                 });
+        }
+
+        private static object DeserializeNewtonsoft(string value)
+        {
+            return JsonConvert.DeserializeObject(value);
         }
 
         private static T DeserializeNewtonsoft<T>(string value)
