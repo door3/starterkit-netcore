@@ -19,7 +19,8 @@ namespace D3SK.NetCore.Infrastructure.Domain
             services.AddTransient<IClock, DomainClock>();
             services.AddScoped<IExceptionManager, ExceptionManager>();
             services.Configure<MultitenancyOptions>(options => { });
-            services.AddMultitenancy<ResolvedTenant, TenantResolver>();
+            // TODO: move out call to AddMultitenancy?
+            services.AddMultitenancy<ResolvedTenant, IdentityClaimsTenantResolver>();
             services.AddScoped<ITenantManager, TenantManager>();
             services.Configure<QueryOptions>(configuration.GetSection(nameof(QueryOptions)));
 
