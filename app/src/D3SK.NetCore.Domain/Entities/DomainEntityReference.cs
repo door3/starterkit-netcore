@@ -21,14 +21,9 @@ namespace D3SK.NetCore.Domain.Entities
         }
     }
 
-    public class DomainEntityReference<TKey> : CompositeEntityBase, IDomainEntityReference<TKey>
+    public class DomainEntityReference<TKey> : EntityReference<TKey>, IDomainEntityReference<TKey>
     {
-        public TKey Id { get; private set; }
-
-        public string Name { get; private set; }
-
-        [NotMapped]
-        public object ExtendedData
+        public new object ExtendedData
         {
             get => ExtendedDataJson.IsNotEmpty() ? JsonHelper.Deserialize(ExtendedDataJson) : null;
             set => ExtendedDataJson = JsonHelper.Serialize(value);
@@ -42,16 +37,8 @@ namespace D3SK.NetCore.Domain.Entities
         }
 
         public DomainEntityReference(TKey id, string name, object extendedData)
+            : base(id, name, extendedData)
         {
-            Id = id;
-            Name = name;
-            ExtendedData = extendedData;
-        }
-
-        public override IEnumerable<object> GetUniqueValues()
-        {
-            yield return GetType();
-            yield return Id;
         }
     }
 }
