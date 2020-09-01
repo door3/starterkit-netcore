@@ -2,15 +2,6 @@
 
 namespace D3SK.NetCore.Common.Entities
 {
-    public interface IOrderedLookupEntity : IOrderedLookupEntity<int>
-    {
-    }
-
-    public interface IOrderedLookupEntity<TKey> : ILookupEntity<TKey> where TKey : IComparable
-    {
-        int Order { get; }
-    }
-
     public interface ICodedLookupEntity : ICodedLookupEntity<int>
     {
     }

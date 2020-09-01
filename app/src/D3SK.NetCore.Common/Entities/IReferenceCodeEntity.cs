@@ -4,8 +4,8 @@
     {
     }
 
-    public interface IReferenceCodeEntity<TCodeType> : IEntityBase
+    public interface IReferenceCodeEntity<out TCodeType> : IEntityBase
     {
-        TCodeType ReferenceCode { get; set; }
+        TCodeType ReferenceCode { get; }
     }
 }

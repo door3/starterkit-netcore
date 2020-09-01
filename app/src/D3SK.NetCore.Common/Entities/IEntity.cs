@@ -13,11 +13,27 @@
         TKey Id { get; }
     }
 
-    public interface IRootEntity : IEntity
+    public interface IRootEntity : IRootEntity<int>
     {
     }
 
-    public interface IChildEntity : IEntity
+    public interface IRootEntity<out TKey> : IEntity<TKey>
+    {
+    }
+
+    public interface IChildEntity : IChildEntity<int>
+    {
+    }
+
+    public interface IChildEntity<out TKey> : IEntity<TKey>
+    {
+    }
+
+    public interface IRootChildEntity : IRootChildEntity<int>
+    {
+    }
+
+    public interface IRootChildEntity<out TKey> : IRootEntity<TKey>, IChildEntity<TKey>
     {
     }
 
