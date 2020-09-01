@@ -1,5 +1,7 @@
 using BookService.Infrastructure;
 using D3SK.NetCore.Api;
+using D3SK.NetCore.Api.Utilities;
+using D3SK.NetCore.Common.Utilities;
 using ExampleBookstore.Infrastructure;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;

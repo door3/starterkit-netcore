@@ -73,7 +73,11 @@ namespace D3SK.NetCore.Infrastructure.Stores
                 .Sort(query)
                 .Filter(query)
                 .Page(query);
-            if (!(query?.TrackEntities).GetValueOrDefault()) items = items.AsNoTracking();
+
+            if (!query?.TrackEntities ?? true)
+            {
+                items = items.AsNoTracking();
+            }
 
             return WithIncludes(items, query.GetIncludes());
         }

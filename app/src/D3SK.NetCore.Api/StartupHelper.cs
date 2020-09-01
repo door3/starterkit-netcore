@@ -2,6 +2,7 @@
 using System.IO;
 using System.Threading.Tasks;
 using D3SK.NetCore.Api.Filters;
+using D3SK.NetCore.Api.Utilities;
 using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain.Models;
 using D3SK.NetCore.Infrastructure.Domain;
@@ -98,6 +99,10 @@ namespace D3SK.NetCore.Api
                 options.Providers.Add<GzipCompressionProvider>();
             });
 
+            // identity
+            services.AddScoped<IIdentityUserClaims, IdentityUserClaims>();
+            services.AddScoped<ICurrentUserManager<IIdentityUserClaims>, HttpCurrentUserManager<IIdentityUserClaims>>();
+            
             // configure base domain services
             DomainBaseStartup.ConfigureServices(services, configuration);
         }

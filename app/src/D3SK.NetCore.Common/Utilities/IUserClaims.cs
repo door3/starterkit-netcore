@@ -20,7 +20,7 @@ namespace D3SK.NetCore.Common.Utilities
         TUserKey UserId { get; }
     }
 
-    public interface ITenantUserClaims : ITenantUserClaims<int, int>
+    public interface ITenantUserClaims : ITenantUserClaims<int, int>, IUserClaims
     {
     }
 
@@ -29,7 +29,7 @@ namespace D3SK.NetCore.Common.Utilities
         TTenantKey TenantId { get; }
     }
 
-    public interface IIdentityUserClaims : IIdentityUserClaims<int, int>
+    public interface IIdentityUserClaims : IIdentityUserClaims<int, int>, ITenantUserClaims
     {
     }
 

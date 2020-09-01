@@ -8,14 +8,15 @@ using SaasKit.Multitenancy;
 
 namespace D3SK.NetCore.Infrastructure.Utilities
 {
-    public class TenantResolver : ITenantResolver<ResolvedTenant>
+    public class CurrentUserClaimsTenantResolver<TUserClaims> : ITenantResolver<ResolvedTenant>
+        where TUserClaims : ITenantUserClaims
     {
         private readonly MultitenancyOptions _options;
 
-        private readonly ICurrentUserManager<ITenantUserClaims> _currentUserManager;
+        private readonly ICurrentUserManager<TUserClaims> _currentUserManager;
 
-        public TenantResolver(IOptions<MultitenancyOptions> options,
-            ICurrentUserManager<ITenantUserClaims> currentUserManager)
+        public CurrentUserClaimsTenantResolver(IOptions<MultitenancyOptions> options,
+            ICurrentUserManager<TUserClaims> currentUserManager)
         {
             _options = options.Value.NotNull(nameof(options));
             _currentUserManager = currentUserManager.NotNull(nameof(currentUserManager));

@@ -44,9 +44,13 @@ namespace D3SK.NetCore.Infrastructure.Stores
         }
 
         public virtual async Task<IList<dynamic>> GetAsync(Expression<Func<T, bool>> predicate,
-            Expression<Func<T, int, dynamic>> selector)
+            Expression<Func<T, int, dynamic>> selector, bool isDistinct = false)
         {
             var items = DbStore.Set<T>().Where(predicate).Select(selector);
+            if (isDistinct)
+            {
+                items = items.Distinct();
+            }
 
             return await items.ToDynamicListAsync();
         }
