@@ -14,24 +14,31 @@ namespace D3SK.NetCore.Infrastructure.Domain
 {
     public static class DomainBaseStartup
     {
-        public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
+        public static void ConfigureServices(IServiceCollection services, IConfiguration configuration, bool useMultitenancy = true)
         {
             services.AddTransient<IClock, DomainClock>();
             services.AddScoped<IExceptionManager, ExceptionManager>();
-            services.Configure<MultitenancyOptions>(options => { });
-            // TODO: move out call to AddMultitenancy?
-            services.AddMultitenancy<ResolvedTenant, IdentityClaimsTenantResolver>();
-            services.AddScoped<ITenantManager, TenantManager>();
             services.Configure<QueryOptions>(configuration.GetSection(nameof(QueryOptions)));
 
             services
-                .AddTransient<IHandleDomainMiddlewareStrategy<IDomainEvent>,
-                    HandleDomainMiddlewareStrategy<IDomainEvent>>();
+                .AddTransient<IHandleDomainEventStrategy<IDomainEvent>,
+                    HandleDomainEventStrategy<IDomainEvent>>();
             services
-                .AddTransient<IHandleDomainMiddlewareStrategy<IValidationEvent>,
-                    HandleDomainMiddlewareStrategy<IValidationEvent>>();
+                .AddTransient<IHandleDomainEventStrategy<IValidationEvent>,
+                    HandleDomainEventStrategy<IValidationEvent>>();
 
             services.AddTransient<IUpdateStrategy, OptimisticUpdateStrategy>();
+
+            if (useMultitenancy)
+            {
+                services.Configure<MultitenancyOptions>(options => { });
+                services.AddMultitenancy<ResolvedTenant, ClaimsTenantResolver>();
+                services.AddScoped<ITenantManager, TenantManager>();
+            }
+            else
+            {
+                services.AddScoped<ITenantManager>(provider => new TenantManager(null));
+            }
         }
     }
 }

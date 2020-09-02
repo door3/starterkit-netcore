@@ -12,8 +12,8 @@ namespace D3SK.NetCore.Infrastructure.Domain
         protected DomainBase(
             IQueryDomainRole<TDomain> queryRole,
             ICommandDomainRole<TDomain> commandRole,
-            IHandleDomainMiddlewareStrategy<IDomainEvent> eventStrategy,
-            IHandleDomainMiddlewareStrategy<IValidationEvent> validationStrategy)
+            IHandleDomainEventStrategy<IDomainEvent> eventStrategy,
+            IHandleDomainEventStrategy<IValidationEvent> validationStrategy)
             : base(eventStrategy, validationStrategy)
         {
             AddRole(queryRole.NotNull(nameof(queryRole)));
@@ -25,13 +25,13 @@ namespace D3SK.NetCore.Infrastructure.Domain
     {
         protected IDictionary<Type, IDomainRole> Roles { get; } = new Dictionary<Type, IDomainRole>();
 
-        public IHandleDomainMiddlewareStrategy<IDomainEvent> EventStrategy { get; }
+        public IHandleDomainEventStrategy<IDomainEvent> EventStrategy { get; }
 
-        public IHandleDomainMiddlewareStrategy<IValidationEvent> ValidationStrategy { get; }
+        public IHandleDomainEventStrategy<IValidationEvent> ValidationStrategy { get; }
 
         protected DomainBase(
-            IHandleDomainMiddlewareStrategy<IDomainEvent> eventStrategy,
-            IHandleDomainMiddlewareStrategy<IValidationEvent> validationStrategy)
+            IHandleDomainEventStrategy<IDomainEvent> eventStrategy,
+            IHandleDomainEventStrategy<IValidationEvent> validationStrategy)
         {
             EventStrategy = eventStrategy.NotNull(nameof(eventStrategy));
             ValidationStrategy = validationStrategy.NotNull(nameof(validationStrategy));
@@ -51,6 +51,18 @@ namespace D3SK.NetCore.Infrastructure.Domain
         public TDomainRole GetRole<TDomainRole>() where TDomainRole : IDomainRole
         {
             return (TDomainRole) GetRole(typeof(TDomainRole));
+        }
+
+        public void HandlesEvent<THandler, TEvent>() 
+            where THandler : class, IAsyncDomainEventHandler<TEvent> 
+            where TEvent : IDomainEvent
+        {
+            EventStrategy.AddAsyncHandler<THandler, TEvent>();
+        }
+
+        public void HandlesValidation<THandler, T>() where THandler : class, IAsyncValidationEventHandler<T>
+        {
+            ValidationStrategy.AddAsyncHandler<THandler, IValidationEvent<T>>();
         }
     }
 }

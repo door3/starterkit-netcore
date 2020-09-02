@@ -93,6 +93,14 @@ namespace D3SK.NetCore.Common.Extensions
             return source.GetBaseTypes().Contains(baseType);
         }
 
+        public static bool InheritsFromAny(this Type source, params Type[] baseTypes)
+        {
+            source.NotNull(nameof(source));
+            baseTypes.NotNull(nameof(baseTypes));
+
+            return baseTypes.Any(baseType => source.GetBaseTypes().Contains(baseType));
+        }
+
         public static bool ImplementsInterface<TInterface>(this Type source)
         {
             source.NotNull(nameof(source));

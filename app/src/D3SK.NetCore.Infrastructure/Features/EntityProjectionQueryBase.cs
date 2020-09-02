@@ -15,7 +15,7 @@ namespace D3SK.NetCore.Infrastructure.Features
         where TDomain : IDomain
         where T : class, IEntityBase
         where TQueryStore : IQueryStore
-        where TQueryContainer : IProjectionQueryContainer<T, TQueryStore>
+        where TQueryContainer : IProjectionQueryContainerBase<T, TQueryStore>
     {
         protected readonly TQueryContainer QueryContainer;
 

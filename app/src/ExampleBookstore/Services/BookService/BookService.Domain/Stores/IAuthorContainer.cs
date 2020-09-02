@@ -6,11 +6,11 @@ using ExampleBookstore.Services.BookService.Domain.Entities;
 
 namespace ExampleBookstore.Services.BookService.Domain.Stores
 {
-    public interface IAuthorQueryContainer : IProjectionQueryContainer<Author, int, IBookQueryStore>
+    public interface IAuthorQueryContainer : IProjectionQueryContainer<Author, IBookQueryStore>
     {
     }
 
-    public interface IAuthorCommandContainer : ICommandContainer<Author, int, IBookStore>
+    public interface IAuthorCommandContainer : ICommandContainer<Author, IBookStore>
     {
     }
 }

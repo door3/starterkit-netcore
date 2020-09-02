@@ -1,6 +1,9 @@
-﻿namespace D3SK.NetCore.Domain.Events
+﻿using System;
+
+namespace D3SK.NetCore.Domain.Events
 {
-    public interface IDomainEvent : IDomainMiddleware
+    public interface IDomainEvent : IDomainEventBase
     {
+        Guid EventGuid { get; set; }
     }
 }

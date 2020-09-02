@@ -28,4 +28,19 @@ namespace D3SK.NetCore.Domain.Entities
         {
         }
     }
+
+    public abstract class DomainConcurrencyEntityBase<TKey, TUserKey> : DomainEntityBase<TKey, TUserKey>, IConcurrencyEntity
+    {
+        // ReSharper disable once UnusedAutoPropertyAccessor.Local
+        [Timestamp]
+        public byte[] RowVersion { get; private set; }
+
+        protected DomainConcurrencyEntityBase()
+        {
+        }
+
+        protected DomainConcurrencyEntityBase(TKey id) : base(id)
+        {
+        }
+    }
 }

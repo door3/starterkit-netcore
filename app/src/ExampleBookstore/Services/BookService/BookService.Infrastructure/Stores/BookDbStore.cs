@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace BookService.Infrastructure.Stores
 {
-    public class BookDbStore : DomainDbStoreBase, IBookStore, IBookQueryStore
+    public class BookDbStore : TenantDbStoreBase, IBookStore, IBookQueryStore
     {
         public BookDbStore(DbContextOptions options,
             IDomainInstance<IBookDomain> domainInstance,

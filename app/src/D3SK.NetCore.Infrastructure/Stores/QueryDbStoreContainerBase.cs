@@ -42,6 +42,11 @@ namespace D3SK.NetCore.Infrastructure.Stores
         public virtual async Task<T> GetAsync(TKey id, string includes = null, bool isTracked = true)
         {
             var item = await DbStore.Set<T>().FindAsync(id);
+            if (!isTracked)
+            {
+                DbStore.Entry(item).State = EntityState.Detached;
+            }
+
             return item != null ? await LoadRelationsAsync(item, includes) : null;
         }
 

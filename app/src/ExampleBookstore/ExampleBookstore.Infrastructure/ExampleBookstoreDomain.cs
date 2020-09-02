@@ -20,8 +20,8 @@ namespace ExampleBookstore.Infrastructure
         protected ExampleBookstoreDomain(
             IQueryDomainRole<TDomain> queryRole,
             ICommandDomainRole<TDomain> commandRole,
-            IHandleDomainMiddlewareStrategy<IDomainEvent> eventStrategy,
-            IHandleDomainMiddlewareStrategy<IValidationEvent> validationStrategy)
+            IHandleDomainEventStrategy<IDomainEvent> eventStrategy,
+            IHandleDomainEventStrategy<IValidationEvent> validationStrategy)
         : base(queryRole, commandRole, eventStrategy, validationStrategy)
         {
         }

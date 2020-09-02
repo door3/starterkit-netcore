@@ -28,12 +28,4 @@ namespace D3SK.NetCore.Common.Utilities
     {
         TTenantKey TenantId { get; }
     }
-
-    public interface IIdentityUserClaims : IIdentityUserClaims<int, int>, ITenantUserClaims
-    {
-    }
-
-    public interface IIdentityUserClaims<out TUserKey, out TTenantKey> : ITenantUserClaims<TUserKey, TTenantKey>
-    {
-    }
 }

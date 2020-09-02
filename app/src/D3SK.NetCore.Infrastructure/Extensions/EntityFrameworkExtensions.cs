@@ -72,7 +72,7 @@ namespace D3SK.NetCore.Infrastructure.Extensions
             
             seedData ??= LookupHelper.GetAll<T, TKey>().ToList();
 
-            if (seedData != null && seedData.Any())
+            if (seedData.Any())
             {
                 entity.HasData(seedData.ToArray());
             }

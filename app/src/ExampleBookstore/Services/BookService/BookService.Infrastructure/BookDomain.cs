@@ -5,6 +5,8 @@ using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
 using ExampleBookstore.Infrastructure;
 using ExampleBookstore.Services.BookService.Domain;
+using ExampleBookstore.Services.BookService.Domain.Entities;
+using ExampleBookstore.Services.BookService.Domain.Events;
 using ExampleBookstore.Services.BookService.Domain.Features.AuthorFeatures;
 using ExampleBookstore.Services.BookService.Domain.Features.BookFeatures;
 using ExampleBookstore.Services.BookService.Domain.Stores;
@@ -19,8 +21,8 @@ namespace BookService.Infrastructure
         public BookDomain(
             IQueryDomainRole<IBookDomain> queryRole,
             ICommandDomainRole<IBookDomain> commandRole,
-            IHandleDomainMiddlewareStrategy<IDomainEvent> eventStrategy,
-            IHandleDomainMiddlewareStrategy<IValidationEvent> validationStrategy)
+            IHandleDomainEventStrategy<IDomainEvent> eventStrategy,
+            IHandleDomainEventStrategy<IValidationEvent> validationStrategy)
             : base(queryRole, commandRole, eventStrategy, validationStrategy)
         {
             ConfigureDomain(this);
@@ -28,12 +30,13 @@ namespace BookService.Infrastructure
 
         public static void ConfigureDomain(IBookDomain domain)
         {
+            domain.HandlesValidation<ValidateBookEventHandler, Book>();
         }
 
         public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
         {
             // db
-            var connectionString = configuration.GetConnectionString("BookDbStoreConnectionString");
+            var connectionString = configuration.GetConnectionString($"{nameof(BookDbStore)}ConnectionString");
             services.AddDbContext<BookDbStore>(options => 
                 options.UseSqlServer(connectionString).EnableSensitiveDataLogging());
 
@@ -51,6 +54,10 @@ namespace BookService.Infrastructure
             services.AddSingleton<IBookDomain, BookDomain>();
             services.AddScoped<IDomainInstance<IBookDomain>, BookDomainInstance>();
 
+            // roles
+            services.AddTransient<IQueryDomainRole<IBookDomain>, ExampleBookstoreQueryDomainRole<IBookDomain>>();
+            services.AddTransient<ICommandDomainRole<IBookDomain>, ExampleBookstoreCommandDomainRole<IBookDomain>>();
+
             // author features
             services.AddScoped<IAuthorCountQuery, AuthorCountQuery>();
             services.AddScoped<IAuthorQuery, AuthorQuery>();
@@ -66,10 +73,6 @@ namespace BookService.Infrastructure
             services.AddScoped<IBookCreateCommand, BookCreateCommand>();
             services.AddScoped<IBookUpdateCommand, BookUpdateCommand>();
             services.AddScoped<IBookDeleteCommand, BookDeleteCommand>();
-
-            // roles
-            services.AddTransient<IQueryDomainRole<IBookDomain>, ExampleBookstoreQueryDomainRole<IBookDomain>>();
-            services.AddTransient<ICommandDomainRole<IBookDomain>, ExampleBookstoreCommandDomainRole<IBookDomain>>();
         }
     }
 }
