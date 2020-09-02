@@ -57,7 +57,7 @@ namespace D3SK.NetCore.Api
             });
         }
 
-        public static void ConfigureBaseServices(IServiceCollection services, IConfiguration configuration)
+        public static void ConfigureBaseServices(IServiceCollection services, IConfiguration configuration, bool useMultitenancy = true)
         {
             // cors
             services.AddCors(options =>
@@ -99,15 +99,21 @@ namespace D3SK.NetCore.Api
                 options.Providers.Add<GzipCompressionProvider>();
             });
 
-            // identity
-            services.AddScoped<IIdentityUserClaims, IdentityUserClaims>();
-            services.AddScoped<ICurrentUserManager<IIdentityUserClaims>, HttpCurrentUserManager<IIdentityUserClaims>>();
-            
+            // current user manager/claims
+            services.AddScoped<IUserClaims, UserClaims>();
+            services.AddScoped<ICurrentUserManager<IUserClaims>, HttpCurrentUserManager<IUserClaims>>();
+
+            if (useMultitenancy)
+            {
+                services.AddScoped<ITenantUserClaims, TenantUserClaims>();
+                services.AddScoped<ICurrentUserManager<ITenantUserClaims>, HttpCurrentUserManager<ITenantUserClaims>>();
+            }
+
             // configure base domain services
-            DomainBaseStartup.ConfigureServices(services, configuration);
+            DomainBaseStartup.ConfigureServices(services, configuration, useMultitenancy);
         }
 
-        public static void ConfigureBaseApi(IApplicationBuilder app, IWebHostEnvironment env)
+        public static void ConfigureBaseApi(IApplicationBuilder app, IWebHostEnvironment env, bool useMultitenancy = true)
         {
             app.UseResponseCompression();
             

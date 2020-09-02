@@ -13,7 +13,7 @@ namespace D3SK.NetCore.Infrastructure.Features
         where TDomain : IDomain
         where T : class, IEntityBase
         where TStore : ITransactionStore
-        where TCommandContainer : ICommandContainer<T, TStore>
+        where TCommandContainer : ICommandContainerBase<T, TStore>
     {
         protected readonly TCommandContainer CommandContainer;
 

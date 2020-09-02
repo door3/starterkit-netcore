@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Text.Json.Serialization;
 using D3SK.NetCore.Common.Entities;
+using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Domain.Events;
 
 namespace D3SK.NetCore.Domain.Entities
@@ -18,8 +19,33 @@ namespace D3SK.NetCore.Domain.Entities
         }
     }
 
-    [SuppressMessage("ReSharper", "UnusedAutoPropertyAccessor.Local")]
-    public abstract class DeletableDomainEntityBase<TTenantKey, TKey, TUserKey> : TenantEntityBase<TTenantKey, TKey>,
+    public abstract class DeletableDomainEntityBase<TTenantKey, TKey, TUserKey> : DeletableDomainEntityBase<TKey, TUserKey>,
+        ITenantEntity<TTenantKey>, IAuditEntity<TUserKey>
+    {
+        public TTenantKey TenantId { get; private set; }
+
+        public bool HasTenantId => !TenantId.IsDefault(0);
+
+        protected DeletableDomainEntityBase()
+        {
+        }
+
+        protected DeletableDomainEntityBase(TKey id) : base(id)
+        {
+        }
+
+        public virtual void SetTenantId(TTenantKey tenantId)
+        {
+            TenantId = tenantId;
+        }
+
+        public virtual void SetTenantId(object tenantId)
+        {
+            SetTenantId((TTenantKey)tenantId);
+        }
+    }
+    
+    public abstract class DeletableDomainEntityBase<TKey, TUserKey> : EntityBase<TKey>,
         IDomainEntity, IAuditEntity<TUserKey>
     {
         [JsonIgnore] public IList<IDomainEvent> DomainEvents { get; } = new List<IDomainEvent>();

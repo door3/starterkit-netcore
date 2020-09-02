@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace D3SK.NetCore.Api.Utilities
 {
-    public class HttpCurrentUserManager<TClaims> : ICurrentUserManager<TClaims> where TClaims : IIdentityUserClaims
+    public class HttpCurrentUserManager<TClaims> : ICurrentUserManager<TClaims> where TClaims : IUserClaimsBase
     {
         private readonly IHttpContextAccessor _httpContextAccessor;
 

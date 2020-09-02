@@ -9,7 +9,14 @@ using Microsoft.AspNetCore.Http;
 
 namespace D3SK.NetCore.Api.Utilities
 {
-    public class IdentityUserClaims : IIdentityUserClaims
+    public class UserClaims : UserClaims<int>, IUserClaims
+    {
+        public UserClaims(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
+        {
+        }
+    }
+
+    public class UserClaims<TUserKey> : IUserClaims<TUserKey>
     {
         public class ClaimTypes
         {
@@ -17,21 +24,19 @@ namespace D3SK.NetCore.Api.Utilities
             public const string TenantId = "tenantId";
         }
 
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        protected readonly IHttpContextAccessor HttpContextAccessor;
 
-        protected HttpContext HttpContext => _httpContextAccessor.HttpContext;
-        
+        protected HttpContext HttpContext => HttpContextAccessor.HttpContext;
+
         protected IEnumerable<Claim> Claims => HttpContext?.User?.Claims;
 
         public bool HasClaims => HttpContext?.User?.Claims?.Any() ?? false;
 
-        public int UserId => GetClaim<int>(ClaimTypes.UserId);
+        public TUserKey UserId => GetClaim<TUserKey>(ClaimTypes.UserId);
 
-        public int TenantId => GetClaim<int>(ClaimTypes.TenantId);
-
-        public IdentityUserClaims(IHttpContextAccessor httpContextAccessor)
+        public UserClaims(IHttpContextAccessor httpContextAccessor)
         {
-            _httpContextAccessor = httpContextAccessor.NotNull(nameof(httpContextAccessor));
+            HttpContextAccessor = httpContextAccessor.NotNull(nameof(httpContextAccessor));
         }
 
         public T GetClaim<T>(string claimType)

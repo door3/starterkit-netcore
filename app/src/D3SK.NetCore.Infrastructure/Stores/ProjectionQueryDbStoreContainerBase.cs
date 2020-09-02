@@ -23,7 +23,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
     }
 
     public abstract class ProjectionQueryDbStoreContainerBase<T, TKey, TStore, TDbStore> : QueryDbStoreContainerBase<T, TKey, TStore, TDbStore>,
-        IProjectionQueryContainer<T, TStore>
+        IProjectionQueryContainer<T, TKey, TStore>
         where T : class, IEntity<TKey>
         where TStore : IQueryStore
         where TDbStore : DbContext, TStore

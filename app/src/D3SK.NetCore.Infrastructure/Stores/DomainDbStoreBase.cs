@@ -21,12 +21,8 @@ namespace D3SK.NetCore.Infrastructure.Stores
     {
         protected IDomainInstance DomainInstance { get; }
 
-        protected ITenantManager TenantManager { get; }
-
-        protected IClock CurrentClock { get; set; }
-
-        public int? TenantId => TenantManager.TenantId;
-
+        protected IClock CurrentClock { get; }
+        
         public IStoreTransaction CurrentTransaction { get; protected set; }
 
         public bool IsInTransaction { get; protected set; }
@@ -34,12 +30,10 @@ namespace D3SK.NetCore.Infrastructure.Stores
         protected DomainDbStoreBase(
             DbContextOptions options, 
             IDomainInstance domainInstance,
-            ITenantManager tenantManager,
             IClock currentClock)
             : base(options)
         {
             DomainInstance = domainInstance.NotNull(nameof(domainInstance));
-            TenantManager = tenantManager.NotNull(nameof(tenantManager));
             CurrentClock = currentClock.NotNull(nameof(currentClock));
         }
         
@@ -112,25 +106,10 @@ namespace D3SK.NetCore.Infrastructure.Stores
 
         protected virtual async Task<int> SaveChangesCoreAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            SetTenantIdForAddedEntities();
             SetIsDeletedForDeletedEntities();
             SetAuditEntityDetails();
             
             return await base.SaveChangesAsync(cancellationToken);
-        }
-
-        protected virtual void SetTenantIdForAddedEntities()
-        {
-            var entities = ChangeTracker.Entries().Where(x => x.State == EntityState.Added)
-                .Select(x => x.Entity).OfType<ITenantEntityBase>();
-
-            foreach (var entity in entities)
-            {
-                if (!entity.HasTenantId)
-                {
-                    entity.SetTenantId(TenantId);
-                }
-            }
         }
 
         protected virtual void SetIsDeletedForDeletedEntities()
@@ -184,44 +163,25 @@ namespace D3SK.NetCore.Infrastructure.Stores
             }
         }
 
-        private IList<IDomainEvent> GetDomainEvents(IList<IDomainEntity> domainEntities)
+        protected IList<IDomainEvent> GetDomainEvents(IList<IDomainEntity> domainEntities)
         {
             return domainEntities.SelectMany(x => x.DomainEvents).ToList();
         }
 
-        private void ClearDomainEvents(IList<IDomainEntity> domainEntities)
+        protected void ClearDomainEvents(IList<IDomainEntity> domainEntities)
         {
             domainEntities.ForEach(x => x.ClearDomainEvents());
         }
 
-        private IList<IDomainEntity> GetDomainEntities()
+        protected IList<IDomainEntity> GetDomainEntities()
         {
             return ChangeTracker.Entries().Select(x => x.Entity).OfType<IDomainEntity>().ToList();
         }
 
-        protected EntityTypeBuilder<T> ApplyDeletedAndTenantIdFilter<T>(EntityTypeBuilder<T> source)
-            where T : class, ISoftDeleteEntity, ITenantEntity<int>
+        protected EntityTypeBuilder<T> ApplyDeletedFilter<T>(EntityTypeBuilder<T> source)
+            where T : class, ISoftDeleteEntity
         {
-            return source.HasQueryFilter(x => !x.IsDeleted && x.TenantId == TenantId);
-        }
-
-        protected EntityTypeBuilder<T> ApplyDeletedAndTenantAllowNullIdFilter<T>(EntityTypeBuilder<T> source)
-            where T : class, ISoftDeleteEntity, ITenantEntity<int?>
-        {
-
-            return source.HasQueryFilter(x => !x.IsDeleted && (x.TenantId == null || x.TenantId == TenantId));
-        }
-
-        protected EntityTypeBuilder<T> ApplyTenantIdFilter<T>(EntityTypeBuilder<T> source)
-            where T : class, ITenantEntity<int>
-        {
-            return source.HasQueryFilter(x => x.TenantId == TenantId);
-        }
-
-        protected EntityTypeBuilder<T> ApplyTenantAllowNullIdFilter<T>(EntityTypeBuilder<T> source)
-            where T : class, ITenantEntity<int?>
-        {
-            return source.HasQueryFilter(x => x.TenantId == null || x.TenantId == TenantId);
+            return source.HasQueryFilter(x => !x.IsDeleted);
         }
     }
 }

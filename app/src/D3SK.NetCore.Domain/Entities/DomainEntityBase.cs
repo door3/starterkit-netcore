@@ -30,4 +30,22 @@ namespace D3SK.NetCore.Domain.Entities
             IsDeleted = isDeleted;
         }
     }
+
+    public abstract class DomainEntityBase<TKey, TUserKey> : DeletableDomainEntityBase<TKey, TUserKey>, ISoftDeleteEntity
+    {
+        public bool IsDeleted { get; private set; }
+
+        protected DomainEntityBase()
+        {
+        }
+
+        protected DomainEntityBase(TKey id) : base(id)
+        {
+        }
+
+        public void SetDeleted(bool isDeleted)
+        {
+            IsDeleted = isDeleted;
+        }
+    }
 }
