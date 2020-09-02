@@ -33,14 +33,18 @@ namespace D3SK.NetCore.Infrastructure.Domain
         public Task RunFeatureAsync<TDomainRole>(IAsyncCommandFeature<TDomain> feature) where TDomainRole : ICommandDomainRole<TDomain>
             => GetDomainRole<TDomainRole>().HandleFeatureAsync(this, feature);
 
-        public Task<Guid> PublishEventAsync<TEvent>(TEvent domainEvent) where TEvent : IDomainEvent
+        public async Task<Guid> PublishEventAsync<TEvent>(TEvent domainEvent) where TEvent : IDomainEvent
         {
-            throw new NotImplementedException();
+            domainEvent.EventGuid = Guid.NewGuid();
+            await Domain.EventStrategy.HandleEventAsync(domainEvent, ServiceProvider);
+            return domainEvent.EventGuid;
         }
 
-        public Task<bool> ValidateAsync<T>(T item)
+        public async Task<bool> ValidateAsync<T>(T item)
         {
-            throw new NotImplementedException();
+            var validationEvent = new DomainValidationEvent<T>(item);
+            await Domain.ValidationStrategy.HandleEventAsync(validationEvent, ServiceProvider);
+            return validationEvent.IsValid;
         }
     }
 }

@@ -8,11 +8,13 @@ using D3SK.NetCore.Domain.Models;
 using D3SK.NetCore.Infrastructure.Domain;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Serilog;
@@ -85,6 +87,9 @@ namespace D3SK.NetCore.Api
 
             services.AddApiVersioning(options => { options.AssumeDefaultVersionWhenUnspecified = true; });
 
+            // http context accessor
+            services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+
             // misc
             services.AddOptions();
             services.AddMemoryCache();
@@ -125,9 +130,13 @@ namespace D3SK.NetCore.Api
             app.UseHttpsRedirection();
             app.UseCors(AllowAllCorsPolicy);
             app.UseAuthentication();
-            app.UseMultitenancy<ResolvedTenant>();
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
+
+            if (useMultitenancy)
+            {
+                app.UseMultitenancy<ResolvedTenant>();
+            }
         }
 
         public static async Task MigrateDbStoresAsync(IHost host, params Type[] storeTypes)

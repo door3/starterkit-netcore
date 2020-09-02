@@ -1,7 +1,12 @@
 ﻿namespace D3SK.NetCore.Domain.Events
 {
-    public interface IValidationEvent : IDomainMiddleware
+    public interface IValidationEvent : IDomainEventBase
     {
-        object ObjectToValidate { get; }
+        bool IsValid { get; set; }
+    }
+
+    public interface IValidationEvent<out T> : IValidationEvent
+    {
+        T ObjectToValidate { get; }
     }
 }

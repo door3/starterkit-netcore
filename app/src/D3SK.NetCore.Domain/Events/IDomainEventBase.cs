@@ -1,6 +1,6 @@
 ﻿namespace D3SK.NetCore.Domain.Events
 {
-    public class HandleMiddlewareEventOptions
+    public interface IDomainEventBase
     {
     }
 }

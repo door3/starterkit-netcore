@@ -21,11 +21,11 @@ namespace D3SK.NetCore.Infrastructure.Domain
             services.Configure<QueryOptions>(configuration.GetSection(nameof(QueryOptions)));
 
             services
-                .AddTransient<IHandleDomainMiddlewareStrategy<IDomainEvent>,
-                    HandleDomainMiddlewareStrategy<IDomainEvent>>();
+                .AddTransient<IHandleDomainEventStrategy<IDomainEvent>,
+                    HandleDomainEventStrategy<IDomainEvent>>();
             services
-                .AddTransient<IHandleDomainMiddlewareStrategy<IValidationEvent>,
-                    HandleDomainMiddlewareStrategy<IValidationEvent>>();
+                .AddTransient<IHandleDomainEventStrategy<IValidationEvent>,
+                    HandleDomainEventStrategy<IValidationEvent>>();
 
             services.AddTransient<IUpdateStrategy, OptimisticUpdateStrategy>();
 

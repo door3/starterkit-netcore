@@ -3,15 +3,15 @@ using System;
 
 namespace D3SK.NetCore.Domain.Events
 {
-    public class DomainMiddlewareHandlerInfo
+    public class DomainEventHandlerInfo
     {
         public Type ObjectType { get; }
 
         public Type HandlerType { get; }
 
-        public HandleMiddlewareEventOptions Options { get; }
+        public HandleDomainEventOptions Options { get; }
 
-        public DomainMiddlewareHandlerInfo(Type objectType, Type handlerType, HandleMiddlewareEventOptions options)
+        public DomainEventHandlerInfo(Type objectType, Type handlerType, HandleDomainEventOptions options)
         {
             ObjectType = objectType.NotNull(nameof(objectType));
             HandlerType = handlerType;
