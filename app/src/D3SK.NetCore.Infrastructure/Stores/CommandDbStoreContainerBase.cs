@@ -53,8 +53,6 @@ namespace D3SK.NetCore.Infrastructure.Stores
                 DbStore.Entry(dbItem).Property(nameof(concurrencyItem.RowVersion)).OriginalValue =
                     concurrencyItem.RowVersion;
             }
-
-            DbStore.Entry(dbItem).State = EntityState.Modified;
         }
 
         protected virtual Task<T> LoadRelationsAsync(T item)

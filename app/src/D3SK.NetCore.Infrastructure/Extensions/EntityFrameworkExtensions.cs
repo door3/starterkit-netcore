@@ -1,9 +1,15 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using D3SK.NetCore.Common.Entities;
+using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Common.Utilities;
+using D3SK.NetCore.Domain.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
 namespace D3SK.NetCore.Infrastructure.Extensions
@@ -78,6 +84,44 @@ namespace D3SK.NetCore.Infrastructure.Extensions
             }
 
             return entity;
+        }
+
+        public static object GetPrimaryKeyObject(this DbContext dbContext, object entity)
+        {
+            var keyProps = dbContext.GetPrimaryKeyProperties(entity).ToList();
+            var expandoKeyObject = new ExpandoObject();
+            var expandoCollection = (ICollection<KeyValuePair<string, object>>) expandoKeyObject;
+            keyProps.ForEach(x =>
+                expandoCollection.Add(new KeyValuePair<string, object>(x.Name, entity.GetPropertyValue(x.Name))));
+            return expandoKeyObject;
+        }
+
+        public static IList<object> GetPrimaryKeys(this DbContext dbContext, object entity)
+        {
+            var keyProps = dbContext.GetPrimaryKeyProperties(entity);
+            return keyProps.Select(x => entity.GetPropertyValue(x.Name)).ToList();
+        }
+
+        public static IList<IProperty> GetPrimaryKeyProperties(this DbContext dbContext, object entity)
+        {
+            return dbContext.Model.FindEntityType(entity.GetType()).FindPrimaryKey().Properties.ToList();
+        }
+
+        public static IList<UpdatedEntityPropertyChange> GetPropertyChanges(this EntityEntry entry)
+        {
+            var changeList = new List<UpdatedEntityPropertyChange>();
+
+            entry.Properties.ForEach(prop =>
+            {
+                if (!prop.IsModified) return;
+
+                var propName = prop.Metadata.Name;
+                var newValue = prop.CurrentValue;
+                var oldValue = prop.OriginalValue;
+                changeList.Add(new UpdatedEntityPropertyChange(propName, newValue, oldValue));
+            });
+
+            return changeList;
         }
     }
 }

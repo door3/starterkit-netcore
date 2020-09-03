@@ -8,7 +8,7 @@ namespace D3SK.NetCore.Infrastructure.Domain
 {
     public abstract class DomainInstanceBase<TDomain> : IDomainInstance<TDomain> where TDomain : IDomain
     {
-        protected readonly IServiceProvider ServiceProvider;
+        public IServiceProvider ServiceProvider { get; }
 
         public TDomain Domain { get; }
 
@@ -26,25 +26,35 @@ namespace D3SK.NetCore.Infrastructure.Domain
             return Domain.GetRole<TDomainRole>();
         }
 
-        public Task<TResult> RunFeatureAsync<TDomainRole, TResult>(IAsyncQueryFeature<TDomain, TResult> feature)
+        public virtual Task<TResult> RunFeatureAsync<TDomainRole, TResult>(IAsyncQueryFeature<TDomain, TResult> feature)
             where TDomainRole : IQueryDomainRole<TDomain>
             => GetDomainRole<TDomainRole>().HandleFeatureAsync(this, feature);
 
-        public Task RunFeatureAsync<TDomainRole>(IAsyncCommandFeature<TDomain> feature) where TDomainRole : ICommandDomainRole<TDomain>
+        public virtual Task RunFeatureAsync<TDomainRole>(IAsyncCommandFeature<TDomain> feature)
+            where TDomainRole : ICommandDomainRole<TDomain>
             => GetDomainRole<TDomainRole>().HandleFeatureAsync(this, feature);
 
-        public async Task<Guid> PublishEventAsync<TEvent>(TEvent domainEvent) where TEvent : IDomainEvent
+        public virtual async Task<Guid> PublishEventAsync<TEvent>(TEvent domainEvent) where TEvent : IDomainEvent
         {
-            domainEvent.EventGuid = Guid.NewGuid();
+            if (domainEvent is IDomainBusEvent busEvent)
+            {
+                busEvent.EventGuid = await PublishBusEventAsync(busEvent);
+            }
+
             await Domain.EventStrategy.HandleEventAsync(domainEvent, ServiceProvider);
             return domainEvent.EventGuid;
         }
 
-        public async Task<bool> ValidateAsync<T>(T item)
+        public virtual async Task<bool> ValidateAsync<T>(T item)
         {
             var validationEvent = new DomainValidationEvent<T>(item);
             await Domain.ValidationStrategy.HandleEventAsync(validationEvent, ServiceProvider);
             return validationEvent.IsValid;
+        }
+
+        protected virtual async Task<Guid> PublishBusEventAsync<TEvent>(TEvent busEvent) where TEvent : IDomainBusEvent
+        {
+            return await Domain.Bus.PublishEventAsync(busEvent, this);
         }
     }
 }

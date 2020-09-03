@@ -112,6 +112,8 @@ namespace D3SK.NetCore.Api
             {
                 services.AddScoped<ITenantUserClaims, TenantUserClaims>();
                 services.AddScoped<ICurrentUserManager<ITenantUserClaims>, HttpCurrentUserManager<ITenantUserClaims>>();
+                services.Configure<MultitenancyOptions>(options => { });
+                services.AddMultitenancy<ResolvedTenant, ClaimsTenantResolver>();
             }
 
             // configure base domain services
@@ -130,13 +132,14 @@ namespace D3SK.NetCore.Api
             app.UseHttpsRedirection();
             app.UseCors(AllowAllCorsPolicy);
             app.UseAuthentication();
-            app.UseRouting();
-            app.UseEndpoints(endpoints => endpoints.MapControllers());
-
+            
             if (useMultitenancy)
             {
                 app.UseMultitenancy<ResolvedTenant>();
             }
+
+            app.UseRouting();
+            app.UseEndpoints(endpoints => endpoints.MapControllers());
         }
 
         public static async Task MigrateDbStoresAsync(IHost host, params Type[] storeTypes)

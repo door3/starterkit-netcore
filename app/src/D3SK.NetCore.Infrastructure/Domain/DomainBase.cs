@@ -10,11 +10,12 @@ namespace D3SK.NetCore.Infrastructure.Domain
     public abstract class DomainBase<TDomain> : DomainBase where TDomain : IDomain
     {
         protected DomainBase(
+            IDomainBus bus,
             IQueryDomainRole<TDomain> queryRole,
             ICommandDomainRole<TDomain> commandRole,
             IHandleDomainEventStrategy<IDomainEvent> eventStrategy,
             IHandleDomainEventStrategy<IValidationEvent> validationStrategy)
-            : base(eventStrategy, validationStrategy)
+            : base(bus, eventStrategy, validationStrategy)
         {
             AddRole(queryRole.NotNull(nameof(queryRole)));
             AddRole(commandRole.NotNull(nameof(commandRole)));
@@ -25,14 +26,18 @@ namespace D3SK.NetCore.Infrastructure.Domain
     {
         protected IDictionary<Type, IDomainRole> Roles { get; } = new Dictionary<Type, IDomainRole>();
 
+        public IDomainBus Bus { get; }
+
         public IHandleDomainEventStrategy<IDomainEvent> EventStrategy { get; }
 
         public IHandleDomainEventStrategy<IValidationEvent> ValidationStrategy { get; }
 
         protected DomainBase(
+            IDomainBus bus,
             IHandleDomainEventStrategy<IDomainEvent> eventStrategy,
             IHandleDomainEventStrategy<IValidationEvent> validationStrategy)
         {
+            Bus = bus.NotNull(nameof(bus));
             EventStrategy = eventStrategy.NotNull(nameof(eventStrategy));
             ValidationStrategy = validationStrategy.NotNull(nameof(validationStrategy));
         }
@@ -63,6 +68,13 @@ namespace D3SK.NetCore.Infrastructure.Domain
         public void HandlesValidation<THandler, T>() where THandler : class, IAsyncValidationEventHandler<T>
         {
             ValidationStrategy.AddAsyncHandler<THandler, IValidationEvent<T>>();
+        }
+
+        public void HandlesBusEvent<THandler, TEvent>()
+            where THandler : class, IAsyncDomainEventHandler<TEvent>
+            where TEvent : IDomainBusEvent
+        {
+            Bus.EventStrategy.AddAsyncHandler<THandler, TEvent>();
         }
     }
 }

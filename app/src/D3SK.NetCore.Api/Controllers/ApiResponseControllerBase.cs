@@ -1,6 +1,7 @@
 ﻿using D3SK.NetCore.Api.Models;
 using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Common.Utilities;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace D3SK.NetCore.Api.Controllers
@@ -15,6 +16,11 @@ namespace D3SK.NetCore.Api.Controllers
         public ApiResponseControllerBase(IExceptionManager exceptionManager)
         {
             ExceptionManager = exceptionManager.NotNull(nameof(ExceptionManager));
+        }
+
+        protected IActionResult Forbidden()
+        {
+            return new StatusCodeResult(StatusCodes.Status403Forbidden);
         }
     }
 }

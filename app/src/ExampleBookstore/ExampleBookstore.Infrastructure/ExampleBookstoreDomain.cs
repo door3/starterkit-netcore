@@ -18,11 +18,12 @@ namespace ExampleBookstore.Infrastructure
         where TDomain : IExampleBookstoreDomain
     {
         protected ExampleBookstoreDomain(
+            IDomainBus bus,
             IQueryDomainRole<TDomain> queryRole,
             ICommandDomainRole<TDomain> commandRole,
             IHandleDomainEventStrategy<IDomainEvent> eventStrategy,
             IHandleDomainEventStrategy<IValidationEvent> validationStrategy)
-        : base(queryRole, commandRole, eventStrategy, validationStrategy)
+        : base(bus, queryRole, commandRole, eventStrategy, validationStrategy)
         {
         }
     }

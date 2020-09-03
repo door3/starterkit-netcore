@@ -6,5 +6,7 @@ namespace D3SK.NetCore.Domain.Events
         where TEvent : IDomainEventBase
     {
         public abstract Task HandleAsync(TEvent domainEvent);
+
+        public Task HandleAsync(object domainEvent) => HandleAsync((TEvent)domainEvent);
     }
 }

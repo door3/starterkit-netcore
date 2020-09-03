@@ -13,6 +13,7 @@
     <PackageReference Include="Microsoft.Extensions.Hosting" Version="3.1.7" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="3.1.7" />
     <PackageReference Include="Serilog.AspNetCore" Version="3.4.0" />
+    <PackageReference Include="SaasKit.Multitenancy" Version="1.1.4" />
   </ItemGroup>
 
   <ItemGroup>
