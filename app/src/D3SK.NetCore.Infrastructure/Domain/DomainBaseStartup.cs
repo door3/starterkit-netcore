@@ -2,6 +2,7 @@
 using D3SK.NetCore.Common.Queries;
 using D3SK.NetCore.Common.Stores;
 using D3SK.NetCore.Common.Utilities;
+using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
 using D3SK.NetCore.Domain.Models;
 using D3SK.NetCore.Infrastructure.Events;
@@ -26,6 +27,9 @@ namespace D3SK.NetCore.Infrastructure.Domain
             services
                 .AddTransient<IHandleDomainEventStrategy<IValidationEvent>,
                     HandleDomainEventStrategy<IValidationEvent>>();
+            services
+                .AddTransient<IHandleDomainEventStrategy<IDomainBusEvent>,
+                    HandleDomainEventStrategy<IDomainBusEvent>>();
 
             services.AddTransient<IUpdateStrategy, OptimisticUpdateStrategy>();
 
@@ -39,6 +43,8 @@ namespace D3SK.NetCore.Infrastructure.Domain
             {
                 services.AddScoped<ITenantManager>(provider => new TenantManager(null));
             }
+
+            services.AddSingleton<IDomainBus, MonolithicDomainBus>();
         }
     }
 }

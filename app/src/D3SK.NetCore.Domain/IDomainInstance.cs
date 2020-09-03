@@ -6,6 +6,8 @@ namespace D3SK.NetCore.Domain
 {
     public interface IDomainInstance
     {
+        IServiceProvider ServiceProvider { get; }
+
         Task<Guid> PublishEventAsync<TEvent>(TEvent domainEvent) where TEvent : IDomainEvent;
 
         Task<bool> ValidateAsync<T>(T item);

@@ -28,12 +28,12 @@ namespace D3SK.NetCore.Infrastructure.Events
                 var handlers = EventHandlers.Where(x => x.ObjectType == type);
                 foreach (var handler in handlers)
                 {
-                    if (!handler.HandlerType?.InheritsFrom(typeof(IAsyncDomainEventHandler<TEvent>)) ?? true)
+                    if (!handler.HandlerType?.ImplementsInterface<IAsyncDomainEventHandlerBase>() ?? true)
                     {
                         return;
                     }
 
-                    var eventHandler = (IAsyncDomainEventHandler<TEvent>)ActivatorUtilities.CreateInstance(
+                    var eventHandler = (IAsyncDomainEventHandlerBase)ActivatorUtilities.CreateInstance(
                         serviceProvider,
                         handler.HandlerType);
                     await eventHandler.HandleAsync(domainEvent);

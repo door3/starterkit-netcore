@@ -12,6 +12,8 @@ using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Entities;
 using D3SK.NetCore.Domain.Events;
+using D3SK.NetCore.Domain.Events.EntityEvents;
+using D3SK.NetCore.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -106,10 +108,35 @@ namespace D3SK.NetCore.Infrastructure.Stores
 
         protected virtual async Task<int> SaveChangesCoreAsync(CancellationToken cancellationToken = new CancellationToken())
         {
-            SetIsDeletedForDeletedEntities();
+            ChangeTracker.DetectChanges();
+
             SetAuditEntityDetails();
+            AddDomainEventsToEntities();
+            SetIsDeletedForDeletedEntities();
             
             return await base.SaveChangesAsync(cancellationToken);
+        }
+
+        protected virtual void AddDomainEventsToEntities()
+        {
+            var addedEntities = GetDomainEntities(EntityState.Added).ToList();
+            var deletedEntities = GetDomainEntities(EntityState.Deleted).ToList();
+            var updatedEntities = GetDomainEntities(EntityState.Modified).ToList();
+
+            addedEntities.ForEach(entity => entity.AddDomainEvent(new EntityAddedDomainEvent(entity)));
+
+            deletedEntities.ForEach(entity =>
+            {
+                var entityId = this.GetPrimaryKeys(entity);
+                entity.AddDomainEvent(new EntityDeletedDomainEvent(entity, entityId));
+            });
+
+            updatedEntities.ForEach(entity =>
+            {
+                var entityId = this.GetPrimaryKeyObject(entity);
+                var changes = Entry(entity).GetPropertyChanges();
+                entity.AddDomainEvent(new EntityUpdatedDomainEvent(entity, entityId, changes));
+            });
         }
 
         protected virtual void SetIsDeletedForDeletedEntities()
@@ -173,9 +200,10 @@ namespace D3SK.NetCore.Infrastructure.Stores
             domainEntities.ForEach(x => x.ClearDomainEvents());
         }
 
-        protected IList<IDomainEntity> GetDomainEntities()
+        protected IList<IDomainEntity> GetDomainEntities(EntityState? state = null)
         {
-            return ChangeTracker.Entries().Select(x => x.Entity).OfType<IDomainEntity>().ToList();
+            return ChangeTracker.Entries().Where(x => !state.HasValue || x.State == state.Value)
+                .Select(x => x.Entity).OfType<IDomainEntity>().ToList();
         }
 
         protected EntityTypeBuilder<T> ApplyDeletedFilter<T>(EntityTypeBuilder<T> source)

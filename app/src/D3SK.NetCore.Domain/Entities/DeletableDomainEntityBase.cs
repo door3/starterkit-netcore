@@ -96,6 +96,6 @@ namespace D3SK.NetCore.Domain.Entities
             => OnAdded(createdDate, createdByUser is TUserKey userId ? userId : default);
 
         public virtual void OnUpdated(DateTimeOffset lastModifiedDate, object lastModifiedByUser)
-            => OnAdded(lastModifiedDate, lastModifiedByUser is TUserKey userId ? userId : default);
+            => OnUpdated(lastModifiedDate, lastModifiedByUser is TUserKey userId ? userId : default);
     }
 }

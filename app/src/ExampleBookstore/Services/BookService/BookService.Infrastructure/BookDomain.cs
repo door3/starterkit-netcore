@@ -1,8 +1,10 @@
-﻿using BookService.Infrastructure.Features.AuthorFeatures;
+﻿using BookService.Infrastructure.Events;
+using BookService.Infrastructure.Features.AuthorFeatures;
 using BookService.Infrastructure.Features.BookFeatures;
 using BookService.Infrastructure.Stores;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
+using D3SK.NetCore.Domain.Events.EntityEvents;
 using ExampleBookstore.Infrastructure;
 using ExampleBookstore.Services.BookService.Domain;
 using ExampleBookstore.Services.BookService.Domain.Entities;
@@ -19,17 +21,19 @@ namespace BookService.Infrastructure
     public class BookDomain : ExampleBookstoreDomain<IBookDomain>, IBookDomain
     {
         public BookDomain(
+            IDomainBus bus,
             IQueryDomainRole<IBookDomain> queryRole,
             ICommandDomainRole<IBookDomain> commandRole,
             IHandleDomainEventStrategy<IDomainEvent> eventStrategy,
             IHandleDomainEventStrategy<IValidationEvent> validationStrategy)
-            : base(queryRole, commandRole, eventStrategy, validationStrategy)
+            : base(bus, queryRole, commandRole, eventStrategy, validationStrategy)
         {
             ConfigureDomain(this);
         }
 
         public static void ConfigureDomain(IBookDomain domain)
         {
+            domain.HandlesBusEvent<EntityUpdatedEventHandler, EntityUpdatedDomainEvent>();
             domain.HandlesValidation<ValidateBookEventHandler, Book>();
         }
 
