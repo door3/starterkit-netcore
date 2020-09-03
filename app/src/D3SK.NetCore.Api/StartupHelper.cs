@@ -112,6 +112,8 @@ namespace D3SK.NetCore.Api
             {
                 services.AddScoped<ITenantUserClaims, TenantUserClaims>();
                 services.AddScoped<ICurrentUserManager<ITenantUserClaims>, HttpCurrentUserManager<ITenantUserClaims>>();
+                services.Configure<MultitenancyOptions>(options => { });
+                services.AddMultitenancy<ResolvedTenant, ClaimsTenantResolver>();
             }
 
             // configure base domain services

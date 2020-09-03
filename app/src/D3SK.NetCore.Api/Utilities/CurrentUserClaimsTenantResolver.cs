@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using SaasKit.Multitenancy;
 
-namespace D3SK.NetCore.Infrastructure.Utilities
+namespace D3SK.NetCore.Api.Utilities
 {
     public class CurrentUserClaimsTenantResolver<TUserClaims> : ITenantResolver<ResolvedTenant>
         where TUserClaims : ITenantUserClaims

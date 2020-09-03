@@ -35,8 +35,6 @@ namespace D3SK.NetCore.Infrastructure.Domain
 
             if (useMultitenancy)
             {
-                services.Configure<MultitenancyOptions>(options => { });
-                services.AddMultitenancy<ResolvedTenant, ClaimsTenantResolver>();
                 services.AddScoped<ITenantManager, TenantManager>();
             }
             else
