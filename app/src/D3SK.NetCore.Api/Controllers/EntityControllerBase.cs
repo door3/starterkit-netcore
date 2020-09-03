@@ -64,30 +64,30 @@ namespace D3SK.NetCore.Api.Controllers
         }
 
         [HttpPost("search")]
-        public virtual async Task<SearchQueryResponse<T>> SearchEntities(
+        public virtual async Task<IActionResult> SearchEntities(
             [FromServices] TQuery query,
             [FromServices] TCountQuery countQuery,
             [FromBody] FromBodySearchQueryRequest request)
         {
             request?.SetQueryAndCount(query, countQuery);
-            return await SearchCore(query, countQuery);
+            return Ok(await SearchCore(query, countQuery));
         }
 
         [HttpPost("select")]
-        public virtual async Task<SearchQueryResponse<object>> SelectEntities(
+        public virtual async Task<IActionResult> SelectEntities(
             [FromServices] TProjectionQuery query,
             [FromServices] TCountQuery countQuery,
             [FromBody] FromBodyProjectionSearchQueryRequest request)
         {
             request?.SetQueryAndCount(query, countQuery);
-            return await SearchCore(query, countQuery);
+            return Ok(await SearchCore(query, countQuery));
         }
 
         [HttpGet("{id}")]
-        public virtual async Task<T> GetEntityById([FromServices] TQuery query, [FromRoute] int id)
+        public virtual async Task<IActionResult> GetEntityById([FromServices] TQuery query, [FromRoute] int id)
         {
             query.Filters.Add(new QueryFilter(id));
-            return (await DomainInstance.RunQueryAsync(query)).SingleOrDefault();
+            return Ok((await DomainInstance.RunQueryAsync(query)).SingleOrDefault());
         }
         
         [HttpPost]
@@ -123,7 +123,7 @@ namespace D3SK.NetCore.Api.Controllers
             return NoContent();
         }
 
-        protected async Task<SearchQueryResponse<TResult>> SearchCore<TResult>(
+        protected virtual async Task<SearchQueryResponse<TResult>> SearchCore<TResult>(
             IAsyncQueryFeature<TDomain, IList<TResult>> query,
             IEntityCountQuery<TDomain, T> countQuery)
         {
