@@ -33,7 +33,7 @@ namespace BookService.Infrastructure
 
         public static void ConfigureDomain(IBookDomain domain)
         {
-            domain.HandlesBusEvent<EntityUpdatedEventHandler, EntityUpdatedDomainEvent>();
+            domain.HandlesBusEvent<EntityUpdatedEventHandler, EntityUpdatedBusEvent>();
             domain.HandlesValidation<ValidateBookEventHandler, Book>();
         }
 

@@ -4,8 +4,8 @@ using System.Text;
 
 namespace D3SK.NetCore.Domain.Events
 {
-    public interface IDomainEventBase : IEventBase
+    public abstract class BusEventBase : IBusEvent
     {
-        Guid EventGuid { get; set; }
+        public Guid EventGuid { get; set; } = Guid.NewGuid();
     }
 }

@@ -4,7 +4,7 @@ using System.Text;
 
 namespace D3SK.NetCore.Domain.Events.EntityEvents
 {
-    public interface IEntityDeletedDomainEvent : IEntityDomainEvent
+    public interface IEntityAddedBusEvent : IEntityBusEvent
     {
     }
 }

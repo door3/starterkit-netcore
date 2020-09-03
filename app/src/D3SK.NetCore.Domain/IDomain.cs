@@ -22,6 +22,6 @@ namespace D3SK.NetCore.Domain
 
         void HandlesBusEvent<THandler, TEvent>()
             where THandler : class, IAsyncDomainEventHandler<TEvent>
-            where TEvent : IDomainBusEvent;
+            where TEvent : IBusEvent;
     }
 }

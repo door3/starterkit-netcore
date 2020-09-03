@@ -1,6 +1,6 @@
 ﻿namespace D3SK.NetCore.Domain.Events.EntityEvents
 {
-    public interface IEntityDomainEvent : IDomainBusEvent
+    public interface IEntityBusEvent : IBusEvent
     {
         object Entity { get; }
 

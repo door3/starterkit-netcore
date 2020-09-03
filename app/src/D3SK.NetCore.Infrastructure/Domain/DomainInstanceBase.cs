@@ -34,15 +34,19 @@ namespace D3SK.NetCore.Infrastructure.Domain
             where TDomainRole : ICommandDomainRole<TDomain>
             => GetDomainRole<TDomainRole>().HandleFeatureAsync(this, feature);
 
-        public virtual async Task<Guid> PublishEventAsync<TEvent>(TEvent domainEvent) where TEvent : IDomainEvent
+        public virtual async Task<Guid> PublishEventAsync<TEvent>(TEvent domainEvent) where TEvent : IDomainEventBase
         {
-            if (domainEvent is IDomainBusEvent busEvent)
+            switch (domainEvent)
             {
-                busEvent.EventGuid = await PublishBusEventAsync(busEvent);
+                case IBusEvent busEvent:
+                    busEvent.EventGuid = await PublishBusEventAsync(busEvent);
+                    return busEvent.EventGuid;
+                case IDomainEvent domEvent:
+                    await Domain.EventStrategy.HandleEventAsync(domEvent, ServiceProvider);
+                    return domEvent.EventGuid;
+                default:
+                    return Guid.Empty;
             }
-
-            await Domain.EventStrategy.HandleEventAsync(domainEvent, ServiceProvider);
-            return domainEvent.EventGuid;
         }
 
         public virtual async Task<bool> ValidateAsync<T>(T item)
@@ -52,7 +56,7 @@ namespace D3SK.NetCore.Infrastructure.Domain
             return validationEvent.IsValid;
         }
 
-        protected virtual async Task<Guid> PublishBusEventAsync<TEvent>(TEvent busEvent) where TEvent : IDomainBusEvent
+        protected virtual async Task<Guid> PublishBusEventAsync<TEvent>(TEvent busEvent) where TEvent : IBusEvent
         {
             return await Domain.Bus.PublishEventAsync(busEvent, this);
         }

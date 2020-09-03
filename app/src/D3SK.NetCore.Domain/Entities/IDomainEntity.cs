@@ -6,10 +6,12 @@ namespace D3SK.NetCore.Domain.Entities
     public interface IDomainEntity
     {
         [Newtonsoft.Json.JsonIgnore]
-        IList<IDomainEvent> DomainEvents { get; }
+        IList<IDomainEventBase> DomainEvents { get; }
 
-        void AddDomainEvent(IDomainEvent domainEvent);
+        void AddDomainEvent(IDomainEventBase domainEvent);
 
-        void ClearDomainEvents();
+        void ClearAllDomainEvents();
+
+        void ClearDomainEvents<TEvent>() where TEvent : IDomainEventBase;
     }
 }

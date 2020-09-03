@@ -28,8 +28,8 @@ namespace D3SK.NetCore.Infrastructure.Domain
                 .AddTransient<IHandleDomainEventStrategy<IValidationEvent>,
                     HandleDomainEventStrategy<IValidationEvent>>();
             services
-                .AddTransient<IHandleDomainEventStrategy<IDomainBusEvent>,
-                    HandleDomainEventStrategy<IDomainBusEvent>>();
+                .AddTransient<IHandleDomainEventStrategy<IBusEvent>,
+                    HandleDomainEventStrategy<IBusEvent>>();
 
             services.AddTransient<IUpdateStrategy, OptimisticUpdateStrategy>();
 

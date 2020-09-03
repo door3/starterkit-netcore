@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
+using System.Linq;
 using System.Text.Json.Serialization;
 using D3SK.NetCore.Common.Entities;
 using D3SK.NetCore.Common.Extensions;
@@ -48,7 +49,7 @@ namespace D3SK.NetCore.Domain.Entities
     public abstract class DeletableDomainEntityBase<TKey, TUserKey> : EntityBase<TKey>,
         IDomainEntity, IAuditEntity<TUserKey>
     {
-        [JsonIgnore] public IList<IDomainEvent> DomainEvents { get; } = new List<IDomainEvent>();
+        [JsonIgnore] public IList<IDomainEventBase> DomainEvents { get; } = new List<IDomainEventBase>();
 
         public DateTimeOffset CreatedDate { get; private set; }
 
@@ -66,14 +67,19 @@ namespace D3SK.NetCore.Domain.Entities
         {
         }
 
-        public void AddDomainEvent(IDomainEvent domainEvent)
+        public void AddDomainEvent(IDomainEventBase domainEvent)
         {
             DomainEvents.Add(domainEvent);
         }
 
-        public void ClearDomainEvents()
+        public void ClearAllDomainEvents()
         {
             DomainEvents.Clear();
+        }
+
+        public void ClearDomainEvents<TEvent>() where TEvent : IDomainEventBase
+        {
+            DomainEvents.Where(x => x.GetType().ImplementsInterface<TEvent>()).ForEach(x => DomainEvents.Remove(x));
         }
 
         public virtual void OnAdded(DateTimeOffset createdDate, TUserKey createdByUser)

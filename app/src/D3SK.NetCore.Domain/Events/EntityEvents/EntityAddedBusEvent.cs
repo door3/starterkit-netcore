@@ -3,9 +3,9 @@ using D3SK.NetCore.Common.Extensions;
 
 namespace D3SK.NetCore.Domain.Events.EntityEvents
 {
-    public class EntityAddedDomainEvent : EntityDomainEventBase, IEntityAddedDomainEvent
+    public class EntityAddedBusEvent : EntityBusEventBase, IEntityAddedBusEvent
     {
-        public EntityAddedDomainEvent(object entity) : base(entity, null)
+        public EntityAddedBusEvent(object entity) : base(entity, null)
         {
         }
     }

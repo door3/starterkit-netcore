@@ -22,6 +22,8 @@
     <ProjectReference Include="..\..\ExampleBookstore.Domain\ExampleBookstore.Domain.csproj" />
     <ProjectReference Include="..\..\ExampleBookstore.Infrastructure\ExampleBookstore.Infrastructure.csproj" />
     <ProjectReference Include="..\BookService\BookService.Api\BookService.Api.csproj" />
+    <ProjectReference Include="..\BookService\BookService.Domain\BookService.Domain.csproj" />
+    <ProjectReference Include="..\BookService\BookService.Infrastructure\BookService.Infrastructure.csproj" />
     <ProjectReference Include="..\ServicesTransport.Common\ServicesTransport.Common.csproj" />
     <ProjectReference Include="..\ServicesTransport.Infrastructure\ServicesTransport.Infrastructure.csproj" />
   </ItemGroup>

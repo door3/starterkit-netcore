@@ -72,7 +72,7 @@ namespace D3SK.NetCore.Infrastructure.Domain
 
         public void HandlesBusEvent<THandler, TEvent>()
             where THandler : class, IAsyncDomainEventHandler<TEvent>
-            where TEvent : IDomainBusEvent
+            where TEvent : IBusEvent
         {
             Bus.EventStrategy.AddAsyncHandler<THandler, TEvent>();
         }

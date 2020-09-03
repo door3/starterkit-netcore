@@ -92,16 +92,22 @@ namespace D3SK.NetCore.Infrastructure.Stores
         {
             if (!IsInTransaction)
             {
-                await HandleDomainEvents();
+                await HandleDomainEventsAsync<IDomainEvent>();
             }
 
             var result = await SaveChangesCoreAsync(cancellationToken);
 
             if (IsInTransaction)
             {
-                await HandleDomainEvents();
-                result += await SaveChangesCoreAsync(cancellationToken);
+                do
+                {
+                    await HandleDomainEventsAsync<IDomainEvent>();
+                    result += await SaveChangesCoreAsync(cancellationToken);
+                } while (HasDomainEvents<IDomainEvent>());
             }
+
+            await HandleDomainEventsAsync<IBusEvent>();
+            ClearAllDomainEvents();
 
             return result;
         }
@@ -123,19 +129,19 @@ namespace D3SK.NetCore.Infrastructure.Stores
             var deletedEntities = GetDomainEntities(EntityState.Deleted).ToList();
             var updatedEntities = GetDomainEntities(EntityState.Modified).ToList();
 
-            addedEntities.ForEach(entity => entity.AddDomainEvent(new EntityAddedDomainEvent(entity)));
+            addedEntities.ForEach(entity => entity.AddDomainEvent(new EntityAddedBusEvent(entity)));
 
             deletedEntities.ForEach(entity =>
             {
                 var entityId = this.GetPrimaryKeys(entity);
-                entity.AddDomainEvent(new EntityDeletedDomainEvent(entity, entityId));
+                entity.AddDomainEvent(new EntityDeletedBusEvent(entity, entityId));
             });
 
             updatedEntities.ForEach(entity =>
             {
                 var entityId = this.GetPrimaryKeyObject(entity);
                 var changes = Entry(entity).GetPropertyChanges();
-                entity.AddDomainEvent(new EntityUpdatedDomainEvent(entity, entityId, changes));
+                entity.AddDomainEvent(new EntityUpdatedBusEvent(entity, entityId, changes));
             });
         }
 
@@ -171,14 +177,22 @@ namespace D3SK.NetCore.Infrastructure.Stores
                 entity.OnUpdated(CurrentClock.UtcNow, null);
             }
         }
-        
-        protected virtual async Task HandleDomainEvents()
+
+        protected bool HasDomainEvents<TEvent>() where TEvent : IDomainEventBase
         {
             var domainEntities = GetDomainEntities();
-            var domainEvents = GetDomainEvents(domainEntities);
+            var domainEvents = GetDomainEvents<TEvent>(domainEntities);
+
+            return domainEvents.Any();
+        }
+        
+        protected virtual async Task HandleDomainEventsAsync<TEvent>() where TEvent : IDomainEventBase
+        {
+            var domainEntities = GetDomainEntities();
+            var domainEvents = GetDomainEvents<TEvent>(domainEntities);
             while (domainEvents.Any())
             {
-                ClearDomainEvents(domainEntities);
+                ClearDomainEvents<TEvent>(domainEntities);
 
                 foreach (var domainEvent in domainEvents)
                 {
@@ -186,18 +200,24 @@ namespace D3SK.NetCore.Infrastructure.Stores
                 }
 
                 domainEntities = GetDomainEntities();
-                domainEvents = GetDomainEvents(domainEntities);
+                domainEvents = GetDomainEvents<TEvent>(domainEntities);
             }
         }
 
-        protected IList<IDomainEvent> GetDomainEvents(IList<IDomainEntity> domainEntities)
+        protected IList<TEvent> GetDomainEvents<TEvent>(IList<IDomainEntity> domainEntities) where TEvent : IDomainEventBase
         {
-            return domainEntities.SelectMany(x => x.DomainEvents).ToList();
+            return domainEntities.SelectMany(x => x.DomainEvents).OfType<TEvent>().ToList();
         }
 
-        protected void ClearDomainEvents(IList<IDomainEntity> domainEntities)
+        protected void ClearDomainEvents<TEvent>(IList<IDomainEntity> domainEntities) where TEvent : IDomainEventBase
         {
-            domainEntities.ForEach(x => x.ClearDomainEvents());
+            domainEntities.ForEach(x => x.ClearDomainEvents<TEvent>());
+        }
+
+        protected void ClearAllDomainEvents(IList<IDomainEntity> domainEntities = null)
+        {
+            domainEntities ??= GetDomainEntities();
+            domainEntities.ForEach(x => x.ClearAllDomainEvents());
         }
 
         protected IList<IDomainEntity> GetDomainEntities(EntityState? state = null)

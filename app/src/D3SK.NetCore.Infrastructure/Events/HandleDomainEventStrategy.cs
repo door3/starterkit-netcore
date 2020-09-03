@@ -9,7 +9,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace D3SK.NetCore.Infrastructure.Events
 {
     public class HandleDomainEventStrategy<TEventBase> : IHandleDomainEventStrategy<TEventBase>
-        where TEventBase : IDomainEventBase
+        where TEventBase : IEventBase
     {
         public IList<DomainEventHandlerInfo> EventHandlers { get; } = new List<DomainEventHandlerInfo>();
 

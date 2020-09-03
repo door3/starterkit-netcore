@@ -8,9 +8,9 @@ using D3SK.NetCore.Infrastructure.Events;
 
 namespace BookService.Infrastructure.Events
 {
-    public class EntityUpdatedEventHandler : AsyncDomainEventHandlerBase<EntityUpdatedDomainEvent>
+    public class EntityUpdatedEventHandler : AsyncDomainEventHandlerBase<EntityUpdatedBusEvent>
     {
-        public override Task HandleAsync(EntityUpdatedDomainEvent domainEvent)
+        public override Task HandleAsync(EntityUpdatedBusEvent domainEvent)
         {
             return Task.CompletedTask;
         }
