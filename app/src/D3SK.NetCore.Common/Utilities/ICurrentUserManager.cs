@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace D3SK.NetCore.Common.Utilities
+﻿namespace D3SK.NetCore.Common.Utilities
 {
     public interface ICurrentUserManager<TUserClaims> where TUserClaims : IUserClaimsBase
     {

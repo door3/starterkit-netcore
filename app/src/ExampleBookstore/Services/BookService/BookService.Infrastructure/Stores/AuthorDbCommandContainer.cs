@@ -1,11 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using D3SK.NetCore.Infrastructure.Stores;
+﻿using D3SK.NetCore.Infrastructure.Stores;
 using ExampleBookstore.Services.BookService.Domain.Entities;
 using ExampleBookstore.Services.BookService.Domain.Stores;
 
-namespace BookService.Infrastructure.Stores
+namespace ExampleBookstore.Services.BookService.Infrastructure.Stores
 {
     public class AuthorDbCommandContainer : CommandDbStoreContainerBase<Author, IBookStore, BookDbStore>,
         IAuthorCommandContainer

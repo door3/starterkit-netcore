@@ -1,18 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using D3SK.NetCore.Common;
 using D3SK.NetCore.Common.Entities;
 using D3SK.NetCore.Common.Extensions;
-using D3SK.NetCore.Common.Stores;
 using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain;
-using D3SK.NetCore.Domain.Entities;
-using D3SK.NetCore.Domain.Events;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

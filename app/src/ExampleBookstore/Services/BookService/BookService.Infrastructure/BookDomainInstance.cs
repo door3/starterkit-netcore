@@ -2,7 +2,7 @@
 using ExampleBookstore.Infrastructure;
 using ExampleBookstore.Services.BookService.Domain;
 
-namespace BookService.Infrastructure
+namespace ExampleBookstore.Services.BookService.Infrastructure
 {
     public class BookDomainInstance : ExampleBookstoreDomainInstance<IBookDomain>
     {

@@ -6,7 +6,7 @@ using ExampleBookstore.Services.BookService.Domain.Features.AuthorFeatures;
 using ExampleBookstore.Services.BookService.Domain.Stores;
 using Microsoft.Extensions.Options;
 
-namespace BookService.Infrastructure.Features.AuthorFeatures
+namespace ExampleBookstore.Services.BookService.Infrastructure.Features.AuthorFeatures
 {
     public class AuthorProjectionQuery :
         EntityProjectionQueryBase<IBookDomain, Author, IBookQueryStore, IAuthorQueryContainer>, IAuthorProjectionQuery

@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\..\D3SK.NetCore.Api\D3SK.NetCore.Api.csproj" />
+    <ProjectReference Include="..\BookService.Domain\BookService.Domain.csproj" />
     <ProjectReference Include="..\BookService.Infrastructure\BookService.Infrastructure.csproj" />
   </ItemGroup>
 

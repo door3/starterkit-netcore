@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
-using BookService.Infrastructure.Stores;
 using D3SK.NetCore.Api;
+using ExampleBookstore.Services.BookService.Infrastructure.Stores;
 using Microsoft.Extensions.Hosting;
 
 namespace ExampleBookstore.Services.ServicesGateway.Api

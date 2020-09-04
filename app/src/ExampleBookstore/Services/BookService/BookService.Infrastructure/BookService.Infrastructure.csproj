@@ -2,6 +2,8 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp3.1</TargetFramework>
+    <AssemblyName>ExampleBookstore.Services.BookService.Infrastructure</AssemblyName>
+    <RootNamespace>ExampleBookstore.Services.BookService.Infrastructure</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>

@@ -2,7 +2,7 @@
 using ExampleBookstore.Services.BookService.Domain.Entities;
 using ExampleBookstore.Services.BookService.Domain.Stores;
 
-namespace BookService.Infrastructure.Stores
+namespace ExampleBookstore.Services.BookService.Infrastructure.Stores
 {
     public class BookDbCommandContainer : CommandDbStoreContainerBase<Book, IBookStore, BookDbStore>,
         IBookCommandContainer

@@ -7,7 +7,7 @@ using ExampleBookstore.Services.BookService.Domain.Entities;
 using ExampleBookstore.Services.BookService.Domain.Features.BookFeatures;
 using ExampleBookstore.Services.BookService.Domain.Stores;
 
-namespace BookService.Infrastructure.Features.BookFeatures
+namespace ExampleBookstore.Services.BookService.Infrastructure.Features.BookFeatures
 {
     public class BookUpdateCommand : EntityPatchCommandBase<IBookDomain, Book, IBookStore, IBookCommandContainer>,
         IBookUpdateCommand

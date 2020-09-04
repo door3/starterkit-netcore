@@ -3,7 +3,6 @@ using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain;
 using ExampleBookstore.Services.BookService.Domain;
 using ExampleBookstore.Services.BookService.Domain.Entities;
-using ExampleBookstore.Services.BookService.Domain.Features.AuthorFeatures;
 using ExampleBookstore.Services.BookService.Domain.Features.BookFeatures;
 
 namespace ExampleBookstore.Services.BookService.Api.Controllers

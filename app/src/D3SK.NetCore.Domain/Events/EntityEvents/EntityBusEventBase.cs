@@ -1,7 +1,4 @@
-﻿using D3SK.NetCore.Common.Extensions;
-using System.Text.Json.Serialization;
-
-namespace D3SK.NetCore.Domain.Events.EntityEvents
+﻿namespace D3SK.NetCore.Domain.Events.EntityEvents
 {
     public abstract class EntityBusEventBase : BusEventBase, IEntityBusEvent
     {

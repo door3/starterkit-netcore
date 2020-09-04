@@ -4,7 +4,6 @@ using D3SK.NetCore.Common.Stores;
 using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
-using D3SK.NetCore.Domain.Models;
 using D3SK.NetCore.Infrastructure.Events;
 using D3SK.NetCore.Infrastructure.Stores;
 using D3SK.NetCore.Infrastructure.Utilities;
