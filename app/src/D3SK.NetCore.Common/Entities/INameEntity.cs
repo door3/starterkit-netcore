@@ -1,15 +1,27 @@
 ﻿namespace D3SK.NetCore.Common.Entities
 {
-    public interface INameEntity : ICompositeEntity
+
+    public interface IShortNameEntity : ICompositeEntity
     {
-        string Prefix { get; set; }
+        string FirstName { get; }
 
-        string FirstName { get; set; }
+        string LastName { get; }
+    }
+    
+    public interface INameEntity : IShortNameEntity
+    {
+        string MiddleName { get; }
+    }
 
-        string MiddleName { get; set; }
+    public interface IFullNameEntity : INameEntity
+    {
+        string FullName { get; }
+    }
 
-        string LastName { get; set; }
+    public interface IExtendedNameEntity : INameEntity
+    {
+        string Prefix { get; }
 
-        string Suffix { get; set; }
+        string Suffix { get; }
     }
 }
