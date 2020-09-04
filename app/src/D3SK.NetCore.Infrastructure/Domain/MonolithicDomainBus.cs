@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
-using Microsoft.Extensions.DependencyInjection;
 
 namespace D3SK.NetCore.Infrastructure.Domain
 {

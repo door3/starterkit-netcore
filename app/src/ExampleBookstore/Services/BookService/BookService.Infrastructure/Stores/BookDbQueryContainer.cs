@@ -7,7 +7,7 @@ using ExampleBookstore.Services.BookService.Domain.Entities;
 using ExampleBookstore.Services.BookService.Domain.Stores;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookService.Infrastructure.Stores
+namespace ExampleBookstore.Services.BookService.Infrastructure.Stores
 {
     public class BookDbQueryContainer :
         ProjectionQueryDbStoreContainerBase<Book, IBookQueryStore, BookDbStore>, IBookQueryContainer

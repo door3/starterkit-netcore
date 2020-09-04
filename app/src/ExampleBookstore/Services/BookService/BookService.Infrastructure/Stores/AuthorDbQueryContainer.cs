@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using D3SK.NetCore.Common.Stores;
 using D3SK.NetCore.Infrastructure.Extensions;
@@ -10,7 +7,7 @@ using ExampleBookstore.Services.BookService.Domain.Entities;
 using ExampleBookstore.Services.BookService.Domain.Stores;
 using Microsoft.EntityFrameworkCore;
 
-namespace BookService.Infrastructure.Stores
+namespace ExampleBookstore.Services.BookService.Infrastructure.Stores
 {
     public class AuthorDbQueryContainer :
         ProjectionQueryDbStoreContainerBase<Author, IBookQueryStore, BookDbStore>, IAuthorQueryContainer

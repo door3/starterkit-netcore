@@ -1,8 +1,4 @@
-﻿using BookService.Infrastructure.Events;
-using BookService.Infrastructure.Features.AuthorFeatures;
-using BookService.Infrastructure.Features.BookFeatures;
-using BookService.Infrastructure.Stores;
-using D3SK.NetCore.Domain;
+﻿using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
 using D3SK.NetCore.Domain.Events.EntityEvents;
 using ExampleBookstore.Infrastructure;
@@ -12,11 +8,15 @@ using ExampleBookstore.Services.BookService.Domain.Events;
 using ExampleBookstore.Services.BookService.Domain.Features.AuthorFeatures;
 using ExampleBookstore.Services.BookService.Domain.Features.BookFeatures;
 using ExampleBookstore.Services.BookService.Domain.Stores;
+using ExampleBookstore.Services.BookService.Infrastructure.Events;
+using ExampleBookstore.Services.BookService.Infrastructure.Features.AuthorFeatures;
+using ExampleBookstore.Services.BookService.Infrastructure.Features.BookFeatures;
+using ExampleBookstore.Services.BookService.Infrastructure.Stores;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace BookService.Infrastructure
+namespace ExampleBookstore.Services.BookService.Infrastructure
 {
     public class BookDomain : ExampleBookstoreDomain<IBookDomain>, IBookDomain
     {

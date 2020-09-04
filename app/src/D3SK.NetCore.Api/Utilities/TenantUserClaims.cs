@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Claims;
-using System.Text;
-using D3SK.NetCore.Common.Extensions;
-using D3SK.NetCore.Common.Utilities;
+﻿using D3SK.NetCore.Common.Utilities;
 using Microsoft.AspNetCore.Http;
 
 namespace D3SK.NetCore.Api.Utilities

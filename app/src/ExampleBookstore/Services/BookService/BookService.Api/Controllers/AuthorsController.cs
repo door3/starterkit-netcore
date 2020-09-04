@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using D3SK.NetCore.Api.Controllers;
+﻿using D3SK.NetCore.Api.Controllers;
 using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain;
 using ExampleBookstore.Services.BookService.Domain;
