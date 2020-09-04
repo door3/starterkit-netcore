@@ -7,7 +7,7 @@ namespace D3SK.NetCore.Domain.Events
         Task HandleAsync(object domainEvent);
     }
 
-    public interface IAsyncDomainEventHandler<in TEvent> : IAsyncDomainEventHandlerBase where TEvent : IDomainEventBase
+    public interface IAsyncDomainEventHandler<in TEvent> : IAsyncDomainEventHandlerBase where TEvent : IEventBase
     {
         Task HandleAsync(TEvent domainEvent);
     }

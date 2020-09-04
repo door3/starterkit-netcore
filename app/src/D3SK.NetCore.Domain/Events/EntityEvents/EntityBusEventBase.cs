@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace D3SK.NetCore.Domain.Events.EntityEvents
 {
-    public abstract class EntityDomainEventBase : DomainEventBase, IEntityDomainEvent
+    public abstract class EntityBusEventBase : BusEventBase, IEntityBusEvent
     {
         public object Entity { get; }
 
@@ -13,7 +13,7 @@ namespace D3SK.NetCore.Domain.Events.EntityEvents
 
         public object EntityId { get; }
 
-        protected EntityDomainEventBase(object entity, object entityId)
+        protected EntityBusEventBase(object entity, object entityId)
         {
             Entity = entity;
             EntityId = entityId;

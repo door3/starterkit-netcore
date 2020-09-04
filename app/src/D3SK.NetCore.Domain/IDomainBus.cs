@@ -6,8 +6,8 @@ namespace D3SK.NetCore.Domain
 {
     public interface IDomainBus
     {
-        IHandleDomainEventStrategy<IDomainBusEvent> EventStrategy { get; }
+        IHandleDomainEventStrategy<IBusEvent> EventStrategy { get; }
 
-        Task<Guid> PublishEventAsync<TEvent>(TEvent busEvent, IDomainInstance domainInstance) where TEvent : IDomainBusEvent;
+        Task<Guid> PublishEventAsync<TEvent>(TEvent busEvent, IDomainInstance domainInstance) where TEvent : IBusEvent;
     }
 }

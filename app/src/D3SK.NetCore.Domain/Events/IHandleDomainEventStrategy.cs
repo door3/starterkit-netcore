@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 
 namespace D3SK.NetCore.Domain.Events
 {
-    public interface IHandleDomainEventStrategy<in TEventBase> where TEventBase : IDomainEventBase
+    public interface IHandleDomainEventStrategy<in TEventBase> where TEventBase : IEventBase
     {
         IList<DomainEventHandlerInfo> EventHandlers { get; }
 

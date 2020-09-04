@@ -11,15 +11,15 @@ namespace D3SK.NetCore.Infrastructure.Domain
 {
     public class MonolithicDomainBus : IDomainBus
     {
-        public IHandleDomainEventStrategy<IDomainBusEvent> EventStrategy { get; }
+        public IHandleDomainEventStrategy<IBusEvent> EventStrategy { get; }
 
-        public MonolithicDomainBus(IHandleDomainEventStrategy<IDomainBusEvent> eventStrategy)
+        public MonolithicDomainBus(IHandleDomainEventStrategy<IBusEvent> eventStrategy)
         {
             EventStrategy = eventStrategy.NotNull(nameof(eventStrategy));
         }
 
         public async Task<Guid> PublishEventAsync<TEvent>(TEvent busEvent, IDomainInstance domainInstance)
-            where TEvent : IDomainBusEvent
+            where TEvent : IBusEvent
         {
             await EventStrategy.HandleEventAsync(busEvent, domainInstance.ServiceProvider);
             return busEvent.EventGuid;
