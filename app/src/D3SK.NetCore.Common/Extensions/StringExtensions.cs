@@ -134,20 +134,43 @@ namespace D3SK.NetCore.Common.Extensions
             return source.SubstringUntil(true, stopStrings);
         }
 
-        public static bool ToBool(this string source, string trueValue = "true", string falseValue = "false", bool defaultValue = false, bool useDefaultBoolValues = true)
+        public static bool ToBool(this string source, string trueValue = "true", string falseValue = "false",
+            bool defaultValue = false, bool useDefaultBoolValues = true)
         {
             var testTrueValues =
-                useDefaultBoolValues ? new List<string>(new[] {"true", "T", "1"}) : new List<string>();
+                useDefaultBoolValues ? new List<string>(new[] {"true", "T", "1", "yes", "Y"}) : new List<string>();
             var testFalseValues =
-                useDefaultBoolValues ? new List<string>(new[] { "false", "F", "0"}) : new List<string>();
+                useDefaultBoolValues ? new List<string>(new[] {"false", "F", "0", "no", "N"}) : new List<string>();
 
             testTrueValues.Add(trueValue);
             testFalseValues.Add(falseValue);
 
-            if (defaultValue)
-                return testFalseValues.Any(x => x.Equals(source.Strip(), StringComparison.OrdinalIgnoreCase));
+            return defaultValue
+                ? testFalseValues.Any(x => x.Equals(source.Strip(), StringComparison.OrdinalIgnoreCase))
+                : testTrueValues.Any(x => x.Equals(source.Strip(), StringComparison.OrdinalIgnoreCase));
+        }
 
-            return testTrueValues.Any(x => x.Equals(source.Strip(), StringComparison.OrdinalIgnoreCase));
+        public static bool? ToNullableBool(this string source, string trueValue = "true", string falseValue = "false",
+            bool useDefaultBoolValues = true)
+        {
+            var testTrueValues =
+                useDefaultBoolValues ? new List<string>(new[] {"true", "T", "1", "yes", "Y"}) : new List<string>();
+            var testFalseValues =
+                useDefaultBoolValues ? new List<string>(new[] {"false", "F", "0", "no", "N"}) : new List<string>();
+
+            testTrueValues.Add(trueValue);
+            testFalseValues.Add(falseValue);
+
+            if (testFalseValues.Any(x => x.Equals(source.Strip(), StringComparison.OrdinalIgnoreCase)))
+            {
+                return false;
+            }
+            else if (testTrueValues.Any(x => x.Equals(source.Strip(), StringComparison.OrdinalIgnoreCase)))
+            {
+                return true;
+            }
+
+            return null;
         }
 
         public static int ToInt(this string source, int defaultValue = default(int))
