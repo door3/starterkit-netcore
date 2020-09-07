@@ -49,10 +49,10 @@ namespace ExampleBookstore.Services.BookService.Infrastructure
             services.AddScoped<IBookQueryStore>(provider => provider.GetService<BookDbStore>());
 
             // containers
-            services.AddScoped<IAuthorCommandContainer, AuthorDbCommandContainer>();
-            services.AddScoped<IAuthorQueryContainer, AuthorDbQueryContainer>();
-            services.AddScoped<IBookCommandContainer, BookDbCommandContainer>();
-            services.AddScoped<IBookQueryContainer, BookDbQueryContainer>();
+            services.AddTransient<IAuthorCommandContainer, AuthorDbCommandContainer>();
+            services.AddTransient<IAuthorQueryContainer, AuthorDbQueryContainer>();
+            services.AddTransient<IBookCommandContainer, BookDbCommandContainer>();
+            services.AddTransient<IBookQueryContainer, BookDbQueryContainer>();
             
             // domain
             services.AddSingleton<IBookDomain, BookDomain>();
@@ -63,20 +63,20 @@ namespace ExampleBookstore.Services.BookService.Infrastructure
             services.AddTransient<ICommandDomainRole<IBookDomain>, ExampleBookstoreCommandDomainRole<IBookDomain>>();
 
             // author features
-            services.AddScoped<IAuthorCountQuery, AuthorCountQuery>();
-            services.AddScoped<IAuthorQuery, AuthorQuery>();
-            services.AddScoped<IAuthorProjectionQuery, AuthorProjectionQuery>();
-            services.AddScoped<IAuthorCreateCommand, AuthorCreateCommand>();
-            services.AddScoped<IAuthorUpdateCommand, AuthorUpdateCommand>();
-            services.AddScoped<IAuthorDeleteCommand, AuthorDeleteCommand>();
+            services.AddTransient<IAuthorCountQuery, AuthorCountQuery>();
+            services.AddTransient<IAuthorQuery, AuthorQuery>();
+            services.AddTransient<IAuthorProjectionQuery, AuthorProjectionQuery>();
+            services.AddTransient<IAuthorCreateCommand, AuthorCreateCommand>();
+            services.AddTransient<IAuthorUpdateCommand, AuthorUpdateCommand>();
+            services.AddTransient<IAuthorDeleteCommand, AuthorDeleteCommand>();
 
             // book features
-            services.AddScoped<IBookCountQuery, BookCountQuery>();
-            services.AddScoped<IBookQuery, BookQuery>();
-            services.AddScoped<IBookProjectionQuery, BookProjectionQuery>();
-            services.AddScoped<IBookCreateCommand, BookCreateCommand>();
-            services.AddScoped<IBookUpdateCommand, BookUpdateCommand>();
-            services.AddScoped<IBookDeleteCommand, BookDeleteCommand>();
+            services.AddTransient<IBookCountQuery, BookCountQuery>();
+            services.AddTransient<IBookQuery, BookQuery>();
+            services.AddTransient<IBookProjectionQuery, BookProjectionQuery>();
+            services.AddTransient<IBookCreateCommand, BookCreateCommand>();
+            services.AddTransient<IBookUpdateCommand, BookUpdateCommand>();
+            services.AddTransient<IBookDeleteCommand, BookDeleteCommand>();
         }
     }
 }

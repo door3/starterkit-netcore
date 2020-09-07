@@ -6,9 +6,9 @@ namespace D3SK.NetCore.Api.Utilities
 {
     public class HttpCurrentUserManager<TClaims> : ICurrentUserManager<TClaims> where TClaims : IUserClaimsBase
     {
-        private readonly IHttpContextAccessor _httpContextAccessor;
+        protected readonly IHttpContextAccessor HttpContextAccessor;
 
-        protected HttpContext HttpContext => _httpContextAccessor.HttpContext;
+        protected HttpContext HttpContext => HttpContextAccessor.HttpContext;
 
         public bool IsAuthenticated => HttpContext?.User?.Identity?.IsAuthenticated ?? false;
 
@@ -18,7 +18,7 @@ namespace D3SK.NetCore.Api.Utilities
 
         public HttpCurrentUserManager(IHttpContextAccessor httpContextAccessor, TClaims claims)
         {
-            _httpContextAccessor = httpContextAccessor.NotNull(nameof(httpContextAccessor));
+            HttpContextAccessor = httpContextAccessor.NotNull(nameof(httpContextAccessor));
             Claims = claims.NotNull(nameof(claims));
         }
 
