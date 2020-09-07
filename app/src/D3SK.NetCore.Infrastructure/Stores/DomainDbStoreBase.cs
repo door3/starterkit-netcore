@@ -164,16 +164,17 @@ namespace D3SK.NetCore.Infrastructure.Stores
             var modified = ChangeTracker.Entries().Where(x => x.State == EntityState.Modified)
                 .Select(x => x.Entity).OfType<IAuditEntityBase>();
 
-            // TODO: set user id for audit entities
+            var userId =
+                DomainInstance.CurrentUserManager.HasClaims ? DomainInstance.CurrentUserManager.Claims.UserId : (int?)null;
 
             foreach (var entity in added)
             {
-                entity.OnAdded(CurrentClock.UtcNow, null);
+                entity.OnAdded(CurrentClock.UtcNow, userId);
             }
 
             foreach (var entity in modified)
             {
-                entity.OnUpdated(CurrentClock.UtcNow, null);
+                entity.OnUpdated(CurrentClock.UtcNow, userId);
             }
         }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain.Events;
 
 namespace D3SK.NetCore.Domain
@@ -7,6 +8,8 @@ namespace D3SK.NetCore.Domain
     public interface IDomainInstance
     {
         IServiceProvider ServiceProvider { get; }
+
+        ICurrentUserManager<IUserClaims> CurrentUserManager { get; }
 
         Task<Guid> PublishEventAsync<TEvent>(TEvent domainEvent) where TEvent : IDomainEventBase;
 

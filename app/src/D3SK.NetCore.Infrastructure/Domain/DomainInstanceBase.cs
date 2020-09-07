@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using D3SK.NetCore.Common.Extensions;
+using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
 
@@ -12,12 +13,16 @@ namespace D3SK.NetCore.Infrastructure.Domain
 
         public TDomain Domain { get; }
 
+        public ICurrentUserManager<IUserClaims> CurrentUserManager { get; }
+
         protected DomainInstanceBase(
             IServiceProvider serviceProvider,
-            TDomain domain)
+            TDomain domain,
+            ICurrentUserManager<IUserClaims> currentUserManager)
         {
             ServiceProvider = serviceProvider.NotNull(nameof(ServiceProvider));
             Domain = domain.NotNull(nameof(domain));
+            CurrentUserManager = currentUserManager.NotNull(nameof(currentUserManager));
         }
 
         protected virtual TDomainRole GetDomainRole<TDomainRole>()
