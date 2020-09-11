@@ -22,7 +22,6 @@ namespace D3SK.NetCore.Api.Controllers
         where TUpdate : IEntityUpdateCommand<TDomain, T>
         where TDelete : IEntityDeleteCommand<TDomain, T, int>
         where TPatch : IEntityPatchCommand<TDomain, T>
-
     {
         protected EntityPatchControllerBase(IDomainInstance<TDomain> instance, IExceptionManager exceptionManager)
             : base(instance, exceptionManager)
@@ -41,7 +40,6 @@ namespace D3SK.NetCore.Api.Controllers
         where TUpdate : IEntityUpdateCommand<TDomain, T>
         where TDelete : IEntityDeleteCommand<TDomain, T, TKey>
         where TPatch : IEntityPatchCommand<TDomain, T>
-
     {
         protected EntityPatchControllerBase(IDomainInstance<TDomain> instance, IExceptionManager exceptionManager)
             : base(instance, exceptionManager)
