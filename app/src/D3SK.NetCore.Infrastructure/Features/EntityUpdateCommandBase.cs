@@ -47,16 +47,16 @@ namespace D3SK.NetCore.Infrastructure.Features
             var options = GetUpdateOptions();
             await CommandContainer.Store.InTransactionAsync(async transaction =>
             {
-                var dbItem = await CommandContainer.FindAsync(CurrentItem.Id);
-                await OnBeforeUpdateAsync(dbItem);
+                var dbStoreItem = await CommandContainer.FindAsync(CurrentItem.Id);
+                await OnBeforeUpdateAsync(dbStoreItem);
                 await UpdateStrategy.UpdateEntityAsync(
                     CurrentItem,
                     OriginalItem,
-                    dbItem,
+                    dbStoreItem,
                     onUpdateComplete: e => CommandContainer.UpdateAsync(CurrentItem, OriginalItem),
                     onPropertyChanged: OnPropertyChangedAsync,
                     options: options);
-                await UpdateDependentsAsync(dbItem);
+                await UpdateDependentsAsync(dbStoreItem);
                 await CommandContainer.Store.SaveChangesAsync();
                 await OnAfterUpdateAsync();
             });
@@ -64,11 +64,11 @@ namespace D3SK.NetCore.Infrastructure.Features
 
         protected virtual UpdateEntityOptions GetUpdateOptions() => new UpdateEntityOptions();
 
-        protected virtual Task UpdateDependentsAsync(T dbItem) => Task.CompletedTask;
+        protected virtual Task UpdateDependentsAsync(T dbStoreItem) => Task.CompletedTask;
 
         protected virtual Task OnPropertyChangedAsync(EntityPropertyUpdatedEventArgs<T> e) => Task.CompletedTask;
 
-        protected virtual Task OnBeforeUpdateAsync(T dbItem) => Task.CompletedTask;
+        protected virtual Task OnBeforeUpdateAsync(T dbStoreItem) => Task.CompletedTask;
 
         protected virtual Task OnAfterUpdateAsync() => Task.CompletedTask;
     }
