@@ -111,7 +111,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
             return result;
         }
 
-        protected virtual async Task<int> SaveChangesCoreAsync(CancellationToken cancellationToken = new CancellationToken())
+        protected virtual async Task<int> SaveChangesCoreAsync(CancellationToken cancellationToken = default)
         {
             ChangeTracker.DetectChanges();
 

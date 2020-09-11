@@ -7,11 +7,11 @@ namespace ExampleBookstore.Infrastructure
 {
     public abstract class ExampleBookstoreDomainInstance<TDomain> : DomainInstanceBase<TDomain>,
         IExampleBookstoreDomainInstance<TDomain>
-        where TDomain : IExampleBookstoreDomain
+        where TDomain : IExampleBookstoreDomain<TDomain>
     {
         protected ExampleBookstoreDomainInstance(IServiceProvider serviceProvider, TDomain domain,
-            ICurrentUserManager<IUserClaims> currentUserManager)
-            : base(serviceProvider, domain, currentUserManager)
+            ICurrentUserManager<IUserClaims> currentUserManager, IExceptionManager exceptionManager)
+            : base(serviceProvider, domain, currentUserManager, exceptionManager)
         {
         }
     }

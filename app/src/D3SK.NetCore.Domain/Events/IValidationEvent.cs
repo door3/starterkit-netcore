@@ -2,7 +2,7 @@
 {
     public interface IValidationEvent : IEventBase
     {
-        bool IsValid { get; set; }
+        bool IsValid { get; }
     }
 
     public interface IValidationEvent<out T> : IValidationEvent

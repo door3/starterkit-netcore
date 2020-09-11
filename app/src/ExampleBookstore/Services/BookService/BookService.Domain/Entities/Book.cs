@@ -8,6 +8,8 @@ namespace ExampleBookstore.Services.BookService.Domain.Entities
 {
     public class Book : DomainConcurrencyEntityBase, IRootEntity, IReferenceCodeEntity
     {
+        public string Isbn { get; set; }
+
         public string ReferenceCode { get; set; }
 
         public string Title { get; set; }

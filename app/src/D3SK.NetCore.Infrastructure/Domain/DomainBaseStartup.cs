@@ -21,14 +21,8 @@ namespace D3SK.NetCore.Infrastructure.Domain
             services.Configure<QueryOptions>(configuration.GetSection(nameof(QueryOptions)));
 
             services
-                .AddTransient<IHandleDomainEventStrategy<IDomainEvent>,
-                    HandleDomainEventStrategy<IDomainEvent>>();
-            services
-                .AddTransient<IHandleDomainEventStrategy<IValidationEvent>,
-                    HandleDomainEventStrategy<IValidationEvent>>();
-            services
-                .AddTransient<IHandleDomainEventStrategy<IBusEvent>,
-                    HandleDomainEventStrategy<IBusEvent>>();
+                .AddTransient<IHandleBusEventStrategy<IBusEvent>,
+                    HandleBusEventStrategy<IBusEvent>>();
 
             services.AddTransient<IUpdateStrategy, OptimisticUpdateStrategy>();
 
@@ -42,6 +36,17 @@ namespace D3SK.NetCore.Infrastructure.Domain
             }
 
             services.AddSingleton<IDomainBus, MonolithicDomainBus>();
+        }
+
+        public static void ConfigureDefaultEventStrategies<TDomain>(IServiceCollection services, IConfiguration configuration) 
+            where TDomain : IDomain
+        {
+            services
+                .AddTransient<IHandleDomainEventStrategy<IDomainEvent, TDomain>,
+                    HandleDomainEventStrategy<IDomainEvent, TDomain>>();
+            services
+                .AddTransient<IHandleValidationStrategy<TDomain>,
+                    HandleValidationStrategy<TDomain>>();
         }
     }
 }

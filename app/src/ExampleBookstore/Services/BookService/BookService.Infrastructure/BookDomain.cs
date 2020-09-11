@@ -1,10 +1,10 @@
 ﻿using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
 using D3SK.NetCore.Domain.Events.EntityEvents;
+using D3SK.NetCore.Infrastructure.Domain;
 using ExampleBookstore.Infrastructure;
 using ExampleBookstore.Services.BookService.Domain;
 using ExampleBookstore.Services.BookService.Domain.Entities;
-using ExampleBookstore.Services.BookService.Domain.Events;
 using ExampleBookstore.Services.BookService.Domain.Features.AuthorFeatures;
 using ExampleBookstore.Services.BookService.Domain.Features.BookFeatures;
 using ExampleBookstore.Services.BookService.Domain.Stores;
@@ -12,6 +12,7 @@ using ExampleBookstore.Services.BookService.Infrastructure.Events;
 using ExampleBookstore.Services.BookService.Infrastructure.Features.AuthorFeatures;
 using ExampleBookstore.Services.BookService.Infrastructure.Features.BookFeatures;
 using ExampleBookstore.Services.BookService.Infrastructure.Stores;
+using ExampleBookstore.Services.BookService.Infrastructure.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -24,8 +25,8 @@ namespace ExampleBookstore.Services.BookService.Infrastructure
             IDomainBus bus,
             IQueryDomainRole<IBookDomain> queryRole,
             ICommandDomainRole<IBookDomain> commandRole,
-            IHandleDomainEventStrategy<IDomainEvent> eventStrategy,
-            IHandleDomainEventStrategy<IValidationEvent> validationStrategy)
+            IHandleDomainEventStrategy<IDomainEvent, IBookDomain> eventStrategy,
+            IHandleValidationStrategy<IBookDomain> validationStrategy)
             : base(bus, queryRole, commandRole, eventStrategy, validationStrategy)
         {
             ConfigureDomain(this);
@@ -33,8 +34,9 @@ namespace ExampleBookstore.Services.BookService.Infrastructure
 
         public static void ConfigureDomain(IBookDomain domain)
         {
-            domain.HandlesBusEvent<EntityUpdatedEventHandler, EntityUpdatedBusEvent>();
-            domain.HandlesValidation<ValidateBookEventHandler, Book>();
+            domain.HandlesBusEvent<EntityUpdatedBusEventHandler, EntityUpdatedBusEvent>();
+            domain.HandlesValidation<BookValidator, Book>();
+            domain.HandlesValidation<BookCreateCommandValidator, BookCreateCommand>();
         }
 
         public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)
@@ -57,6 +59,7 @@ namespace ExampleBookstore.Services.BookService.Infrastructure
             // domain
             services.AddSingleton<IBookDomain, BookDomain>();
             services.AddScoped<IDomainInstance<IBookDomain>, BookDomainInstance>();
+            DomainBaseStartup.ConfigureDefaultEventStrategies<IBookDomain>(services, configuration);
 
             // roles
             services.AddTransient<IQueryDomainRole<IBookDomain>, ExampleBookstoreQueryDomainRole<IBookDomain>>();

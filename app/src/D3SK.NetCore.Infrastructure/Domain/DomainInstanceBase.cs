@@ -7,7 +7,7 @@ using D3SK.NetCore.Domain.Events;
 
 namespace D3SK.NetCore.Infrastructure.Domain
 {
-    public abstract class DomainInstanceBase<TDomain> : IDomainInstance<TDomain> where TDomain : IDomain
+    public abstract class DomainInstanceBase<TDomain> : IDomainInstance<TDomain> where TDomain : IDomain<TDomain>, IDomain
     {
         public IServiceProvider ServiceProvider { get; }
 
@@ -15,14 +15,18 @@ namespace D3SK.NetCore.Infrastructure.Domain
 
         public ICurrentUserManager<IUserClaims> CurrentUserManager { get; }
 
+        public IExceptionManager ExceptionManager { get; }
+
         protected DomainInstanceBase(
             IServiceProvider serviceProvider,
             TDomain domain,
-            ICurrentUserManager<IUserClaims> currentUserManager)
+            ICurrentUserManager<IUserClaims> currentUserManager,
+            IExceptionManager exceptionManager)
         {
             ServiceProvider = serviceProvider.NotNull(nameof(ServiceProvider));
             Domain = domain.NotNull(nameof(domain));
             CurrentUserManager = currentUserManager.NotNull(nameof(currentUserManager));
+            ExceptionManager = exceptionManager.NotNull(nameof(exceptionManager));
         }
 
         protected virtual TDomainRole GetDomainRole<TDomainRole>()
@@ -47,7 +51,7 @@ namespace D3SK.NetCore.Infrastructure.Domain
                     busEvent.EventGuid = await PublishBusEventAsync(busEvent);
                     return busEvent.EventGuid;
                 case IDomainEvent domEvent:
-                    await Domain.EventStrategy.HandleEventAsync(domEvent, ServiceProvider);
+                    await Domain.EventStrategy.HandleEventAsync(domEvent, ServiceProvider, this);
                     return domEvent.EventGuid;
                 default:
                     return Guid.Empty;
@@ -56,8 +60,7 @@ namespace D3SK.NetCore.Infrastructure.Domain
 
         public virtual async Task<bool> ValidateAsync<T>(T item)
         {
-            var validationEvent = new DomainValidationEvent<T>(item);
-            await Domain.ValidationStrategy.HandleEventAsync(validationEvent, ServiceProvider);
+            var validationEvent = await Domain.ValidationStrategy.HandleValidationAsync(item, ServiceProvider, this);
             return validationEvent.IsValid;
         }
 

@@ -9,16 +9,41 @@ namespace D3SK.NetCore.Infrastructure.Domain
 {
     public abstract class DomainBase<TDomain> : DomainBase where TDomain : IDomain
     {
+        public IHandleDomainEventStrategy<IDomainEvent, TDomain> EventStrategy { get; }
+
+        public IHandleValidationStrategy<TDomain> ValidationStrategy { get; }
+
         protected DomainBase(
             IDomainBus bus,
             IQueryDomainRole<TDomain> queryRole,
             ICommandDomainRole<TDomain> commandRole,
-            IHandleDomainEventStrategy<IDomainEvent> eventStrategy,
-            IHandleDomainEventStrategy<IValidationEvent> validationStrategy)
-            : base(bus, eventStrategy, validationStrategy)
+            IHandleDomainEventStrategy<IDomainEvent, TDomain> eventStrategy,
+            IHandleValidationStrategy<TDomain> validationStrategy)
+            : base(bus)
         {
             AddRole(queryRole.NotNull(nameof(queryRole)));
             AddRole(commandRole.NotNull(nameof(commandRole)));
+            EventStrategy = eventStrategy.NotNull(nameof(eventStrategy));
+            ValidationStrategy = validationStrategy.NotNull(nameof(validationStrategy));
+        }
+
+        public void HandlesEvent<THandler, TEvent>()
+            where THandler : class, IAsyncDomainEventHandler<TEvent, TDomain>
+            where TEvent : IDomainEvent
+        {
+            EventStrategy.AddAsyncHandler<THandler, TEvent>();
+        }
+
+        public void HandlesValidation<THandler, T>() where THandler : class, IAsyncValidator<T, TDomain>
+        {
+            ValidationStrategy.AddAsyncHandler<THandler, T>();
+        }
+
+        public void HandlesBusEvent<THandler, TEvent>()
+            where THandler : class, IAsyncBusEventHandler<TEvent>
+            where TEvent : IBusEvent
+        {
+            Bus.EventStrategy.AddAsyncHandler<THandler, TEvent>();
         }
     }
 
@@ -28,18 +53,9 @@ namespace D3SK.NetCore.Infrastructure.Domain
 
         public IDomainBus Bus { get; }
 
-        public IHandleDomainEventStrategy<IDomainEvent> EventStrategy { get; }
-
-        public IHandleDomainEventStrategy<IValidationEvent> ValidationStrategy { get; }
-
-        protected DomainBase(
-            IDomainBus bus,
-            IHandleDomainEventStrategy<IDomainEvent> eventStrategy,
-            IHandleDomainEventStrategy<IValidationEvent> validationStrategy)
+        protected DomainBase(IDomainBus bus)
         {
             Bus = bus.NotNull(nameof(bus));
-            EventStrategy = eventStrategy.NotNull(nameof(eventStrategy));
-            ValidationStrategy = validationStrategy.NotNull(nameof(validationStrategy));
         }
 
         protected IDomainRole GetRole(Type roleType)
@@ -56,25 +72,6 @@ namespace D3SK.NetCore.Infrastructure.Domain
         public TDomainRole GetRole<TDomainRole>() where TDomainRole : IDomainRole
         {
             return (TDomainRole) GetRole(typeof(TDomainRole));
-        }
-
-        public void HandlesEvent<THandler, TEvent>() 
-            where THandler : class, IAsyncDomainEventHandler<TEvent> 
-            where TEvent : IDomainEvent
-        {
-            EventStrategy.AddAsyncHandler<THandler, TEvent>();
-        }
-
-        public void HandlesValidation<THandler, T>() where THandler : class, IAsyncValidationEventHandler<T>
-        {
-            ValidationStrategy.AddAsyncHandler<THandler, IValidationEvent<T>>();
-        }
-
-        public void HandlesBusEvent<THandler, TEvent>()
-            where THandler : class, IAsyncDomainEventHandler<TEvent>
-            where TEvent : IBusEvent
-        {
-            Bus.EventStrategy.AddAsyncHandler<THandler, TEvent>();
         }
     }
 }
