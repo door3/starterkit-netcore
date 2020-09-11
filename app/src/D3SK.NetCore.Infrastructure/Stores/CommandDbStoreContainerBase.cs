@@ -18,7 +18,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
     }
 
     public abstract class CommandDbStoreContainerBase<T, TKey, TStore, TDbStore> : 
-        DbStoreContainerBase<TStore, TDbStore>, ICommandContainer<T, TKey, TStore>, IConcurrencyContainer<T, TStore>
+        ConcurrencyDbStoreContainerBase<T, TKey, TStore, TDbStore>, ICommandContainer<T, TKey, TStore>
         where T : class, IEntity<TKey>
         where TStore : ICommandStore
         where TDbStore : DbContext, TStore
@@ -50,17 +50,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
             currentItem.NotNull(nameof(currentItem));
             await UpdateRowVersionAsync(currentItem);
         }
-
-        public virtual async Task UpdateRowVersionAsync(T currentItem, T dbItem = null)
-        {
-            dbItem ??= await DbStore.FindAsync<T>(currentItem.Id);
-            if (currentItem is IConcurrencyEntity concurrencyItem)
-            {
-                DbStore.Entry(dbItem).Property(nameof(concurrencyItem.RowVersion)).OriginalValue =
-                    concurrencyItem.RowVersion;
-            }
-        }
-
+        
         protected virtual Task<T> LoadRelationsAsync(T item)
         {
             return item.AsTask();
