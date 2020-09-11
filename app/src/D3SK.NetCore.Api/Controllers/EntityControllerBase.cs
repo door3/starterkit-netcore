@@ -116,7 +116,7 @@ namespace D3SK.NetCore.Api.Controllers
 
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        public virtual async Task<IActionResult> DeletePatient([FromServices] TDelete command, [FromRoute] TKey id)
+        public virtual async Task<IActionResult> DeleteEntity([FromServices] TDelete command, [FromRoute] TKey id)
         {
             command.EntityId = id;
             await DomainInstance.RunCommandAsync(command);
