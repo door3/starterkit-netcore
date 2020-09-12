@@ -10,6 +10,8 @@ namespace D3SK.NetCore.Common.Systems
         bool IsExecuting { get; }
 
         string GetProcessName();
+
+        IList<Type> GetProcessDependencies();
     }
 
     public interface IProcess<in TOptions> : IProcessBase where TOptions : ExecuteProcessOptions

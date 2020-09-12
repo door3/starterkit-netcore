@@ -29,7 +29,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
 
         public virtual async Task<T> FindAsync(TKey id)
         {
-            var item = await DbStore.Set<T>().FindAsync(id);
+            var item = await DbStore.FindAsync<T>(id);
             return item != null ? await LoadRelationsAsync(item) : null;
         }
 

@@ -16,9 +16,11 @@ namespace D3SK.NetCore.Common.Systems
 
         public bool IsExecuting { get; protected set; }
 
-        public string GetProcessName() => GetType().Name;
+        public virtual string GetProcessName() => GetType().Name;
 
-        protected string GetProcessAndStepName() => $"{GetProcessName().AppendWord(CurrentStepName, ".")}";
+        protected virtual string GetProcessAndStepName() => $"{GetProcessName().AppendWord(CurrentStepName, ".")}";
+
+        public virtual IList<Type> GetProcessDependencies() => new List<Type>();
 
         protected ProcessBase(ILogger logger)
         {
