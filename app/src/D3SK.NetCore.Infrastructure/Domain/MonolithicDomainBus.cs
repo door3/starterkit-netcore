@@ -8,9 +8,9 @@ namespace D3SK.NetCore.Infrastructure.Domain
 {
     public class MonolithicDomainBus : IDomainBus
     {
-        public IHandleDomainEventStrategy<IBusEvent> EventStrategy { get; }
+        public IHandleBusEventStrategy<IBusEvent> EventStrategy { get; }
 
-        public MonolithicDomainBus(IHandleDomainEventStrategy<IBusEvent> eventStrategy)
+        public MonolithicDomainBus(IHandleBusEventStrategy<IBusEvent> eventStrategy)
         {
             EventStrategy = eventStrategy.NotNull(nameof(eventStrategy));
         }

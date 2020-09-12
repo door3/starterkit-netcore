@@ -4,14 +4,16 @@ using ExampleBookstore.Services.BookService.Infrastructure.Stores;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace ExampleBookstore.Services.BookService.Infrastructure.Migrations.BookDbStoreMigrations
 {
     [DbContext(typeof(BookDbStore))]
-    partial class BookDbStoreModelSnapshot : ModelSnapshot
+    [Migration("20200911042723_AddIsbnToBook")]
+    partial class AddIsbnToBook
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

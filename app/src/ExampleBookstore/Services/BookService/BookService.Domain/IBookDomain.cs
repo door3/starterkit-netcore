@@ -2,7 +2,7 @@
 
 namespace ExampleBookstore.Services.BookService.Domain
 {
-    public interface IBookDomain : IExampleBookstoreDomain
+    public interface IBookDomain : IExampleBookstoreDomain<IBookDomain>
     {
     }
 }

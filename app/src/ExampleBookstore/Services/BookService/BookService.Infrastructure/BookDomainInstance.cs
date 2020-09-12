@@ -8,8 +8,8 @@ namespace ExampleBookstore.Services.BookService.Infrastructure
     public class BookDomainInstance : ExampleBookstoreDomainInstance<IBookDomain>
     {
         public BookDomainInstance(IServiceProvider serviceProvider, IBookDomain domain,
-            ICurrentUserManager<IUserClaims> currentUserManager)
-            : base(serviceProvider, domain, currentUserManager)
+            ICurrentUserManager<IUserClaims> currentUserManager, IExceptionManager exceptionManager)
+            : base(serviceProvider, domain, currentUserManager, exceptionManager)
         {
         }
     }

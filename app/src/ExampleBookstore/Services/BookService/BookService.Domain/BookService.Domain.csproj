@@ -11,4 +11,8 @@
     <ProjectReference Include="..\..\..\ExampleBookstore.Domain\ExampleBookstore.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Events\" />
+  </ItemGroup>
+
 </Project>

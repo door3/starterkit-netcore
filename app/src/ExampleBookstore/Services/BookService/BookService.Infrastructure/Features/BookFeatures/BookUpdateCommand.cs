@@ -17,16 +17,16 @@ namespace ExampleBookstore.Services.BookService.Infrastructure.Features.BookFeat
         {
         }
 
-        protected override async Task UpdateDependentsAsync(Book dbItem)
+        protected override async Task UpdateDependentsAsync(Book dbStoreItem)
         {
             if (PatchIncludesProperty(nameof(Book.Authors)))
             {
                 await UpdateStrategy.UpdateCollectionAsync(
                     CurrentItem.Authors,
                     OriginalItem?.Authors,
-                    dbItem.Authors,
-                    onAddItem: item => TaskAction.Run(() => dbItem.AddAuthor(item.AuthorId)),
-                    onDeleteItem: item => TaskAction.Run(() => dbItem.RemoveAuthor(item.AuthorId)),
+                    dbStoreItem.Authors,
+                    onAddItem: item => TaskAction.Run(() => dbStoreItem.AddAuthor(item.AuthorId)),
+                    onDeleteItem: item => TaskAction.Run(() => dbStoreItem.RemoveAuthor(item.AuthorId)),
                     getItemId: item => new {item.BookId, item.AuthorId});
             }
         }

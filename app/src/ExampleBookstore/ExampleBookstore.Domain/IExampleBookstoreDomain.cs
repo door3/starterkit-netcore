@@ -2,7 +2,7 @@
 
 namespace ExampleBookstore.Domain
 {
-    public interface IExampleBookstoreDomain : IDomain
+    public interface IExampleBookstoreDomain<TDomain> : IDomain<TDomain> where TDomain : IDomain
     {
     }
 }

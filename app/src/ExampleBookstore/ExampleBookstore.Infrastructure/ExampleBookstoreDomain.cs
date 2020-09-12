@@ -14,15 +14,15 @@ namespace ExampleBookstore.Infrastructure
         }
     }
 
-    public abstract class ExampleBookstoreDomain<TDomain> : DomainBase<TDomain>, IExampleBookstoreDomain
-        where TDomain : IExampleBookstoreDomain
+    public abstract class ExampleBookstoreDomain<TDomain> : DomainBase<TDomain>, IExampleBookstoreDomain<TDomain>
+        where TDomain : IExampleBookstoreDomain<TDomain>
     {
         protected ExampleBookstoreDomain(
             IDomainBus bus,
             IQueryDomainRole<TDomain> queryRole,
             ICommandDomainRole<TDomain> commandRole,
-            IHandleDomainEventStrategy<IDomainEvent> eventStrategy,
-            IHandleDomainEventStrategy<IValidationEvent> validationStrategy)
+            IHandleDomainEventStrategy<IDomainEvent, TDomain> eventStrategy,
+            IHandleValidationStrategy<TDomain> validationStrategy)
         : base(bus, queryRole, commandRole, eventStrategy, validationStrategy)
         {
         }

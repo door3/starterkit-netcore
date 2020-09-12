@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Domain;
@@ -9,19 +10,18 @@ using Microsoft.Extensions.DependencyInjection;
 
 namespace D3SK.NetCore.Infrastructure.Events
 {
-    public class HandleDomainEventStrategy<TEventBase, TDomain> : IHandleDomainEventStrategy<TEventBase, TDomain>
+    public class HandleBusEventStrategy<TEventBase> : IHandleBusEventStrategy<TEventBase>
         where TEventBase : IEventBase
-        where TDomain : IDomain
     {
         public IList<DomainEventHandlerInfo> EventHandlers { get; } = new List<DomainEventHandlerInfo>();
 
         public void AddAsyncHandler<THandler, TEvent>(HandleDomainEventOptions options = null)
-            where THandler : class, IAsyncDomainEventHandler<TEvent, TDomain> where TEvent : TEventBase
+            where THandler : class, IAsyncBusEventHandler<TEvent> where TEvent : TEventBase
         {
             EventHandlers.Add(new DomainEventHandlerInfo(typeof(TEvent), typeof(THandler), options));
         }
 
-        public async Task HandleEventAsync<TEvent>(TEvent domainEvent, IServiceProvider serviceProvider, IDomainInstance<TDomain> domainInstance)
+        public async Task HandleEventAsync<TEvent>(TEvent domainEvent, IServiceProvider serviceProvider)
             where TEvent : TEventBase
         {
             var eventType = domainEvent.GetType();
@@ -30,15 +30,15 @@ namespace D3SK.NetCore.Infrastructure.Events
                 var handlers = EventHandlers.Where(x => x.ObjectType == type);
                 foreach (var handler in handlers)
                 {
-                    if (!handler.HandlerType?.ImplementsInterface<IAsyncDomainEventHandlerBase>() ?? true)
+                    if (!handler.HandlerType?.ImplementsInterface<IAsyncBusEventHandlerBase>() ?? true)
                     {
-                        continue;
+                        return;
                     }
 
-                    var eventHandler = (IAsyncDomainEventHandlerBase)ActivatorUtilities.CreateInstance(
+                    var eventHandler = (IAsyncBusEventHandlerBase) ActivatorUtilities.CreateInstance(
                         serviceProvider,
                         handler.HandlerType);
-                    await eventHandler.HandleAsync(domainEvent, domainInstance);
+                    await eventHandler.HandleAsync(domainEvent);
                 }
             }
         }

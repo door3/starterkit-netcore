@@ -31,7 +31,7 @@ namespace D3SK.NetCore.Api.Controllers
     }
 
     public class EntityControllerBase<TDomain, T, TKey, TCountQuery, TQuery, TProjectionQuery, TCreate, TUpdate, TDelete>
-        : DomainControllerBase<TDomain>
+        : EntityProjectionQueryControllerBase<TDomain, T, TKey, TCountQuery, TQuery, TProjectionQuery>
         where TDomain : IDomain
         where T : class, IEntity<TKey>
         where TCountQuery: IEntityCountQuery<TDomain, T>
@@ -46,50 +46,6 @@ namespace D3SK.NetCore.Api.Controllers
         {
         }
 
-        [HttpGet]
-        public virtual async Task<IActionResult> GetEntities(
-            [FromServices] TQuery query,
-            [FromServices] TCountQuery countQuery,
-            [FromQuery] FromQuerySearchQueryRequest request,
-            [FromQuery] int? id)
-        {
-            request?.SetQueryAndCount(query, countQuery);
-            if (id.HasValue)
-            {
-                query.Filters.Add(new QueryFilter(id));
-                return Ok((await DomainInstance.RunQueryAsync(query)).SingleOrDefault());
-            }
-
-            return Ok(await SearchCore(query, countQuery));
-        }
-
-        [HttpPost("search")]
-        public virtual async Task<IActionResult> SearchEntities(
-            [FromServices] TQuery query,
-            [FromServices] TCountQuery countQuery,
-            [FromBody] FromBodySearchQueryRequest request)
-        {
-            request?.SetQueryAndCount(query, countQuery);
-            return Ok(await SearchCore(query, countQuery));
-        }
-
-        [HttpPost("select")]
-        public virtual async Task<IActionResult> SelectEntities(
-            [FromServices] TProjectionQuery query,
-            [FromServices] TCountQuery countQuery,
-            [FromBody] FromBodyProjectionSearchQueryRequest request)
-        {
-            request?.SetQueryAndCount(query, countQuery);
-            return Ok(await SearchCore(query, countQuery));
-        }
-
-        [HttpGet("{id}")]
-        public virtual async Task<IActionResult> GetEntityById([FromServices] TQuery query, [FromRoute] int id)
-        {
-            query.Filters.Add(new QueryFilter(id));
-            return Ok((await DomainInstance.RunQueryAsync(query)).SingleOrDefault());
-        }
-        
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Created)]
         public virtual async Task<IActionResult> CreateEntity([FromServices] TCreate command,
@@ -116,20 +72,11 @@ namespace D3SK.NetCore.Api.Controllers
 
         [HttpDelete("{id}")]
         [ProducesResponseType((int)HttpStatusCode.NoContent)]
-        public virtual async Task<IActionResult> DeletePatient([FromServices] TDelete command, [FromRoute] TKey id)
+        public virtual async Task<IActionResult> DeleteEntity([FromServices] TDelete command, [FromRoute] TKey id)
         {
             command.EntityId = id;
             await DomainInstance.RunCommandAsync(command);
             return NoContent();
-        }
-
-        protected virtual async Task<SearchQueryResponse<TResult>> SearchCore<TResult>(
-            IAsyncQueryFeature<TDomain, IList<TResult>> query,
-            IEntityCountQuery<TDomain, T> countQuery)
-        {
-            var result = await DomainInstance.RunQueryAsync(query);
-            var count = await DomainInstance.RunQueryAsync(countQuery);
-            return new SearchQueryResponse<TResult>(result, count);
         }
     }
 }

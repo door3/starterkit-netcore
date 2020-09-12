@@ -11,6 +11,8 @@ namespace D3SK.NetCore.Domain
 
         ICurrentUserManager<IUserClaims> CurrentUserManager { get; }
 
+        IExceptionManager ExceptionManager { get; }
+
         Task<Guid> PublishEventAsync<TEvent>(TEvent domainEvent) where TEvent : IDomainEventBase;
 
         Task<bool> ValidateAsync<T>(T item);
