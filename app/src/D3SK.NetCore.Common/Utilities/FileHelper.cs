@@ -13,7 +13,14 @@ namespace D3SK.NetCore.Common.Utilities
 {
     public static class FileHelper
     {
-        public static IList<T> ReadCsv<T>(string filePath, ReadCsvOptions options = null)
+        public static Task<IList<T>> ReadCsvAsync<T>(string path, string fileName, string relativePath = null,
+            ReadCsvOptions options = null)
+        {
+            var file = FindFile(path, fileName, relativePath);
+            return ReadCsvAsync<T>(file.FullName, options);
+        }
+
+        public static async Task<IList<T>> ReadCsvAsync<T>(string filePath, ReadCsvOptions options = null)
         {
             options ??= new ReadCsvOptions();
 
@@ -39,8 +46,8 @@ namespace D3SK.NetCore.Common.Utilities
             csv.Configuration.ReadingExceptionOccurred = options.OnReadingException ?? (ex => false);
             csv.Configuration.HeaderValidated =
                 options.OnHeaderValidated ?? ((isValid, headerNames, headerNameIndex, context) => { });
-
-            while (csv.Read())
+            
+            while (await csv.ReadAsync())
             {
                 var record = csv.GetRecord<T>();
                 if (!isRecordBad)
@@ -55,12 +62,12 @@ namespace D3SK.NetCore.Common.Utilities
             return good.ToList();
         }
 
-        public static IList<T> ReadCsv<T>(string filePath, Encoding encoding)
+        public static Task<IList<T>> ReadCsvAsync<T>(string filePath, Encoding encoding)
         {
-            return ReadCsv<T>(filePath, new ReadCsvOptions(encoding));
+            return ReadCsvAsync<T>(filePath, new ReadCsvOptions(encoding));
         }
 
-        public static IList<T> ReadCsv<T, TMap>(string filePath, ReadCsvOptions options = null)
+        public static Task<IList<T>> ReadCsvAsync<T, TMap>(string filePath, ReadCsvOptions options = null)
             where TMap : ClassMap<T>
         {
             options ??= new ReadCsvOptions();
@@ -70,13 +77,13 @@ namespace D3SK.NetCore.Common.Utilities
                 csv.Configuration.RegisterClassMap<TMap>();
                 bpAction?.Invoke(csv);
             };
-            return ReadCsv<T>(filePath, options);
+            return ReadCsvAsync<T>(filePath, options);
         }
 
-        public static IList<T> ReadCsv<T, TMap>(string filePath, Encoding encoding)
+        public static Task<IList<T>> ReadCsvAsync<T, TMap>(string filePath, Encoding encoding)
             where TMap : ClassMap<T>
         {
-            return ReadCsv<T, TMap>(filePath, new ReadCsvOptions(encoding));
+            return ReadCsvAsync<T, TMap>(filePath, new ReadCsvOptions(encoding));
         }
 
         public static bool FileExists(string path, string fileName, string relativePath = null)
