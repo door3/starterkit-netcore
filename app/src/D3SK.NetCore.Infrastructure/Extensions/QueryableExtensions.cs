@@ -126,7 +126,7 @@ namespace D3SK.NetCore.Infrastructure.Extensions
         {
             return query?.Includes.HasInclude(include) ?? false;
         }
-        
+
         public static bool HasIncludes(this IStoreQuery query)
         {
             return query != null && query.Includes.HasIncludes();
@@ -136,24 +136,24 @@ namespace D3SK.NetCore.Infrastructure.Extensions
         {
             var includesList = source?.Split(',', StringSplitOptions.RemoveEmptyEntries);
 
-            if (includesList == null || includesList.Any())
+            if (includesList == null || !includesList.Any())
             {
                 return false;
             }
 
             return includesList.Contains(include, StringComparer.OrdinalIgnoreCase);
         }
-        
+
         public static bool HasIncludes(this string source)
         {
             return !(source.IsEmpty() || source == StoreQueryIncludes.None);
         }
-        
+
         public static IQueryable<T> Page<T>(this IQueryable<T> source, IPageable pagingInfo)
         {
             source.NotNull(nameof(source));
-            return pagingInfo == null || pagingInfo.PageSize <= 0 
-                ? source 
+            return pagingInfo == null || pagingInfo.PageSize <= 0
+                ? source
                 : source.Skip(pagingInfo.CurrentPage * pagingInfo.PageSize).Take(pagingInfo.PageSize);
         }
 
