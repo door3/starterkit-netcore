@@ -14,7 +14,7 @@ namespace D3SK.NetCore.Tests.Common.Extensions
             const string testString = "This is a test string!";
 
             // test double quotes
-            var doubleQuotedString = testString.QuoteEncode(true);
+            var doubleQuotedString = testString.QuoteEncode();
             Assert.Equal($"\"{testString}\"", doubleQuotedString);
 
             // test single quotes
