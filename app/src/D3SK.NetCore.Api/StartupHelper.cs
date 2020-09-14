@@ -119,9 +119,11 @@ namespace D3SK.NetCore.Api
 
             // configure base domain services
             DomainBaseStartup.ConfigureServices(services, configuration, useMultitenancy);
+
+            services.AddSwaggerGen();
         }
 
-        public static void ConfigureBaseApi(IApplicationBuilder app, IWebHostEnvironment env, bool useMultitenancy = true)
+        public static void ConfigureBaseApi(IApplicationBuilder app, IWebHostEnvironment env, bool useMultitenancy = true, bool useSwagger = true)
         {
             app.UseResponseCompression();
             
@@ -141,6 +143,15 @@ namespace D3SK.NetCore.Api
 
             app.UseRouting();
             app.UseEndpoints(endpoints => endpoints.MapControllers());
+
+            if (useSwagger)
+            {
+                app.UseSwagger();
+                app.UseSwaggerUI(c =>
+                {
+                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "latest");
+                });
+            }
         }
 
         public static async Task MigrateDbStoresAsync(IHost host, params Type[] storeTypes)

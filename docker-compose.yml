@@ -1,0 +1,15 @@
+version: '3.7'
+services:
+  db:
+    container_name: bookstore-db
+    image: microsoft/mssql-server-linux:2017-latest
+    volumes:
+      - bookstore-sql-vol:/var/opt/mssql
+    ports:
+      - "1433:1433"
+    environment:
+      - ACCEPT_EULA=Y
+      - SA_PASSWORD=p@ssword12345
+      
+volumes:
+    bookstore-sql-vol:
