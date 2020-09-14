@@ -11,7 +11,7 @@ namespace D3SK.NetCore.Tests.Common.Extensions
     public class TestTaskExtensions
     {
         [Fact]
-        public async Task WithActionTest()
+        public async Task WithActionTestAsync()
         {
             // test with Task.CompletedTask
             var testActionInt1 = 0;
@@ -45,6 +45,44 @@ namespace D3SK.NetCore.Tests.Common.Extensions
             // make sure rest of task completes
             await testTaskResult;
             Assert.Equal(39, testActionInt2);
+        }
+
+        [Fact]
+        public async Task AsTaskTestAsync()
+        {
+            const string testString = "This is a test string";
+
+            // test object to object
+            await AssertTestAsync(((object) testString).AsTask());
+
+            // test object to type
+            await AssertTestAsync(((object) testString).AsTask<string>());
+
+            // test type
+            await AssertTestAsync(testString.AsTask());
+            
+            async Task AssertTestAsync<TTaskType>(Task<TTaskType> testTask)
+            {
+                await Assert.IsType<Task<TTaskType>>(testTask);
+                var testTaskResult = await testTask;
+                Assert.IsType<string>(testTaskResult);
+                Assert.Equal(testString, testTaskResult.ToString());
+            }
+        }
+
+        [Fact]
+        public async Task TaskActionRunTestAsync()
+        {
+            var testActionInt = 0;
+
+            var testTask = TaskAction.Run(() => testActionInt += 92);
+            // make sure a completed task is return, and the int was updated
+            Assert.Equal(Task.CompletedTask, testTask);
+            Assert.Equal(92, testActionInt);
+            // make sure awaiting the task doesn't actually do anything (like rerun the action)
+            await testTask;
+            Assert.Equal(Task.CompletedTask, testTask);
+            Assert.Equal(92, testActionInt);
         }
     }
 }
