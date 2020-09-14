@@ -18,6 +18,8 @@ namespace D3SK.NetCore.Infrastructure.Domain
         {
             services.AddTransient<IClock, DomainClock>();
             services.AddScoped<IExceptionManager, ExceptionManager>();
+            services.AddSingleton<ICacheManager, InMemoryCacheManager>();
+
             services.Configure<QueryOptions>(configuration.GetSection(nameof(QueryOptions)));
 
             services

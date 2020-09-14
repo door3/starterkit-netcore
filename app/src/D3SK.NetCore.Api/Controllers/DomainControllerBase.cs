@@ -5,8 +5,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace D3SK.NetCore.Api.Controllers
 {
-    [ApiVersion("1.0")]
-    [Route("api/v{version:apiVersion}/[controller]")]
     public class DomainControllerBase<TDomain> : ApiResponseControllerBase where TDomain : IDomain
     {
         protected IDomainInstance<TDomain> DomainInstance { get; }

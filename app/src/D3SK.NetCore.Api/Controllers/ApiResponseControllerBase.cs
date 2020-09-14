@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc;
 namespace D3SK.NetCore.Api.Controllers
 {
     [ApiController]
+    [ApiVersion("1.0")]
+    [Route("api/v{version:apiVersion}/[controller]")]
     public class ApiResponseControllerBase : ControllerBase
     {
         public int ResponseCode { get; set; } = ApiResponseCodes.Success;
