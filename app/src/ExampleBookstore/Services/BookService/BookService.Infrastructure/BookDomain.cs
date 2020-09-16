@@ -1,6 +1,7 @@
 ﻿using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
 using D3SK.NetCore.Domain.Events.EntityEvents;
+using D3SK.NetCore.Domain.Models;
 using D3SK.NetCore.Infrastructure.Domain;
 using ExampleBookstore.Infrastructure;
 using ExampleBookstore.Services.BookService.Domain;
@@ -35,8 +36,9 @@ namespace ExampleBookstore.Services.BookService.Infrastructure
         public static void ConfigureDomain(IBookDomain domain)
         {
             domain.HandlesBusEvent<EntityUpdatedBusEventHandler, EntityUpdatedBusEvent>();
-            domain.HandlesValidation<BookValidator, Book>();
+            domain.HandlesValidation<BookValidator, Book, PatchEntityValidationOptions>();
             domain.HandlesValidation<BookCreateCommandValidator, BookCreateCommand>();
+            domain.HandlesValidation<BookUpdateCommandValidator, BookUpdateCommand>();
         }
 
         public static void ConfigureServices(IServiceCollection services, IConfiguration configuration)

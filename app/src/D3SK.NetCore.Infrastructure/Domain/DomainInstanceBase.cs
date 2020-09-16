@@ -64,6 +64,12 @@ namespace D3SK.NetCore.Infrastructure.Domain
             return validationEvent.IsValid;
         }
 
+        public virtual async Task<bool> ValidateAsync<T, TOptions>(T item, TOptions validationOptions)
+        {
+            var validationEvent = await Domain.ValidationStrategy.HandleValidationAsync(item, validationOptions, ServiceProvider, this);
+            return validationEvent.IsValid;
+        }
+
         protected virtual async Task<Guid> PublishBusEventAsync<TEvent>(TEvent busEvent) where TEvent : IBusEvent
         {
             return await Domain.Bus.PublishEventAsync(busEvent, this);

@@ -23,6 +23,8 @@ namespace D3SK.NetCore.Domain
 
         void HandlesValidation<THandler, T>() where THandler : class, IAsyncValidator<T, TDomain>;
 
+        void HandlesValidation<THandler, T, TOptions>() where THandler : class, IAsyncValidator<T, TOptions, TDomain>;
+
         void HandlesBusEvent<THandler, TEvent>()
             where THandler : class, IAsyncBusEventHandler<TEvent>
             where TEvent : IBusEvent;

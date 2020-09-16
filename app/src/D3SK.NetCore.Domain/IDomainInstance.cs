@@ -16,6 +16,8 @@ namespace D3SK.NetCore.Domain
         Task<Guid> PublishEventAsync<TEvent>(TEvent domainEvent) where TEvent : IDomainEventBase;
 
         Task<bool> ValidateAsync<T>(T item);
+
+        Task<bool> ValidateAsync<T, TOptions>(T item, TOptions validationOptions);
     }
 
     public interface IDomainInstance<TDomain> : IDomainInstance
