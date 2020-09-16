@@ -46,7 +46,7 @@ namespace D3SK.NetCore.Common.Stores
     {
         Task<IList<dynamic>> GetAsync(IProjectionStoreQuery query);
 
-        Task<IList<dynamic>> GetAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, int, dynamic>> selector, bool isDistinct = false);
+        Task<IList<dynamic>> GetAsync(Expression<Func<T, bool>> predicate, Expression<Func<T, dynamic>> selector, bool isDistinct = false);
     }
 
     public interface IProjectionQueryContainer<T, out TStore> : IProjectionQueryContainer<T, int, TStore>

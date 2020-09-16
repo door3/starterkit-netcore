@@ -32,7 +32,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
         {
         }
 
-        public virtual async Task<IList<object>> GetAsync(IProjectionStoreQuery query)
+        public virtual async Task<IList<dynamic>> GetAsync(IProjectionStoreQuery query)
         {
             var items = GetQueryable(query).Project(query);
             if (query.Distinct)
@@ -44,7 +44,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
         }
 
         public virtual async Task<IList<dynamic>> GetAsync(Expression<Func<T, bool>> predicate,
-            Expression<Func<T, int, dynamic>> selector, bool isDistinct = false)
+            Expression<Func<T, dynamic>> selector, bool isDistinct = false)
         {
             var items = DbStore.Set<T>().Where(predicate).Select(selector);
             if (isDistinct)

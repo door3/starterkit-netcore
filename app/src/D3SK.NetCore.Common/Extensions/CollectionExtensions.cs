@@ -7,6 +7,11 @@ namespace D3SK.NetCore.Common.Extensions
 {
     public static class CollectionExtensions
     {
+        public static bool ContainsIgnoreCase(this ICollection<string> source, string item)
+        {
+            return source.Contains(item, StringComparer.OrdinalIgnoreCase);
+        }
+
         public static void RemoveEntity<T>(this ICollection<T> list, T item) where T : IEntity<int>
         {
             RemoveEntity<T, int>(list, item);
