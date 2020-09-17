@@ -10,5 +10,7 @@ namespace D3SK.NetCore.Common.Stores
         public bool NullOnAdd { get; set; } = false;
 
         public bool EnableUpdating { get; set; } = true;
+
+        public string CrossDomainConstraint { get; set; }
     }
 }
