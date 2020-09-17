@@ -7,7 +7,7 @@ using D3SK.NetCore.Common.Extensions;
 
 namespace D3SK.NetCore.Infrastructure.Domain
 {
-    public abstract class DomainBase<TDomain> : DomainBase where TDomain : IDomain
+    public abstract class DomainBase<TDomain> : DomainBase, IDomain<TDomain> where TDomain : IDomain
     {
         public IHandleDomainEventStrategy<IDomainEvent, TDomain> EventStrategy { get; }
 
@@ -37,6 +37,11 @@ namespace D3SK.NetCore.Infrastructure.Domain
         public void HandlesValidation<THandler, T>() where THandler : class, IAsyncValidator<T, TDomain>
         {
             ValidationStrategy.AddAsyncHandler<THandler, T>();
+        }
+
+        public void HandlesValidation<THandler, T, TOptions>() where THandler : class, IAsyncValidator<T, TOptions, TDomain>
+        {
+            ValidationStrategy.AddAsyncHandler<THandler, T, TOptions>();
         }
 
         public void HandlesBusEvent<THandler, TEvent>()

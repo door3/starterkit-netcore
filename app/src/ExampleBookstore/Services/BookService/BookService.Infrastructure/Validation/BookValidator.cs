@@ -1,16 +1,18 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Common.Specifications;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
+using D3SK.NetCore.Domain.Models;
 using ExampleBookstore.Services.BookService.Domain;
 using ExampleBookstore.Services.BookService.Domain.Entities;
 using ExampleBookstore.Services.BookService.Domain.Stores;
 
 namespace ExampleBookstore.Services.BookService.Infrastructure.Validation
 {
-    public class BookValidator : AsyncValidatorBase<Book, IBookDomain>
+    public class BookValidator : AsyncValidatorBase<Book, PatchEntityValidationOptions, IBookDomain>
     {
         private readonly IBookQueryContainer _bookContainer;
 
@@ -19,18 +21,24 @@ namespace ExampleBookstore.Services.BookService.Infrastructure.Validation
             _bookContainer = bookContainer;
         }
 
-        public override async Task<bool> IsValidAsync(Book item, IDomainInstance<IBookDomain> domainInstance)
+        public override async Task<bool> IsValidAsync(Book item, PatchEntityValidationOptions validationOptions, 
+            IDomainInstance<IBookDomain> domainInstance)
         {
-            var rules = new HasTitle()
+            var rules = new EmptySpecification<Book>()
                 .WithExceptionManager(domainInstance.ExceptionManager)
-                .WithError("Book must have a title.")
-                .And(new HasIsbn().WithError("Book must have ISBN."));
+                .AndIf(() => validationOptions.HasProperty(nameof(Book.Title)),
+                    new HasTitle().WithError("Book must have a title."))
+                .AndIf(() => validationOptions.HasProperty(nameof(Book.Isbn)),
+                    new HasIsbn().WithError("Book must have ISBN."));
 
-            var asyncRules = new IsbnIsUnique(_bookContainer)
+            var asyncRules = new AsyncEmptySpecification<Book>()
                 .WithExceptionManager(domainInstance.ExceptionManager)
-                .WithError("ISBN must be unique.");
+                .AndIfAsync(() => validationOptions.HasProperty(nameof(Book.Isbn)),
+                    new IsbnIsUnique(_bookContainer).WithError("ISBN must be unique."));
 
-            return rules.IsSatisfiedBy(item) && await asyncRules.IsSatisfiedByAsync(item);
+            var isRulesSatisfied = rules.IsSatisfiedBy(item);
+            var isAsyncRulesSatisfied = await asyncRules.IsSatisfiedByAsync(item);
+            return isRulesSatisfied && isAsyncRulesSatisfied;
         }
 
         private class HasTitle : Specification<Book>
@@ -60,6 +68,8 @@ namespace ExampleBookstore.Services.BookService.Infrastructure.Validation
 
             protected override async Task<bool> IsSatisfiedByConditionAsync(Book item)
             {
+                if (item.Isbn.IsEmpty()) return true;
+
                 var existingItems = await _bookContainer.GetAsync(x => x.Isbn == item.Isbn && x.Id != item.Id);
                 return !existingItems.Any();
             }

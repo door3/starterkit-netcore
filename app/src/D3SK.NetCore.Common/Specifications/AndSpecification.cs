@@ -9,7 +9,13 @@ namespace D3SK.NetCore.Common.Specifications
         {
         }
 
-        protected override bool IsSatisfiedCondition() => Specification1.IsSatisfied() && Specification2.IsSatisfied();
+        protected override bool IsSatisfiedCondition()
+        {
+            var isSpec1Satisfied = Specification1.IsSatisfied();
+            var isSpec2Satisfied = Specification2.IsSatisfied();
+
+            return isSpec1Satisfied && isSpec2Satisfied;
+        }
     }
 
     public class AndSpecification<T> : ConditionalOperatorSpecificationBase<T>
@@ -19,8 +25,13 @@ namespace D3SK.NetCore.Common.Specifications
         {
         }
 
-        protected override bool IsSatisfiedByCondition(T item) =>
-            Specification1.IsSatisfiedBy(item) && Specification2.IsSatisfiedBy(item);
+        protected override bool IsSatisfiedByCondition(T item)
+        {
+            var isSpec1Satisfied = Specification1.IsSatisfiedBy(item);
+            var isSpec2Satisfied = Specification2.IsSatisfiedBy(item);
+
+            return isSpec1Satisfied && isSpec2Satisfied;
+        }
     }
 
     public class AsyncAndSpecification : AsyncConditionalOperatorSpecificationBase
@@ -30,8 +41,13 @@ namespace D3SK.NetCore.Common.Specifications
         {
         }
 
-        protected override async Task<bool> IsSatisfiedConditionAsync() =>
-            await Specification1.IsSatisfiedAsync() && await Specification2.IsSatisfiedAsync();
+        protected override async Task<bool> IsSatisfiedConditionAsync()
+        {
+            var isSpec1Satisfied = await Specification1.IsSatisfiedAsync();
+            var isSpec2Satisfied = await Specification2.IsSatisfiedAsync();
+
+            return isSpec1Satisfied && isSpec2Satisfied;
+        }
     }
 
     public class AsyncAndSpecification<T> : AsyncConditionalOperatorSpecificationBase<T>
@@ -41,7 +57,12 @@ namespace D3SK.NetCore.Common.Specifications
         {
         }
 
-        protected override async Task<bool> IsSatisfiedByConditionAsync(T item) =>
-            await Specification1.IsSatisfiedByAsync(item) && await Specification2.IsSatisfiedByAsync(item);
-    }
+        protected override async Task<bool> IsSatisfiedByConditionAsync(T item)
+        {
+            var isSpec1Satisfied = await Specification1.IsSatisfiedByAsync(item);
+            var isSpec2Satisfied = await Specification2.IsSatisfiedByAsync(item);
+
+            return isSpec1Satisfied && isSpec2Satisfied;
+        }
+}
 }
