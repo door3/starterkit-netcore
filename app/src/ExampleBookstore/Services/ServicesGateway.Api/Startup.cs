@@ -1,6 +1,7 @@
 using D3SK.NetCore.Api;
 using ExampleBookstore.Infrastructure;
 using ExampleBookstore.Services.BookService.Infrastructure;
+using ExampleBookstore.Services.BookService.Infrastructure.Stores;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
@@ -22,6 +23,8 @@ namespace ExampleBookstore.Services.ServicesGateway.Api
             StartupHelper.ConfigureBaseServices(services, Configuration);
             ExampleBookstoreDomain.ConfigureServices(services, Configuration);
             BookDomain.ConfigureServices(services, Configuration);
+
+            StartupHelper.AddDatabaseHealthCheck<BookDbStore>(services);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
