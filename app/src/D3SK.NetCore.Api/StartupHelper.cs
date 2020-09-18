@@ -6,8 +6,9 @@ using D3SK.NetCore.Api.Utilities;
 using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain.Models;
 using D3SK.NetCore.Infrastructure.Domain;
-using D3SK.NetCore.Infrastructure.Utilities;
+using HealthChecks.UI.Client;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -45,7 +46,7 @@ namespace D3SK.NetCore.Api
 
             return builder.Build();
         }
-        
+
         public static IHostBuilder UseDefaultSerilog(this IHostBuilder source)
         {
             return source.UseSerilog((hostingContext, loggerConfiguration) =>
@@ -60,8 +61,19 @@ namespace D3SK.NetCore.Api
             });
         }
 
-        public static void ConfigureBaseServices(IServiceCollection services, IConfiguration configuration, bool useMultitenancy = true)
+        public static void AddDatabaseHealthCheck<TContext>(IServiceCollection services)
+            where TContext : DbContext
         {
+            services
+                .AddHealthChecks()
+                .AddDbContextCheck<TContext>(name: "database");
+        }
+
+        public static void ConfigureBaseServices(
+            IServiceCollection services, IConfiguration configuration, bool useMultitenancy = true)
+        {
+            services.AddHealthChecks();
+
             // cors
             services.AddCors(options =>
             {
@@ -79,7 +91,7 @@ namespace D3SK.NetCore.Api
                 options.Filters.Add(typeof(ApiResultFilter));
                 options.Filters.Add(typeof(ApiExceptionFilter));
                 options.Filters.Add(
-                    new ResponseCacheAttribute() {NoStore = true, Location = ResponseCacheLocation.None});
+                    new ResponseCacheAttribute() { NoStore = true, Location = ResponseCacheLocation.None });
             }).AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -95,7 +107,7 @@ namespace D3SK.NetCore.Api
             services.AddOptions();
             services.AddMemoryCache();
             services.AddHttpClient();
-            
+
             // response gzip compression
             services.AddResponseCompression();
             services.Configure<GzipCompressionProviderOptions>(options =>
@@ -123,10 +135,12 @@ namespace D3SK.NetCore.Api
             services.AddSwaggerGen();
         }
 
-        public static void ConfigureBaseApi(IApplicationBuilder app, IWebHostEnvironment env, bool useMultitenancy = true, bool useSwagger = true)
+        public static void ConfigureBaseApi(
+            IApplicationBuilder app, IWebHostEnvironment env, 
+            bool useMultitenancy = true, bool useSwagger = true)
         {
             app.UseResponseCompression();
-            
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
@@ -135,14 +149,18 @@ namespace D3SK.NetCore.Api
             app.UseHttpsRedirection();
             app.UseCors(AllowAllCorsPolicy);
             app.UseAuthentication();
-            
+
             if (useMultitenancy)
             {
                 app.UseMultitenancy<ResolvedTenant>();
             }
 
             app.UseRouting();
-            app.UseEndpoints(endpoints => endpoints.MapControllers());
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                endpoints.MapHealthChecks("/health", GetHealthCheckOptions());
+            });
 
             if (useSwagger)
             {
@@ -167,7 +185,7 @@ namespace D3SK.NetCore.Api
 
             async Task MigrateAsync(Type storeType, IServiceProvider serviceProvider)
             {
-                var context = (DbContext) serviceProvider.GetService(storeType);
+                var context = (DbContext)serviceProvider.GetService(storeType);
                 await context.Database.MigrateAsync();
             }
         }
@@ -176,6 +194,14 @@ namespace D3SK.NetCore.Api
         {
             MigrateDbStoresAsync(source, storeTypes).Wait();
             return source;
+        }
+
+        private static HealthCheckOptions GetHealthCheckOptions()
+        {
+            return new HealthCheckOptions()
+            {
+                ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+            };
         }
     }
 }
