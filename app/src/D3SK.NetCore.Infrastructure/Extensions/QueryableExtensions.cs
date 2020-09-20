@@ -211,5 +211,12 @@ namespace D3SK.NetCore.Infrastructure.Extensions
 
             return ordered;
         }
+
+        public static bool ContainsQueryProperty(this IList<string> source, string property)
+        {
+            return source.IsEmpty() || source.Any(x => 
+                       x.IsSame(property) ||
+                       x.EndsWith($"as {property}", StringComparison.OrdinalIgnoreCase));
+        }
     }
 }
