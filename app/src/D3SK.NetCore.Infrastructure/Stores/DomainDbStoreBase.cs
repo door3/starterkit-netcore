@@ -113,8 +113,6 @@ namespace D3SK.NetCore.Infrastructure.Stores
 
         protected virtual async Task<int> SaveChangesCoreAsync(CancellationToken cancellationToken = default)
         {
-            ChangeTracker.DetectChanges();
-
             SetAuditEntityDetails();
             AddDomainEventsToEntities();
             SetIsDeletedForDeletedEntities();

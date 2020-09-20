@@ -33,12 +33,15 @@ namespace D3SK.NetCore.Infrastructure.Features
             {
                 await OnBeforeCreateAsync();
                 await UpdateStrategy.AddEntityAsync(CurrentItem, e => CommandContainer.AddAsync(e.Entity));
+                await OnBeforeSaveChangesAsync();
                 await CommandContainer.Store.SaveChangesAsync();
                 await OnAfterCreateAsync();
             });
         }
 
         protected virtual Task OnBeforeCreateAsync() => Task.CompletedTask;
+
+        protected virtual Task OnBeforeSaveChangesAsync() => Task.CompletedTask;
 
         protected virtual Task OnAfterCreateAsync() => Task.CompletedTask;
     }
