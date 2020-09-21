@@ -39,6 +39,8 @@ namespace D3SK.NetCore.Infrastructure.Stores
             return await items.CountAsync();
         }
 
+        public virtual Task<bool> AnyAsync(Expression<Func<T, bool>> predicate) => DbStore.Set<T>().AnyAsync(predicate);
+
         public virtual async Task<T> GetAsync(TKey id, string includes = null, bool isTracked = true)
         {
             var item = await DbStore.Set<T>().FindAsync(id);

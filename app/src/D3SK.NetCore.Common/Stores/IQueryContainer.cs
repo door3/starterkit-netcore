@@ -22,6 +22,8 @@ namespace D3SK.NetCore.Common.Stores
     {
         Task<int> CountAsync(IFilterable filterInfo = null);
 
+        Task<bool> AnyAsync(Expression<Func<T, bool>> predicate);
+
         Task<IList<T>> GetAsync(Expression<Func<T, bool>> predicate, string includes = null, bool isTracked = false);
 
         Task<IList<T>> GetAsync(IStoreQuery query = null);

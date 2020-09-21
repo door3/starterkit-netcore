@@ -7,7 +7,7 @@ namespace D3SK.NetCore.Common.Queries
 {
     public static class EnumerableQueryParser
     {
-        public static (string, IList<object>) ParseDynamicFilter(QueryFilter filter)
+        public static (string, IList<object>) ParseDynamicFilter(this QueryFilter filter)
         {
             var parameters = new List<object>();
             var filterString = ParseFilterCore(filter, 0, true, ref parameters);
@@ -15,7 +15,7 @@ namespace D3SK.NetCore.Common.Queries
             return (filterString, parameters);
         }
 
-        public static string ParseFilter(QueryFilter filter)
+        public static string ParseFilter(this QueryFilter filter)
         {
             var parameters = new List<object>();
             return ParseFilterCore(filter, 0, false, ref parameters);
