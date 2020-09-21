@@ -132,11 +132,14 @@ namespace D3SK.NetCore.Api
             // configure base domain services
             DomainBaseStartup.ConfigureServices(services, configuration, useMultitenancy);
 
-            services.AddSwaggerGen();
+            services.AddSwaggerGen(options =>
+            {
+                options.SchemaFilter<SwaggerExcludeFilter>();
+            });
         }
 
         public static void ConfigureBaseApi(
-            IApplicationBuilder app, IWebHostEnvironment env, 
+            IApplicationBuilder app, IWebHostEnvironment env,
             bool useMultitenancy = true, bool useSwagger = true)
         {
             app.UseResponseCompression();

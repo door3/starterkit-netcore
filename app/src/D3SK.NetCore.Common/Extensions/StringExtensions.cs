@@ -60,7 +60,7 @@ namespace D3SK.NetCore.Common.Extensions
         {
             return AppendWord(source, word, ", ");
         }
-        
+
         public static string ToPascalCase(this string source, string splitString = " ", string joinString = null)
         {
             if (source == null) return null;
@@ -138,9 +138,9 @@ namespace D3SK.NetCore.Common.Extensions
             bool defaultValue = false, bool useDefaultBoolValues = true)
         {
             var testTrueValues =
-                useDefaultBoolValues ? new List<string>(new[] {"true", "T", "1", "yes", "Y"}) : new List<string>();
+                useDefaultBoolValues ? new List<string>(new[] { "true", "T", "1", "yes", "Y" }) : new List<string>();
             var testFalseValues =
-                useDefaultBoolValues ? new List<string>(new[] {"false", "F", "0", "no", "N"}) : new List<string>();
+                useDefaultBoolValues ? new List<string>(new[] { "false", "F", "0", "no", "N" }) : new List<string>();
 
             testTrueValues.Add(trueValue);
             testFalseValues.Add(falseValue);
@@ -154,9 +154,9 @@ namespace D3SK.NetCore.Common.Extensions
             bool useDefaultBoolValues = true)
         {
             var testTrueValues =
-                useDefaultBoolValues ? new List<string>(new[] {"true", "T", "1", "yes", "Y"}) : new List<string>();
+                useDefaultBoolValues ? new List<string>(new[] { "true", "T", "1", "yes", "Y" }) : new List<string>();
             var testFalseValues =
-                useDefaultBoolValues ? new List<string>(new[] {"false", "F", "0", "no", "N"}) : new List<string>();
+                useDefaultBoolValues ? new List<string>(new[] { "false", "F", "0", "no", "N" }) : new List<string>();
 
             testTrueValues.Add(trueValue);
             testFalseValues.Add(falseValue);
@@ -185,7 +185,7 @@ namespace D3SK.NetCore.Common.Extensions
 
             return int.TryParse(source, out var result) && !((otherDefaults?.Contains(result)).GetValueOrDefault())
                 ? result
-                : (int?) null;
+                : (int?)null;
         }
 
         public static DateTimeOffset? ToNullableDateTimeOffset(this string source)
@@ -193,7 +193,7 @@ namespace D3SK.NetCore.Common.Extensions
             if (source?.Replace("/", string.Empty).IsEmpty() ?? true)
                 return null;
 
-            return DateTimeOffset.TryParse(source, out var result) ? result : (DateTimeOffset?) null;
+            return DateTimeOffset.TryParse(source, out var result) ? result : (DateTimeOffset?)null;
         }
 
         public static DateTimeOffset ToDateTimeOffset(this string source, DateTimeOffset defaultValue = default(DateTimeOffset))
@@ -211,7 +211,7 @@ namespace D3SK.NetCore.Common.Extensions
             if (source.IsEmpty())
                 return null;
 
-            return decimal.TryParse(source, out var result) ? result : (decimal?) null;
+            return decimal.TryParse(source, out var result) ? result : (decimal?)null;
         }
 
         public static string ToTitleCase(this string source)
@@ -230,6 +230,15 @@ namespace D3SK.NetCore.Common.Extensions
             var needsCasing = char.IsLower(source[0]) || !source.Any(char.IsLower);
 
             return needsCasing ? $"{source.Substring(0, 1).ToUpper()}{source.Substring(1).ToLower()}" : source;
+        }
+
+        public static string ToCamelCase(this string str)
+        {
+            if (!string.IsNullOrEmpty(str) && str.Length > 1)
+            {
+                return Char.ToLowerInvariant(str[0]) + str.Substring(1);
+            }
+            return str;
         }
     }
 }
