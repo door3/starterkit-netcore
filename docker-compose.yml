@@ -4,7 +4,7 @@ services:
     container_name: bookstore-db
     image: mcr.microsoft.com/mssql/server:2019-latest
     volumes:
-      - bookstore-sql-vol1:/var/opt/mssql
+      - bookstore-sql-vol:/var/opt/mssql
     ports:
       - "1433:1433"
     environment:
@@ -12,4 +12,4 @@ services:
       - SA_PASSWORD=p@ssword12345
       
 volumes:
-    bookstore-sql-vol1:
+    bookstore-sql-vol:
