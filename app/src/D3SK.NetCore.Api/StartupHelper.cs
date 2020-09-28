@@ -134,6 +134,7 @@ namespace D3SK.NetCore.Api
 
             services.AddSwaggerGen(options =>
             {
+                options.CustomSchemaIds(type => type.ToString());
                 options.SchemaFilter<SwaggerExcludeFilter>();
             });
         }
