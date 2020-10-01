@@ -1,5 +1,5 @@
 # starterkit-netcore
-## .NET Core Starter Kit with DDD / CQRS
+## .NET Core Starterkit with DDD / CQRS
 
 - Bootstrap API startup and development with helper classes and extensions
 - Base entity structure, DB stores, and table containers for well-formed and consistent data access
