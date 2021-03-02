@@ -1,4 +1,6 @@
-﻿namespace D3SK.NetCore.Common.Utilities
+﻿using System.Threading.Tasks;
+
+namespace D3SK.NetCore.Common.Utilities
 {
     public interface IUserClaimsBase
     {
@@ -11,17 +13,17 @@
     {
     }
 
-    public interface IUserClaims<out TUserKey> : IUserClaimsBase
+    public interface IUserClaims<TUserKey> : IUserClaimsBase
     {
-        TUserKey UserId { get; }
+        Task<TUserKey> GetUserIdAsync();
     }
 
     public interface ITenantUserClaims : ITenantUserClaims<int, int>, IUserClaims
     {
     }
 
-    public interface ITenantUserClaims<out TUserKey, out TTenantKey> : IUserClaims<TUserKey>
+    public interface ITenantUserClaims<TUserKey, TTenantKey> : IUserClaims<TUserKey>
     {
-        TTenantKey TenantId { get; }
+        Task<TTenantKey> GetTenantIdAsync();
     }
 }

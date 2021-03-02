@@ -31,18 +31,21 @@ namespace D3SK.NetCore.Infrastructure.Features
         {
             await CommandContainer.Store.InTransactionAsync(async transaction =>
             {
-                await OnBeforeCreateAsync();
+                await OnBeforeCreateAsync(domainInstance);
                 await UpdateStrategy.AddEntityAsync(CurrentItem, e => CommandContainer.AddAsync(e.Entity));
-                await OnBeforeSaveChangesAsync();
+                await OnBeforeSaveChangesAsync(domainInstance);
                 await CommandContainer.Store.SaveChangesAsync();
-                await OnAfterCreateAsync();
+                await OnAfterCreateAsync(domainInstance);
             });
+            await OnTransactionCompleteAsync(domainInstance);
         }
 
-        protected virtual Task OnBeforeCreateAsync() => Task.CompletedTask;
+        protected virtual Task OnBeforeCreateAsync(IDomainInstance<TDomain> domainInstance) => Task.CompletedTask;
 
-        protected virtual Task OnBeforeSaveChangesAsync() => Task.CompletedTask;
+        protected virtual Task OnBeforeSaveChangesAsync(IDomainInstance<TDomain> domainInstance) => Task.CompletedTask;
 
-        protected virtual Task OnAfterCreateAsync() => Task.CompletedTask;
+        protected virtual Task OnAfterCreateAsync(IDomainInstance<TDomain> domainInstance) => Task.CompletedTask;
+
+        protected virtual Task OnTransactionCompleteAsync(IDomainInstance<TDomain> domainInstance) => Task.CompletedTask;
     }
 }

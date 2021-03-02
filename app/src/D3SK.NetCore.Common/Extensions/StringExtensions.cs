@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace D3SK.NetCore.Common.Extensions
 {
@@ -154,7 +155,7 @@ namespace D3SK.NetCore.Common.Extensions
             bool useDefaultBoolValues = true)
         {
             var testTrueValues =
-                useDefaultBoolValues ? new List<string>(new[] { "true", "T", "1", "yes", "Y" }) : new List<string>();
+                useDefaultBoolValues ? new List<string>(new[] { "true", "T", "1", "yes", "Y", "10" }) : new List<string>();
             var testFalseValues =
                 useDefaultBoolValues ? new List<string>(new[] { "false", "F", "0", "no", "N" }) : new List<string>();
 
@@ -230,6 +231,16 @@ namespace D3SK.NetCore.Common.Extensions
             var needsCasing = char.IsLower(source[0]) || !source.Any(char.IsLower);
 
             return needsCasing ? $"{source.Substring(0, 1).ToUpper()}{source.Substring(1).ToLower()}" : source;
+        }
+
+        public static string WithoutSpecialCharacters(this string source)
+        {
+            if (source.IsEmpty())
+            {
+                return source;
+            }
+
+            return Regex.Replace(source, "[^0-9]", string.Empty);
         }
 
         public static string ToCamelCase(this string str)

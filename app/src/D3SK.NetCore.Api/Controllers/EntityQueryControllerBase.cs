@@ -47,6 +47,7 @@ namespace D3SK.NetCore.Api.Controllers
             [FromQuery] FromQuerySearchQueryRequest request,
             [FromQuery] int? id)
         {
+            query.NonOwnerPermissionId = GetNonOwnerPermissionId();
             request?.SetQueryAndCount(query, countQuery);
             if (id.HasValue)
             {
@@ -63,6 +64,7 @@ namespace D3SK.NetCore.Api.Controllers
             [FromServices] TCountQuery countQuery,
             [FromBody] FromBodySearchQueryRequest request)
         {
+            query.NonOwnerPermissionId = GetNonOwnerPermissionId();
             request?.SetQueryAndCount(query, countQuery);
             return Ok(await SearchCore(query, countQuery));
         }
@@ -70,6 +72,7 @@ namespace D3SK.NetCore.Api.Controllers
         [HttpGet("{id}")]
         public virtual async Task<IActionResult> GetEntityById([FromServices] TQuery query, [FromRoute] TKey id)
         {
+            query.NonOwnerPermissionId = GetNonOwnerPermissionId();
             query.Filters.Add(new QueryFilter(id));
             return Ok((await DomainInstance.RunQueryAsync(query)).SingleOrDefault());
         }
@@ -82,5 +85,7 @@ namespace D3SK.NetCore.Api.Controllers
             var count = await DomainInstance.RunQueryAsync(countQuery);
             return new SearchQueryResponse<TResult>(result, count);
         }
+
+        protected virtual int GetNonOwnerPermissionId() => 0;
     }
 }

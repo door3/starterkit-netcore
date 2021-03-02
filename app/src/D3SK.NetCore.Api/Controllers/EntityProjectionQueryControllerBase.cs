@@ -47,6 +47,7 @@ namespace D3SK.NetCore.Api.Controllers
             [FromServices] TCountQuery countQuery,
             [FromBody] FromBodyProjectionSearchQueryRequest request)
         {
+            query.NonOwnerPermissionId = GetNonOwnerPermissionId();
             request?.SetQueryAndCount(query, countQuery);
             return Ok(await SearchCore(query, countQuery));
         }

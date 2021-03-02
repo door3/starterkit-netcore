@@ -2,5 +2,8 @@
 {
     public abstract class CompositeEntityBase : ValueEntityBase, ICompositeEntity
     {
+        public virtual void OnInit()
+        {
+        }
     }
 }

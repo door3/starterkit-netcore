@@ -52,4 +52,31 @@ namespace D3SK.NetCore.Api.Models
             command.PropertiesToUpdate = PropertiesToUpdate;
         }
     }
+
+    public class EntityMultiplePatchCommandRequest<T>
+        : CommandRequestBase<IEntityMultiplePatchCommand<T>> where T : class, IEntityBase
+    {
+        public Item<T>[] Items { get; set; }
+
+        public IList<string> PropertiesToUpdate { get; set; } = new List<string>();
+
+        public override void SetCommand(IEntityMultiplePatchCommand<T> command)
+        {
+            command.NotNull(nameof(command));
+            command.Items = Items;
+            command.PropertiesToUpdate = PropertiesToUpdate;
+        }
+    }
+
+    public class EntityMultipleCreateCommandRequest<T>
+        : CommandRequestBase<IEntityMultipleCreateCommand<T>> where T : class, IEntityBase
+    {
+        public T[] Items { get; set; }
+
+        public override void SetCommand(IEntityMultipleCreateCommand<T> command)
+        {
+            command.NotNull(nameof(command));
+            command.Items = Items;
+        }
+    }
 }

@@ -1,29 +1,28 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using D3SK.NetCore.Common.Entities;
-using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Common.Stores;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Features;
 
 namespace D3SK.NetCore.Infrastructure.Features
 {
-    public abstract class EntityPatchCommandBase<TDomain, T, TStore, TCommandContainer>
-        : EntityPatchCommandBase<TDomain, T, int, TStore, TCommandContainer>
+    public abstract class EntityMultiplePatchCommandBase<TDomain, T, TStore, TCommandContainer>
+        : EntityMultiplePatchCommandBase<TDomain, T, int, TStore, TCommandContainer>
         where TDomain : IDomain
         where T : class, IEntity<int>
         where TStore : ITransactionStore
         where TCommandContainer : ICommandContainer<T, int, TStore>
     {
-        protected EntityPatchCommandBase(TCommandContainer commandContainer, IUpdateStrategy updateStrategy)
+        protected EntityMultiplePatchCommandBase(TCommandContainer commandContainer, IUpdateStrategy updateStrategy)
             : base(commandContainer, updateStrategy)
         {
         }
     }
 
-    public abstract class EntityPatchCommandBase<TDomain, T, TKey, TStore, TCommandContainer>
-        : EntityUpdateCommandBase<TDomain, T, TKey, TStore, TCommandContainer>, IEntityPatchCommand<TDomain, T>
+    public abstract class EntityMultiplePatchCommandBase<TDomain, T, TKey, TStore, TCommandContainer>
+        : EntityMultipleUpdateCommandBase<TDomain, T, TKey, TStore, TCommandContainer>, IEntityMultiplePatchCommand<TDomain, T>
         where TDomain : IDomain
         where T : class, IEntity<TKey>
         where TStore : ITransactionStore
@@ -33,7 +32,7 @@ namespace D3SK.NetCore.Infrastructure.Features
 
         public bool IsPatch => PropertiesToUpdate.Any();
 
-        protected EntityPatchCommandBase(TCommandContainer commandContainer, IUpdateStrategy updateStrategy)
+        protected EntityMultiplePatchCommandBase(TCommandContainer commandContainer, IUpdateStrategy updateStrategy)
             : base(commandContainer, updateStrategy)
         {
         }

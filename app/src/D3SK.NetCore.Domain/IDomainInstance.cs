@@ -9,8 +9,6 @@ namespace D3SK.NetCore.Domain
     {
         IServiceProvider ServiceProvider { get; }
 
-        ICurrentUserManager<IUserClaims> CurrentUserManager { get; }
-
         IExceptionManager ExceptionManager { get; }
 
         Task<Guid> PublishEventAsync<TEvent>(TEvent domainEvent) where TEvent : IDomainEventBase;
@@ -18,6 +16,8 @@ namespace D3SK.NetCore.Domain
         Task<bool> ValidateAsync<T>(T item);
 
         Task<bool> ValidateAsync<T, TOptions>(T item, TOptions validationOptions);
+
+        ICurrentUserManager GetCurrentUserManager();
     }
 
     public interface IDomainInstance<TDomain> : IDomainInstance

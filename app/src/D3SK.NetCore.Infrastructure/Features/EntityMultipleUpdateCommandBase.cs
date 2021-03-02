@@ -1,4 +1,4 @@
-﻿using System.Threading.Tasks;
+using System.Threading.Tasks;
 using D3SK.NetCore.Common.Entities;
 using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Common.Stores;
@@ -8,21 +8,21 @@ using D3SK.NetCore.Infrastructure.Extensions;
 
 namespace D3SK.NetCore.Infrastructure.Features
 {
-    public abstract class EntityUpdateCommandBase<TDomain, T, TStore, TCommandContainer>
-        : EntityUpdateCommandBase<TDomain, T, int, TStore, TCommandContainer>
+    public abstract class EntityMultipleUpdateCommandBase<TDomain, T, TStore, TCommandContainer>
+        : EntityMultipleUpdateCommandBase<TDomain, T, int, TStore, TCommandContainer>
         where TDomain : IDomain
         where T : class, IEntity<int>
         where TStore : ITransactionStore
         where TCommandContainer : ICommandContainer<T, int, TStore>
     {
-        protected EntityUpdateCommandBase(TCommandContainer commandContainer, IUpdateStrategy updateStrategy)
+        protected EntityMultipleUpdateCommandBase(TCommandContainer commandContainer, IUpdateStrategy updateStrategy)
             : base(commandContainer, updateStrategy)
         {
         }
     }
 
-    public abstract class EntityUpdateCommandBase<TDomain, T, TKey, TStore, TCommandContainer>
-        : IEntityUpdateCommand<TDomain, T>
+    public abstract class EntityMultipleUpdateCommandBase<TDomain, T, TKey, TStore, TCommandContainer>
+        : IEntityMultipleUpdateCommand<TDomain, T>
         where TDomain : IDomain
         where T : class, IEntity<TKey>
         where TStore : ITransactionStore
@@ -32,15 +32,9 @@ namespace D3SK.NetCore.Infrastructure.Features
 
         protected readonly IUpdateStrategy UpdateStrategy;
 
-        protected IDomainInstance<TDomain> DomainInstance { get; private set; }
+        public Item<T>[] Items { get; set; }
 
-        public T CurrentItem { get; set; }
-
-        public T OriginalItem { get; set; }
-
-        protected T DbStoreItem { get; set; }
-
-        protected EntityUpdateCommandBase(TCommandContainer commandContainer, IUpdateStrategy updateStrategy)
+        protected EntityMultipleUpdateCommandBase(TCommandContainer commandContainer, IUpdateStrategy updateStrategy)
         {
             CommandContainer = commandContainer.NotNull(nameof(commandContainer));
             UpdateStrategy = updateStrategy.NotNull(nameof(updateStrategy));
@@ -48,37 +42,39 @@ namespace D3SK.NetCore.Infrastructure.Features
 
         public virtual async Task HandleAsync(IDomainInstance<TDomain> domainInstance)
         {
-            DomainInstance = domainInstance.NotNull(nameof(domainInstance));
             var options = GetUpdateOptions();
             await CommandContainer.Store.InTransactionAsync(async transaction =>
             {
-                DbStoreItem = await CommandContainer.FindAsync(CurrentItem.Id);
-                await OnBeforeUpdateAsync(DbStoreItem);
-                await UpdateStrategy.UpdateEntityAsync(
-                    CurrentItem,
-                    OriginalItem,
-                    DbStoreItem,
-                    onUpdateComplete: e => CommandContainer.UpdateAsync(CurrentItem, OriginalItem),
-                    onPropertyChanged: OnPropertyChangedAsync,
-                    options: options);
-                await UpdateDependentsAsync(DbStoreItem);
+                foreach (var item in Items)
+                {
+                    var dbStoreItem = await CommandContainer.FindAsync(item.CurrentItem.Id);
+                    await OnBeforeUpdateAsync(dbStoreItem);
+                    await UpdateStrategy.UpdateEntityAsync(
+                        item.CurrentItem,
+                        item.OriginalItem,
+                        dbStoreItem,
+                        onUpdateComplete: e => CommandContainer.UpdateAsync(item.CurrentItem, item.OriginalItem),
+                        onPropertyChanged: OnPropertyChangedAsync,
+                        options: options);
+                    await UpdateDependentsAsync(item.CurrentItem, item.OriginalItem, dbStoreItem);
+                }
+
+                await OnBeforeSaveAsync();
                 await CommandContainer.Store.SaveChangesAsync();
                 await OnAfterUpdateAsync();
             });
-
-            await OnTransactionCompleteAsync();
         }
 
         protected virtual UpdateEntityOptions GetUpdateOptions() => new UpdateEntityOptions();
 
-        protected virtual Task UpdateDependentsAsync(T dbStoreItem) => Task.CompletedTask;
+        protected virtual Task UpdateDependentsAsync(T currentItem, T originalItem, T dbStoreItem) => Task.CompletedTask;
 
         protected virtual Task OnPropertyChangedAsync(EntityPropertyUpdatedEventArgs<T> e) => Task.CompletedTask;
 
         protected virtual Task OnBeforeUpdateAsync(T dbStoreItem) => Task.CompletedTask;
 
-        protected virtual Task OnAfterUpdateAsync() => Task.CompletedTask;
+        protected virtual Task OnBeforeSaveAsync() => Task.CompletedTask;
 
-        protected virtual Task OnTransactionCompleteAsync() => Task.CompletedTask;
+        protected virtual Task OnAfterUpdateAsync() => Task.CompletedTask;
     }
 }

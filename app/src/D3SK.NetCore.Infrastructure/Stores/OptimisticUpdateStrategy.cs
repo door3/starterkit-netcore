@@ -18,7 +18,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
             var entityType = obj.GetType();
             var properties = entityType
                 .GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                .Select(p => new {Property = p, Attribute = p.GetCustomAttribute<UpdateStrategyAttribute>()})
+                .Select(p => new { Property = p, Attribute = p.GetCustomAttribute<UpdateStrategyAttribute>() })
                 .Where(p => p.Attribute != null && p.Attribute.NullOnAdd)
                 .ToList();
             properties.ForEach(p => p.Property.SetValue(obj, null, null));
@@ -29,7 +29,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
                 .ToList();
             collections.ForEach(c =>
             {
-                var list = (IEnumerable) c.GetValue(obj);
+                var list = (IEnumerable)c.GetValue(obj);
                 foreach (var i in list)
                 {
                     SetNullOnAdd(i);
@@ -70,7 +70,6 @@ namespace D3SK.NetCore.Infrastructure.Stores
             T dbItem = null,
             Func<EntityPropertyUpdatedEventArgs<T>, Task> onPropertyChanged = null,
             Func<EntityUpdatedEventArgs<T>, Task> onUpdateComplete = null,
-            Func<T, object> getItemId = null,
             UpdateEntityOptions options = null)
             where T : class, IEntityBase
         {
@@ -133,7 +132,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
 
             bool IdsAreEqual(TKey idA, TKey idB) => Equals(idA, idB);
 
-            getItemId ??= (item => (TKey) GetEntityId(item));
+            getItemId ??= (item => (TKey)GetEntityId(item));
             findItem ??= (id =>
                 !Equals(id, default(TKey))
                     ? dbItems.SingleOrDefault(x => IdsAreEqual(id, getItemId(x)))
@@ -167,51 +166,6 @@ namespace D3SK.NetCore.Infrastructure.Stores
             }
         }
 
-        public async Task<bool> UpdateCompositeEntityAsync<T, TComposite>(
-            T currentRootItem,
-            string namePrefix,
-            TComposite currentItem,
-            TComposite originalItem,
-            TComposite dbItem,
-            Func<EntityPropertyUpdatedEventArgs<T>, Task> onPropertyChanged,
-            UpdateEntityOptions options = null)
-            where T : class, IEntityBase
-            where TComposite : class, ICompositeEntity
-        {
-            currentItem.NotNull(nameof(currentItem));
-            dbItem.NotNull(nameof(dbItem));
-            originalItem ??= dbItem;
-            options ??= new UpdateEntityOptions();
-
-            var modified = false;
-            var entityType = currentItem.GetType();
-            if (await UpdateEntityPropertiesAsync(
-                currentRootItem,
-                namePrefix,
-                currentItem,
-                originalItem,
-                dbItem,
-                onPropertyChanged,
-                options))
-            {
-                modified = true;
-            }
-
-            if (await UpdateEntitySetMethodsAsync<T>(
-                currentRootItem,
-                namePrefix,
-                currentItem,
-                originalItem,
-                dbItem,
-                onPropertyChanged,
-                options))
-            {
-                modified = true;
-            }
-
-            return modified;
-        }
-
         protected virtual object GetEntityId<T>(T entity) where T : class
         {
             return (entity as IEntity)?.Id ?? entity.GetPropertyValue("Id");
@@ -228,7 +182,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
             where T : class, IEntityBase
         {
             options ??= new UpdateEntityOptions();
-            var entityType = typeof(T);
+            var entityType = currentItem.GetType();
             var modified = false;
 
             var shouldFilterProps = options.PropertiesToUpdate?.Any() ?? false;
@@ -256,19 +210,6 @@ namespace D3SK.NetCore.Infrastructure.Stores
                 var oldValue = prop.Property.TryGetValue(originalItem);
                 var newValue = prop.Property.TryGetValue(currentItem);
 
-                if (prop.Property.PropertyType.ImplementsInterface<ICompositeEntity>())
-                {
-                    var compositeModified = await UpdateCompositeEntityAsync(
-                        currentRootItem,
-                        $"{prop.FullName}.",
-                        (ICompositeEntity) newValue,
-                        (ICompositeEntity) oldValue,
-                        (ICompositeEntity) dbValue,
-                        onPropertyChanged);
-                    if (compositeModified) modified = true;
-                    continue;
-                }
-
                 if (Equals(oldValue, newValue) || Equals(dbValue, newValue)) continue;
                 if (onPropertyChanged != null)
                 {
@@ -277,7 +218,17 @@ namespace D3SK.NetCore.Infrastructure.Stores
                     await onPropertyChanged(eventArgs);
                 }
 
+                if (prop.Property.PropertyType.ImplementsInterface<ICompositeEntity>() && newValue != null)
+                {
+                    var compositeEntity = newValue as CompositeEntityBase;
+                    if (compositeEntity != null)
+                    {
+                        compositeEntity.OnInit();
+                    }
+                }
+
                 prop.Property.SetValue(dbItem, newValue);
+
                 modified = true;
             }
 
@@ -295,7 +246,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
             where T : class, IEntityBase
         {
             options ??= new UpdateEntityOptions();
-            var entityType = typeof(T);
+            var entityType = currentItem.GetType();
             var modified = false;
 
             var shouldFilterProps = options.PropertiesToUpdate?.Any() ?? false;
@@ -333,7 +284,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
                     await onPropertyChanged(eventArgs);
                 }
 
-                setter.Method.Invoke(dbItem, new[] {newValue});
+                setter.Method.Invoke(dbItem, new[] { newValue });
                 modified = true;
             }
 
@@ -345,16 +296,16 @@ namespace D3SK.NetCore.Infrastructure.Stores
             switch (obj)
             {
                 case Type type:
-                {
-                    return $"{namePrefix}{type.Name}";
-                }
+                    {
+                        return $"{namePrefix}{type.Name}";
+                    }
                 case PropertyInfo propInfo:
                     return $"{namePrefix}{propInfo.Name}";
                 default:
-                {
-                    var objType = obj.GetType();
-                    return $"{namePrefix}{objType.Name}";
-                }
+                    {
+                        var objType = obj.GetType();
+                        return $"{namePrefix}{objType.Name}";
+                    }
             }
         }
 

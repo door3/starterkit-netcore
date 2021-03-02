@@ -8,7 +8,7 @@ namespace D3SK.NetCore.Domain.Entities
         [Newtonsoft.Json.JsonIgnore]
         IList<IDomainEventBase> DomainEvents { get; }
 
-        void AddDomainEvent(IDomainEventBase domainEvent);
+        void AddDomainEvent<T>(T eventItem) where T : IDomainEventBase;
 
         void ClearAllDomainEvents();
 

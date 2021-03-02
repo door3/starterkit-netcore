@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using D3SK.NetCore.Domain.Events;
 using D3SK.NetCore.Common.Extensions;
+using D3SK.NetCore.Domain.Models;
+using Microsoft.Extensions.Options;
 
 namespace D3SK.NetCore.Infrastructure.Domain
 {
@@ -14,12 +16,13 @@ namespace D3SK.NetCore.Infrastructure.Domain
         public IHandleValidationStrategy<TDomain> ValidationStrategy { get; }
 
         protected DomainBase(
+            IOptions<DomainOptions> domainOptions,
             IDomainBus bus,
             IQueryDomainRole<TDomain> queryRole,
             ICommandDomainRole<TDomain> commandRole,
             IHandleDomainEventStrategy<IDomainEvent, TDomain> eventStrategy,
             IHandleValidationStrategy<TDomain> validationStrategy)
-            : base(bus)
+            : base(domainOptions, bus)
         {
             AddRole(queryRole.NotNull(nameof(queryRole)));
             AddRole(commandRole.NotNull(nameof(commandRole)));
@@ -54,12 +57,15 @@ namespace D3SK.NetCore.Infrastructure.Domain
 
     public abstract class DomainBase : IDomain
     {
+        public DomainOptions DomainOptions { get; }
+
         protected IDictionary<Type, IDomainRole> Roles { get; } = new Dictionary<Type, IDomainRole>();
 
         public IDomainBus Bus { get; }
 
-        protected DomainBase(IDomainBus bus)
+        protected DomainBase(IOptions<DomainOptions> domainOptions, IDomainBus bus)
         {
+            DomainOptions = domainOptions.NotNull(nameof(domainOptions)).Value;
             Bus = bus.NotNull(nameof(bus));
         }
 

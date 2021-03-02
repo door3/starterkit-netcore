@@ -4,6 +4,7 @@ using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace D3SK.NetCore.Infrastructure.Domain
 {
@@ -13,19 +14,15 @@ namespace D3SK.NetCore.Infrastructure.Domain
 
         public TDomain Domain { get; }
 
-        public ICurrentUserManager<IUserClaims> CurrentUserManager { get; }
-
         public IExceptionManager ExceptionManager { get; }
 
         protected DomainInstanceBase(
             IServiceProvider serviceProvider,
             TDomain domain,
-            ICurrentUserManager<IUserClaims> currentUserManager,
             IExceptionManager exceptionManager)
         {
             ServiceProvider = serviceProvider.NotNull(nameof(ServiceProvider));
             Domain = domain.NotNull(nameof(domain));
-            CurrentUserManager = currentUserManager.NotNull(nameof(currentUserManager));
             ExceptionManager = exceptionManager.NotNull(nameof(exceptionManager));
         }
 
@@ -34,6 +31,10 @@ namespace D3SK.NetCore.Infrastructure.Domain
         {
             return Domain.GetRole<TDomainRole>();
         }
+
+        // TODO: figure out a better way to fix the circular dependency
+        public virtual ICurrentUserManager GetCurrentUserManager() =>
+            ServiceProvider.GetRequiredService<ICurrentUserManager>();
 
         public virtual Task<TResult> RunFeatureAsync<TDomainRole, TResult>(IAsyncQueryFeature<TDomain, TResult> feature)
             where TDomainRole : IQueryDomainRole<TDomain>
