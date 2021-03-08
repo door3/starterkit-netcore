@@ -4,6 +4,8 @@ using D3SK.NetCore.Domain.Events;
 using D3SK.NetCore.Infrastructure.Domain;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Options;
+using D3SK.NetCore.Domain.Models;
 
 namespace ExampleBookstore.Infrastructure
 {
@@ -18,12 +20,13 @@ namespace ExampleBookstore.Infrastructure
         where TDomain : IExampleBookstoreDomain<TDomain>
     {
         protected ExampleBookstoreDomain(
+            IOptions<DomainOptions> domainOptions,
             IDomainBus bus,
             IQueryDomainRole<TDomain> queryRole,
             ICommandDomainRole<TDomain> commandRole,
             IHandleDomainEventStrategy<IDomainEvent, TDomain> eventStrategy,
             IHandleValidationStrategy<TDomain> validationStrategy)
-        : base(bus, queryRole, commandRole, eventStrategy, validationStrategy)
+        : base(domainOptions, bus, queryRole, commandRole, eventStrategy, validationStrategy)
         {
         }
     }

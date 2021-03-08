@@ -44,7 +44,7 @@ namespace D3SK.NetCore.Domain.Entities
             SetTenantId((TTenantKey)tenantId);
         }
     }
-    
+
     public abstract class DeletableDomainEntityBase<TKey, TUserKey> : EntityBase<TKey>,
         IDomainEntity, IAuditEntity<TUserKey>
     {
@@ -66,9 +66,15 @@ namespace D3SK.NetCore.Domain.Entities
         {
         }
 
-        public void AddDomainEvent(IDomainEventBase domainEvent)
+        // NOTE: Overload equals method of domain event
+        // if single event is enough with some values
+        public void AddDomainEvent<T>(T eventItem)
+            where T : IDomainEventBase
         {
-            DomainEvents.Add(domainEvent);
+            if (DomainEvents.OfType<T>().All(f => !f.Equals(eventItem)))
+            {
+                DomainEvents.Add(eventItem);
+            }
         }
 
         public void ClearAllDomainEvents()
@@ -94,7 +100,10 @@ namespace D3SK.NetCore.Domain.Entities
         public virtual void OnUpdated(DateTimeOffset lastModifiedDate, TUserKey lastModifiedByUser)
         {
             LastModifiedDate = lastModifiedDate;
-            LastModifiedByUser = lastModifiedByUser;
+            if(!lastModifiedByUser.Equals(0))
+            {
+                LastModifiedByUser = lastModifiedByUser;
+            }
         }
 
         public virtual void OnAdded(DateTimeOffset createdDate, object createdByUser)

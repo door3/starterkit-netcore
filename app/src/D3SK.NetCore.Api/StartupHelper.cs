@@ -7,6 +7,7 @@ using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain.Models;
 using D3SK.NetCore.Infrastructure.Domain;
 using HealthChecks.UI.Client;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
@@ -70,7 +71,7 @@ namespace D3SK.NetCore.Api
         }
 
         public static void ConfigureBaseServices(
-            IServiceCollection services, IConfiguration configuration, bool useMultitenancy = true)
+            IServiceCollection services, IConfiguration configuration, bool useMultitenancy = true, Action<MvcOptions> controllersConfigFn = null)
         {
             services.AddHealthChecks();
 
@@ -92,6 +93,11 @@ namespace D3SK.NetCore.Api
                 options.Filters.Add(typeof(ApiExceptionFilter));
                 options.Filters.Add(
                     new ResponseCacheAttribute() { NoStore = true, Location = ResponseCacheLocation.None });
+
+                if (controllersConfigFn != null)
+                {
+                    controllersConfigFn(options);
+                }
             }).AddNewtonsoftJson(options =>
             {
                 options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
@@ -163,7 +169,7 @@ namespace D3SK.NetCore.Api
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
-                endpoints.MapHealthChecks("/health", GetHealthCheckOptions());
+                endpoints.MapHealthChecks("/health", GetHealthCheckOptions()).WithMetadata(new AllowAnonymousAttribute());
             });
 
             if (useSwagger)

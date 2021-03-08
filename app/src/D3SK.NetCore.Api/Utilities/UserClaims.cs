@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Threading.Tasks;
 using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Common.Utilities;
 using Microsoft.AspNetCore.Http;
@@ -31,7 +32,7 @@ namespace D3SK.NetCore.Api.Utilities
 
         public bool HasClaims => HttpContext?.User?.Claims?.Any() ?? false;
 
-        public TUserKey UserId => GetClaim<TUserKey>(ClaimTypes.UserId);
+        public virtual Task<TUserKey> GetUserIdAsync() => GetClaim<TUserKey>(ClaimTypes.UserId).AsTask();
 
         public UserClaims(IHttpContextAccessor httpContextAccessor)
         {

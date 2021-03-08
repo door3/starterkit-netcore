@@ -11,7 +11,7 @@ namespace ExampleBookstore.Infrastructure
     {
         protected ExampleBookstoreDomainInstance(IServiceProvider serviceProvider, TDomain domain,
             ICurrentUserManager<IUserClaims> currentUserManager, IExceptionManager exceptionManager)
-            : base(serviceProvider, domain, currentUserManager, exceptionManager)
+            : base(serviceProvider, domain, exceptionManager)
         {
         }
     }

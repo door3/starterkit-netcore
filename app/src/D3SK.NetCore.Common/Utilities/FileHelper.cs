@@ -20,6 +20,13 @@ namespace D3SK.NetCore.Common.Utilities
             return ReadCsvAsync<T>(file.FullName, options);
         }
 
+        public static Task<IList<T>> ReadCsvAsync<T, TMap>(string path, string fileName, string relativePath = null,
+            ReadCsvOptions options = null) where TMap : ClassMap<T>
+        {
+            var file = FindFile(path, fileName, relativePath);
+            return ReadCsvAsync<T, TMap>(file.FullName, options);
+        }
+
         public static async Task<IList<T>> ReadCsvAsync<T>(string filePath, ReadCsvOptions options = null)
         {
             options ??= new ReadCsvOptions();

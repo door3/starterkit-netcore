@@ -63,5 +63,21 @@ namespace D3SK.NetCore.Common.Extensions
             list.Add(item);
             return true;
         }
+
+        public static T AddIfMissingAndReturn<T>(this ICollection<T> list, T item, Func<T, bool> predicate)
+        {
+            list.NotNull(nameof(list));
+            item.NotNull(nameof(item));
+            predicate.NotNull(nameof(predicate));
+
+            var foundItem = list.FirstOrDefault(predicate);
+            if (foundItem != null)
+            {
+                return foundItem;
+            }
+
+            list.Add(item);
+            return item;
+        }
     }
 }

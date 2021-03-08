@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
 using System.Linq;
@@ -9,6 +10,12 @@ namespace D3SK.NetCore.Common.Extensions
 {
     public static class ListExtensions
     {
+        public static IList<T> NotEmpty<T>(this IList<T> source, string argumentName = null)
+        {
+            if (source == null || source.Count == 0) throw new ArgumentNullException(argumentName);
+            return source;
+        }
+
         public static void ForEach<T>(this IList<T> list, Action<T> action)
         {
             list.NotNull(nameof(list));

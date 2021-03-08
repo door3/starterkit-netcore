@@ -80,7 +80,7 @@ namespace D3SK.NetCore.Infrastructure.Extensions
             return source.Filter(filterInfo?.Filters);
         }
 
-        public static bool IsIdFilter(this IFilterable filterInfo, params string[] primaryKeys)
+        public static bool IsSingleItemIdFilter(this IFilterable filterInfo, params string[] primaryKeys)
         {
             if (filterInfo?.Filters == null) return false;
 
@@ -90,12 +90,12 @@ namespace D3SK.NetCore.Infrastructure.Extensions
                     return false;
             }
 
-            return filterInfo.Filters.Count == primaryKeys.Length;
+            return filterInfo.Filters.Count == primaryKeys.Length && !filterInfo.Filters.First().OrFilters.Any();
         }
 
-        public static bool IsIdFilter(this IFilterable filterInfo)
+        public static bool IsSingleItemIdFilter(this IFilterable filterInfo)
         {
-            return filterInfo.IsIdFilter("Id");
+            return filterInfo.IsSingleItemIdFilter("Id");
         }
 
         public static void AddFilterList<T>(this IFilterable filterInfo, IList<T> items,
@@ -119,7 +119,7 @@ namespace D3SK.NetCore.Infrastructure.Extensions
 
         public static string GetIncludes(this IStoreQuery query)
         {
-            return query?.Includes ?? (query.IsIdFilter() ? StoreQueryIncludes.Full : null);
+            return query?.Includes ?? (query.IsSingleItemIdFilter() ? StoreQueryIncludes.Full : null);
         }
 
         public static bool HasInclude(this IStoreQuery query, string include)
@@ -214,7 +214,7 @@ namespace D3SK.NetCore.Infrastructure.Extensions
 
         public static bool ContainsQueryProperty(this IList<string> source, string property)
         {
-            return source.IsEmpty() || source.Any(x => 
+            return source.IsEmpty() || source.Any(x =>
                        x.IsSame(property) ||
                        x.EndsWith($"as {property}", StringComparison.OrdinalIgnoreCase));
         }

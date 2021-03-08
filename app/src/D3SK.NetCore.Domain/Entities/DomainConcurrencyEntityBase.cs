@@ -33,7 +33,7 @@ namespace D3SK.NetCore.Domain.Entities
     {
         // ReSharper disable once UnusedAutoPropertyAccessor.Local
         [Timestamp]
-        public byte[] RowVersion { get; private set; }
+        public byte[] RowVersion { get; protected set; }
 
         protected DomainConcurrencyEntityBase()
         {

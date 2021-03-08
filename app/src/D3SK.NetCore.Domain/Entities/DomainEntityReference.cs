@@ -37,6 +37,7 @@ namespace D3SK.NetCore.Domain.Entities
         public DomainEntityReference(TKey id, string name, object extendedData)
             : base(id, name, extendedData)
         {
+            ExtendedData = extendedData;
         }
     }
 }

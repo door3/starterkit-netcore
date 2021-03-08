@@ -23,13 +23,13 @@ namespace D3SK.NetCore.Infrastructure.Stores
         protected IDomainInstance DomainInstance { get; }
 
         protected IClock CurrentClock { get; }
-        
+
         public IStoreTransaction CurrentTransaction { get; protected set; }
 
         public bool IsInTransaction { get; protected set; }
 
         protected DomainDbStoreBase(
-            DbContextOptions options, 
+            DbContextOptions options,
             IDomainInstance domainInstance,
             IClock currentClock)
             : base(options)
@@ -37,7 +37,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
             DomainInstance = domainInstance.NotNull(nameof(domainInstance));
             CurrentClock = currentClock.NotNull(nameof(currentClock));
         }
-        
+
         protected virtual void OnTransactionCommitted(object sender, EventArgs e)
         {
             IsInTransaction = false;
@@ -60,7 +60,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
             CurrentTransaction = new StoreDbTransaction(dbTransaction);
             CurrentTransaction.Committed += OnTransactionCommitted;
             CurrentTransaction.RolledBack += OnTransactionRolledBack;
-            
+
             return CurrentTransaction;
         }
 
@@ -86,7 +86,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
         {
             await Database.ExecuteSqlRawAsync(command, parameters);
         }
-        
+
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
         {
             if (!IsInTransaction)
@@ -113,10 +113,10 @@ namespace D3SK.NetCore.Infrastructure.Stores
 
         protected virtual async Task<int> SaveChangesCoreAsync(CancellationToken cancellationToken = default)
         {
-            SetAuditEntityDetails();
+            await SetAuditEntityDetailsAsync();
             AddDomainEventsToEntities();
             SetIsDeletedForDeletedEntities();
-            
+
             return await base.SaveChangesAsync(cancellationToken);
         }
 
@@ -154,7 +154,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
             }
         }
 
-        protected virtual void SetAuditEntityDetails()
+        protected virtual async Task SetAuditEntityDetailsAsync()
         {
             var added = ChangeTracker.Entries().Where(x => x.State == EntityState.Added)
                 .Select(x => x.Entity).OfType<IAuditEntityBase>();
@@ -162,8 +162,9 @@ namespace D3SK.NetCore.Infrastructure.Stores
             var modified = ChangeTracker.Entries().Where(x => x.State == EntityState.Modified)
                 .Select(x => x.Entity).OfType<IAuditEntityBase>();
 
-            var userId =
-                DomainInstance.CurrentUserManager.HasClaims ? DomainInstance.CurrentUserManager.Claims.UserId : (int?)null;
+            var currentUserManager = DomainInstance.GetCurrentUserManager();
+
+            var userId = await currentUserManager.GetUserIdAsync();
 
             foreach (var entity in added)
             {
@@ -183,7 +184,7 @@ namespace D3SK.NetCore.Infrastructure.Stores
 
             return domainEvents.Any();
         }
-        
+
         protected virtual async Task HandleDomainEventsAsync<TEvent>() where TEvent : IDomainEventBase
         {
             var domainEntities = GetDomainEntities();
@@ -228,6 +229,11 @@ namespace D3SK.NetCore.Infrastructure.Stores
             where T : class, ISoftDeleteEntity
         {
             return source.HasQueryFilter(x => !x.IsDeleted);
+        }
+
+        public virtual async Task PublishLeftoverBusEventsAsync()
+        {
+            await HandleDomainEventsAsync<IBusEvent>();
         }
     }
 }

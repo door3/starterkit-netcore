@@ -17,18 +17,20 @@ using ExampleBookstore.Services.BookService.Infrastructure.Validation;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 
 namespace ExampleBookstore.Services.BookService.Infrastructure
 {
     public class BookDomain : ExampleBookstoreDomain<IBookDomain>, IBookDomain
     {
         public BookDomain(
+            IOptions<DomainOptions> domainOptions,
             IDomainBus bus,
             IQueryDomainRole<IBookDomain> queryRole,
             ICommandDomainRole<IBookDomain> commandRole,
             IHandleDomainEventStrategy<IDomainEvent, IBookDomain> eventStrategy,
             IHandleValidationStrategy<IBookDomain> validationStrategy)
-            : base(bus, queryRole, commandRole, eventStrategy, validationStrategy)
+            : base(domainOptions, bus, queryRole, commandRole, eventStrategy, validationStrategy)
         {
             ConfigureDomain(this);
         }

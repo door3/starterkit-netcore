@@ -28,6 +28,10 @@ namespace D3SK.NetCore.Infrastructure.Features
 
         public string Includes { get; set; }
 
+        public int NonOwnerPermissionId { get; set; }
+
+        public bool CurrentUserHasNonOwnerPermission { get; set; }
+
         protected StoreQueryBase(IOptions<QueryOptions> queryOptions)
         {
             QueryOptions = queryOptions.Value;

@@ -22,12 +22,12 @@ namespace D3SK.NetCore.Api.Utilities
             _currentUserManager = currentUserManager.NotNull(nameof(currentUserManager));
         }
 
-        public Task<TenantContext<ResolvedTenant>> ResolveAsync(HttpContext context)
+        public async Task<TenantContext<ResolvedTenant>> ResolveAsync(HttpContext context)
         {
-            var tenantId = _currentUserManager.HasClaims ? _currentUserManager.Claims.TenantId : 1;
+            var tenantId = _currentUserManager.HasClaims ? (await _currentUserManager.Claims.GetTenantIdAsync()) : 1;
             var tenant = new ResolvedTenant(tenantId);
             var tenantContext = new TenantContext<ResolvedTenant>(tenant);
-            return tenantContext.AsTask();
+            return tenantContext;
         }
     }
 }

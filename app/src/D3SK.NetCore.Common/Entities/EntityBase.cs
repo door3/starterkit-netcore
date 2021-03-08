@@ -13,7 +13,7 @@
 
     public abstract class EntityBase<TKey> : IEntity<TKey>
     {
-        public TKey Id { get; private set; }
+        public TKey Id { get; protected set; }
 
         protected EntityBase()
         {

@@ -3,7 +3,7 @@ using D3SK.NetCore.Common.Queries;
 
 namespace D3SK.NetCore.Domain.Features
 {
-    public interface IEntityCountQuery<T> : IFilterable
+    public interface IEntityCountQuery<T> : IFilterable, IAllowNonOwnerPermissionQuery
     {
     }
 

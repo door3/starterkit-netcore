@@ -1,4 +1,5 @@
-﻿using D3SK.NetCore.Common.Extensions;
+﻿using System.Threading.Tasks;
+using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Common.Utilities;
 using Microsoft.AspNetCore.Http;
 
@@ -14,6 +15,8 @@ namespace D3SK.NetCore.Api.Utilities
 
         public bool HasClaims => IsAuthenticated && Claims.HasClaims;
 
+        public virtual Task<int> GetUserIdAsync() => Claims.GetClaim<int>(UserClaims.ClaimTypes.UserId).AsTask();
+
         public TClaims Claims { get; private set; }
 
         public HttpCurrentUserManager(IHttpContextAccessor httpContextAccessor, TClaims claims)
@@ -26,5 +29,7 @@ namespace D3SK.NetCore.Api.Utilities
         {
             Claims = claims;
         }
+
+        public virtual bool IsPrivateNetworkCall() => false;
     }
 }

@@ -1,9 +1,12 @@
 ﻿using D3SK.NetCore.Domain.Events;
+using D3SK.NetCore.Domain.Models;
 
 namespace D3SK.NetCore.Domain
 {
     public interface IDomain
     {
+        DomainOptions DomainOptions { get; }
+
         IDomainBus Bus { get; }
 
         void AddRole<TDomainRole>(TDomainRole role) where TDomainRole : IDomainRole;

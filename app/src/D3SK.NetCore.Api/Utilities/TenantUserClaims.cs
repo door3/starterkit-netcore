@@ -1,4 +1,6 @@
-﻿using D3SK.NetCore.Common.Utilities;
+﻿using System.Threading.Tasks;
+using D3SK.NetCore.Common.Extensions;
+using D3SK.NetCore.Common.Utilities;
 using Microsoft.AspNetCore.Http;
 
 namespace D3SK.NetCore.Api.Utilities
@@ -13,10 +15,10 @@ namespace D3SK.NetCore.Api.Utilities
     public class TenantUserClaims<TUserKey, TTenantKey> : UserClaims<TUserKey>,
         ITenantUserClaims<TUserKey, TTenantKey>
     {
-        public TTenantKey TenantId => GetClaim<TTenantKey>(ClaimTypes.TenantId);
-
         public TenantUserClaims(IHttpContextAccessor httpContextAccessor) : base(httpContextAccessor)
         {
         }
+
+        public Task<TTenantKey> GetTenantIdAsync() => GetClaim<TTenantKey>(ClaimTypes.TenantId).AsTask();
     }
 }

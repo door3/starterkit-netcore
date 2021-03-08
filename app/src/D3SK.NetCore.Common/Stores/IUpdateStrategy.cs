@@ -21,7 +21,6 @@ namespace D3SK.NetCore.Common.Stores
             T dbItem = null,
             Func<EntityPropertyUpdatedEventArgs<T>, Task> onPropertyChanged = null,
             Func<EntityUpdatedEventArgs<T>, Task> onUpdateComplete = null,
-            Func<T, object> getItemId = null,
             UpdateEntityOptions options = null)
             where T : class, IEntityBase;
 
@@ -36,14 +35,5 @@ namespace D3SK.NetCore.Common.Stores
             Func<TKey, T> findItem = null,
             UpdateCollectionOptions options = null)
             where T : class, IEntityBase;
-
-        Task<bool> UpdateCompositeEntityAsync<T, TComposite>(T currentRootItem, string namePrefix,
-            TComposite currentItem,
-            TComposite originalItem = null,
-            TComposite dbItem = null,
-            Func<EntityPropertyUpdatedEventArgs<T>, Task> onPropertyChanged = null,
-            UpdateEntityOptions options = null)
-            where T : class, IEntityBase
-            where TComposite : class, ICompositeEntity;
     }
 }

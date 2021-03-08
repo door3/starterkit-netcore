@@ -20,6 +20,10 @@ namespace D3SK.NetCore.Infrastructure.Features
 
         public IList<QueryFilter> Filters { get; set; } = new List<QueryFilter>();
 
+        public int NonOwnerPermissionId { get; set; }
+
+        public bool CurrentUserHasNonOwnerPermission { get; set; }
+
         protected EntityCountQueryBase(TQueryContainer queryContainer)
         {
             QueryContainer = queryContainer.NotNull(nameof(queryContainer));

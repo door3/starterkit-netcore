@@ -32,6 +32,8 @@ namespace D3SK.NetCore.Infrastructure.Features
 
         protected readonly IUpdateStrategy UpdateStrategy;
 
+        protected IDomainInstance<TDomain> DomainInstance { get; private set; }
+
         public TKey EntityId { get; set; }
 
         protected EntityDeleteCommandBase(TCommandContainer commandContainer, IUpdateStrategy updateStrategy)
@@ -42,6 +44,7 @@ namespace D3SK.NetCore.Infrastructure.Features
 
         public virtual async Task HandleAsync(IDomainInstance<TDomain> domainInstance)
         {
+            DomainInstance = domainInstance.NotNull(nameof(domainInstance));
             await CommandContainer.Store.InTransactionAsync(async transaction =>
             {
                 var dbItem = await CommandContainer.FindAsync(EntityId);

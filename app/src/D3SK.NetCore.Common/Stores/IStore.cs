@@ -17,6 +17,8 @@ namespace D3SK.NetCore.Common.Stores
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
 
         Task RunCommandAsync(string command, params object[] parameters);
+
+        Task PublishLeftoverBusEventsAsync();
     }
     
     public interface ITransactionStore : ICommandStore
@@ -26,7 +28,5 @@ namespace D3SK.NetCore.Common.Stores
         Task<IStoreTransaction> BeginTransactionAsync(CancellationToken cancellationToken = default);
 
         IStoreTransaction UseTransaction(IStoreTransaction transaction);
-
-        void CommitTransaction();
     }
 }
