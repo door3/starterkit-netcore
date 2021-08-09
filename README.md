@@ -8,7 +8,3 @@
 - Multitenant by default (can be turned off)
 - All base functionality is completely extensible
 - Complete scaffolding of CRUD endpoints in a few lines of code
-
-# GitHub Issues
-## Contribution Policy and Discussions
-https://door3nyc.atlassian.net/wiki/spaces/D3PB/pages/753500177/Starter+Kits
