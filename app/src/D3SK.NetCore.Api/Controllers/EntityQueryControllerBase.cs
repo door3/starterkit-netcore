@@ -48,6 +48,7 @@ namespace D3SK.NetCore.Api.Controllers
             [FromQuery] int? id)
         {
             query.NonOwnerPermissionId = GetNonOwnerPermissionId();
+            countQuery.NonOwnerPermissionId = GetNonOwnerPermissionId();
             request?.SetQueryAndCount(query, countQuery);
             if (id.HasValue)
             {
@@ -65,6 +66,7 @@ namespace D3SK.NetCore.Api.Controllers
             [FromBody] FromBodySearchQueryRequest request)
         {
             query.NonOwnerPermissionId = GetNonOwnerPermissionId();
+            countQuery.NonOwnerPermissionId = GetNonOwnerPermissionId();
             request?.SetQueryAndCount(query, countQuery);
             return Ok(await SearchCore(query, countQuery));
         }
@@ -86,6 +88,6 @@ namespace D3SK.NetCore.Api.Controllers
             return new SearchQueryResponse<TResult>(result, count);
         }
 
-        protected virtual int GetNonOwnerPermissionId() => 0;
+        protected virtual int GetNonOwnerPermissionId(bool isCommand = false) => 0;
     }
 }

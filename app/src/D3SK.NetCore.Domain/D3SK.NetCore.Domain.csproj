@@ -8,4 +8,8 @@
     <ProjectReference Include="..\D3SK.NetCore.Common\D3SK.NetCore.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <PackageReference Include="Destructurama.Attributed" Version="2.0.0" />
+  </ItemGroup>
+
 </Project>

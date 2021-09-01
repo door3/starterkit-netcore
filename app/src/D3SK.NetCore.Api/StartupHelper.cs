@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Threading.Tasks;
 using D3SK.NetCore.Api.Filters;
 using D3SK.NetCore.Api.Utilities;
@@ -22,6 +24,12 @@ using Microsoft.Extensions.Hosting;
 using Newtonsoft.Json;
 using Serilog;
 using Serilog.Events;
+using Serilog.Sinks.Email;
+using System.Net.Security;
+using System.Security.Cryptography.X509Certificates;
+using Destructurama;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Authentication;
 
 namespace D3SK.NetCore.Api
 {
@@ -54,11 +62,10 @@ namespace D3SK.NetCore.Api
             {
                 Serilog.Debugging.SelfLog.Enable(Console.Error);
 
-                loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration)
-                    .MinimumLevel.Information()
-                    .MinimumLevel.Override(nameof(Microsoft), LogEventLevel.Information)
+                ConfigureEmailSink(hostingContext.Configuration, loggerConfiguration.ReadFrom.Configuration(hostingContext.Configuration))
+                    .Destructure.UsingAttributes()
                     .Enrich.FromLogContext()
-                    .WriteTo.Console();
+                    .WriteTo.Console(outputTemplate: "[{Timestamp:HH:mm:ss}] {SourceContext} [{Level:u3}] - {Message:l} | {Properties}{NewLine}{Exception}");
             });
         }
 
@@ -122,11 +129,7 @@ namespace D3SK.NetCore.Api
             {
                 options.Providers.Add<GzipCompressionProvider>();
             });
-
-            // current user manager/claims
-            services.AddScoped<IUserClaims, UserClaims>();
-            services.AddScoped<ICurrentUserManager<IUserClaims>, HttpCurrentUserManager<IUserClaims>>();
-
+            
             if (useMultitenancy)
             {
                 services.AddScoped<ITenantUserClaims, TenantUserClaims>();
@@ -147,7 +150,10 @@ namespace D3SK.NetCore.Api
 
         public static void ConfigureBaseApi(
             IApplicationBuilder app, IWebHostEnvironment env,
-            bool useMultitenancy = true, bool useSwagger = true)
+            bool useMultitenancy = true, bool useSwagger = true,
+            Action<IApplicationBuilder> configureMiddlewareFn = null,
+            Action<IEndpointRouteBuilder> useEndpointsFn = null,
+            Action<IApplicationBuilder> beforeAuthenticationFn = null)
         {
             app.UseResponseCompression();
 
@@ -158,6 +164,13 @@ namespace D3SK.NetCore.Api
 
             app.UseHttpsRedirection();
             app.UseCors(AllowAllCorsPolicy);
+            app.UseSerilogRequestLogging();
+
+            if (beforeAuthenticationFn != null)
+            {
+                beforeAuthenticationFn(app);
+            }
+
             app.UseAuthentication();
 
             if (useMultitenancy)
@@ -166,6 +179,13 @@ namespace D3SK.NetCore.Api
             }
 
             app.UseRouting();
+            if (configureMiddlewareFn != null)
+            {
+                configureMiddlewareFn(app);
+            }
+
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
@@ -213,5 +233,101 @@ namespace D3SK.NetCore.Api
                 ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
             };
         }
+
+        private static LoggerConfiguration ConfigureEmailSink(IConfiguration configuration, LoggerConfiguration loggerConfiguration)
+        {
+            var options = configuration.Get<SerilogConfigurationOptions>();
+
+            if (string.IsNullOrWhiteSpace(options.ErrorReportingRecipientEmails))
+            {
+                return loggerConfiguration;
+            }
+
+            var connectionInfo = new EmailConnectionInfo
+            {
+                MailServer = options.Smtp.Server,
+                NetworkCredentials = new NetworkCredential(options.Smtp.Username, options.Smtp.Password),
+                Port = options.Smtp.Port,
+                EnableSsl = false,
+                FromEmail = options.SupportEmail,
+                ToEmail = options.ErrorReportingRecipientEmails,
+                EmailSubject = $"Error Occurred ({options.PortalAppUrl})"
+            };
+  
+            if (options.Smtp.IgnoreCertificateErrors)
+            {
+                connectionInfo.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true;
+            }
+            else
+            {
+                ServicePointManager.ServerCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) =>
+                {
+                    if (sslPolicyErrors == SslPolicyErrors.None)
+                    {
+                        return true;
+                    }
+
+                    if ((sslPolicyErrors & SslPolicyErrors.RemoteCertificateChainErrors) != 0)
+                    {
+                        if (chain != null && chain.ChainStatus != null)
+                        {
+                            foreach (var status in chain.ChainStatus)
+                            {
+                                if (certificate.Subject == certificate.Issuer && status.Status == X509ChainStatusFlags.UntrustedRoot)
+                                {
+                                    continue;
+                                }
+
+                                if (status.Status != X509ChainStatusFlags.NoError)
+                                {
+                                    return false;
+                                }
+                            }
+                        }
+
+                        return true;
+                    }
+
+                    return false;
+                };
+            }
+
+            return loggerConfiguration.WriteTo.Logger(
+                c => c.WriteTo.Email(connectionInfo, period: TimeSpan.FromSeconds(options.EmailErrorReportingPeriod <= 0 ? 60 : options.EmailErrorReportingPeriod),
+                    outputTemplate: "[{Timestamp:HH:mm:ss}] {SourceContext} [{Level:u3}] - {Message:l} | {Properties}{NewLine}{Exception}"),
+                LogEventLevel.Error);
+        }
+    }
+
+    public class SerilogConfigurationOptions
+    {
+        public string PortalAppUrl { get; set; }
+
+        public string SupportEmail { get; set; }
+
+        public string ErrorReportingRecipientEmails { get; set; }
+
+        public int EmailErrorReportingPeriod { get; set; }
+
+        public SmtpConfig Smtp { get; set; }
+    }
+
+    public class SmtpConfig
+    {
+        public string Server { get; set; }
+
+        public string Username { get; set; }
+
+        public string Password { get; set; }
+
+        public int Port { get; set; } = 25;
+
+        public bool IsSsl { get; set; }
+
+        public bool IgnoreCertificateErrors { get; set; }
+
+        public bool DisableDestinationLimit { get; set; }
+
+        public List<string> AllowedDestinations { get; set; }
     }
 }

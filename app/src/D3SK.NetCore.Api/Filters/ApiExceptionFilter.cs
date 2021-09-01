@@ -10,15 +10,25 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using D3SK.NetCore.Infrastructure;
+using D3SK.NetCore.Api.Exceptions;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Options;
+using D3SK.NetCore.Domain.Models;
+using D3SK.NetCore.Infrastructure.Exceptions;
 
 namespace D3SK.NetCore.Api.Filters
 {
     public class ApiExceptionFilter : ExceptionFilterAttribute, IFilterMetadata
     {
         private readonly ILogger<ApiExceptionFilter> _logger;
+        private readonly IOptions<DomainOptions> _domainOptions;
 
-        public ApiExceptionFilter(ILogger<ApiExceptionFilter> logger) =>
+        public ApiExceptionFilter(ILogger<ApiExceptionFilter> logger, IOptions<DomainOptions> domainOptions)
+        {
             _logger = logger.NotNull(nameof(logger));
+            _domainOptions = domainOptions.NotNull(nameof(domainOptions));
+        }
 
         public override void OnException(ExceptionContext context)
         {
@@ -41,7 +51,7 @@ namespace D3SK.NetCore.Api.Filters
 
                 _logger.LogTrace("An error occurred: {messages}, {tempData}", messages, tempData);
             }
-            else if (context.Exception is FileNotFoundException)
+            else if (context.Exception is FileNotFoundException || context.Exception is EntityNotFoundException)
             {
                 var innerEx = context.Exception.GetInnermostException();
                 messages.Add(new ErrorMessage(innerEx.Message, ExceptionMessageTypes.DefaultErrorCode, innerEx.StackTrace));
@@ -52,13 +62,25 @@ namespace D3SK.NetCore.Api.Filters
                 statusCode = StatusCodes.Status409Conflict;
                 _logger.LogTrace("Concurrency error");
             }
-            else
+            else if (context.Exception is DomainException)
             {
                 var innerEx = context.Exception.GetInnermostException();
                 messages.Add(new ErrorMessage(innerEx.Message, ExceptionMessageTypes.DefaultErrorCode, innerEx.StackTrace));
                 code = ApiResponseCodes.UncaughtException;
+            }
+            else
+            {
+                if (_domainOptions.Value.ShowExtendedError)
+                {
+                    var innerEx = context.Exception.GetInnermostException();
+                    messages.Add(new ErrorMessage(innerEx.Message, ExceptionMessageTypes.DefaultErrorCode, innerEx.StackTrace));
+                }
+                else
+                {
+                    messages.Add(new ErrorMessage("Internal server error", ExceptionMessageTypes.DefaultErrorCode));
+                }
 
-                _logger.LogError(context.Exception, "Internal server error");
+                code = ApiResponseCodes.UncaughtException;
             }
 
             var apiResponse = new ApiResponse()

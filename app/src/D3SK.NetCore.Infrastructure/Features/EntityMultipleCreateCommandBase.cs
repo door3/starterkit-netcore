@@ -45,7 +45,7 @@ namespace D3SK.NetCore.Infrastructure.Features
                 await OnAfterSaveChangesAsync();
             });
 
-            await OnTransactionCompleteAsync();
+            await OnTransactionCompleteAsync(domainInstance);
         }
 
         protected virtual Task OnBeforeCreateAsync()
@@ -65,6 +65,6 @@ namespace D3SK.NetCore.Infrastructure.Features
 
         protected virtual Task OnAfterSaveChangesAsync() => Task.CompletedTask;
 
-        protected virtual Task OnTransactionCompleteAsync() => Task.CompletedTask;
+        protected virtual Task OnTransactionCompleteAsync(IDomainInstance<TDomain> domainInstance) => Task.CompletedTask;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -65,7 +66,7 @@ namespace D3SK.NetCore.Common.Extensions
         public static string ToPascalCase(this string source, string splitString = " ", string joinString = null)
         {
             if (source == null) return null;
-            if (source.Length < 2) return source.ToUpper();
+            if (source.Length < 2) return source.ToUpper(CultureInfo.InvariantCulture);
 
             var words = source.Split(splitString, StringSplitOptions.RemoveEmptyEntries);
 
@@ -73,7 +74,7 @@ namespace D3SK.NetCore.Common.Extensions
             foreach (var word in words)
             {
                 if (result.Length > 0) result.Append(joinString);
-                result.Append($"{word.Substring(0, 1).ToUpper()}{word.Substring(1)}");
+                result.Append($"{word.Substring(0, 1).ToUpper(CultureInfo.InvariantCulture)}{word.Substring(1)}");
             }
 
             return result.ToString();

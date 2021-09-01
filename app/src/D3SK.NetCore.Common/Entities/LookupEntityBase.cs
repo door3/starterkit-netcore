@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace D3SK.NetCore.Common.Entities
 {
@@ -11,6 +14,51 @@ namespace D3SK.NetCore.Common.Entities
         protected LookupEntityBase(int id, string name)
             : base(id, name)
         {
+        }
+
+        public static T FromValue<T>(int value)
+            where T : LookupEntityBase
+        {
+            return Parse<T, int>(value, "value", item => item.Id == value);
+        }
+
+
+        private static T Parse<T, K>(K value, string description, Func<T, bool> predicate)
+            where T : LookupEntityBase
+        {
+            var matchingItem = TryParse(predicate);
+
+            if (matchingItem == null)
+            {
+                var message = $"'{value}' is not a valid {description} in {typeof(T)}";
+
+                throw new InvalidOperationException(message);
+            }
+
+            return matchingItem;
+        }
+
+        private static T TryParse<T>(Func<T, bool> predicate)
+            where T : LookupEntityBase
+        {
+            return GetAll<T>().FirstOrDefault(predicate);
+        }
+
+        public static IEnumerable<T> GetAll<T>()
+            where T : LookupEntityBase
+        {
+            var type = typeof(T);
+            var fields = type.GetTypeInfo().GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.DeclaredOnly);
+
+            foreach (var info in fields)
+            {
+                var locatedValue = info.GetValue(null) as T;
+
+                if (locatedValue != null)
+                {
+                    yield return locatedValue;
+                }
+            }
         }
     }
 
