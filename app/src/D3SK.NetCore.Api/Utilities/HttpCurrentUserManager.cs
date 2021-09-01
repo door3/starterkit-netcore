@@ -9,7 +9,7 @@ namespace D3SK.NetCore.Api.Utilities
     {
         protected readonly IHttpContextAccessor HttpContextAccessor;
 
-        protected HttpContext HttpContext => HttpContextAccessor.HttpContext;
+      protected HttpContext HttpContext => HttpContextAccessor.HttpContext;
 
         public bool IsAuthenticated => HttpContext?.User?.Identity?.IsAuthenticated ?? false;
 

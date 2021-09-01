@@ -7,6 +7,7 @@ using D3SK.NetCore.Common.Extensions;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace D3SK.NetCore.Infrastructure.Events
 {
@@ -14,6 +15,13 @@ namespace D3SK.NetCore.Infrastructure.Events
         where TEventBase : IEventBase
     {
         public IList<DomainEventHandlerInfo> EventHandlers { get; } = new List<DomainEventHandlerInfo>();
+
+        private readonly ILogger<HandleBusEventStrategy<TEventBase>> _logger;
+
+        public HandleBusEventStrategy(ILogger<HandleBusEventStrategy<TEventBase>> logger)
+        {
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        }
 
         public void AddAsyncHandler<THandler, TEvent>(HandleDomainEventOptions options = null)
             where THandler : class, IAsyncBusEventHandler<TEvent> where TEvent : TEventBase
@@ -24,6 +32,7 @@ namespace D3SK.NetCore.Infrastructure.Events
         public async Task HandleEventAsync<TEvent>(TEvent domainEvent, IServiceProvider serviceProvider)
             where TEvent : TEventBase
         {
+            _logger.LogTrace("Started handling event {@domainEvent}", domainEvent);
             var eventType = domainEvent.GetType();
             foreach (var type in eventType.GetBaseTypes(true))
             {
@@ -41,6 +50,7 @@ namespace D3SK.NetCore.Infrastructure.Events
                     await eventHandler.HandleAsync(domainEvent);
                 }
             }
+            _logger.LogTrace("Finished handling event {@domainEvent}", domainEvent);
         }
     }
 }

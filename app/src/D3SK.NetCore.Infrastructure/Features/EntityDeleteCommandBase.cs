@@ -53,10 +53,14 @@ namespace D3SK.NetCore.Infrastructure.Features
                 await CommandContainer.Store.SaveChangesAsync();
                 await OnAfterDeleteAsync();
             });
+
+            await OnTransactionCompleteAsync(domainInstance);
         }
 
         protected virtual Task OnBeforeDeleteAsync(T dbItem) => Task.CompletedTask;
 
         protected virtual Task OnAfterDeleteAsync() => Task.CompletedTask;
+
+        protected virtual Task OnTransactionCompleteAsync(IDomainInstance<TDomain> domainInstance) => Task.CompletedTask;
     }
 }

@@ -5,6 +5,7 @@ using D3SK.NetCore.Common.Utilities;
 using D3SK.NetCore.Domain;
 using D3SK.NetCore.Domain.Events;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 namespace D3SK.NetCore.Infrastructure.Domain
 {
@@ -15,15 +16,18 @@ namespace D3SK.NetCore.Infrastructure.Domain
         public TDomain Domain { get; }
 
         public IExceptionManager ExceptionManager { get; }
+        private readonly ILogger<DomainInstanceBase<TDomain>> _logger;
 
         protected DomainInstanceBase(
             IServiceProvider serviceProvider,
             TDomain domain,
-            IExceptionManager exceptionManager)
+            IExceptionManager exceptionManager,
+            ILogger<DomainInstanceBase<TDomain>> logger)
         {
             ServiceProvider = serviceProvider.NotNull(nameof(ServiceProvider));
             Domain = domain.NotNull(nameof(domain));
             ExceptionManager = exceptionManager.NotNull(nameof(exceptionManager));
+            _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
         protected virtual TDomainRole GetDomainRole<TDomainRole>()
@@ -36,13 +40,37 @@ namespace D3SK.NetCore.Infrastructure.Domain
         public virtual ICurrentUserManager GetCurrentUserManager() =>
             ServiceProvider.GetRequiredService<ICurrentUserManager>();
 
-        public virtual Task<TResult> RunFeatureAsync<TDomainRole, TResult>(IAsyncQueryFeature<TDomain, TResult> feature)
+        public virtual async Task<TResult> RunFeatureAsync<TDomainRole, TResult>(IAsyncQueryFeature<TDomain, TResult> feature)
             where TDomainRole : IQueryDomainRole<TDomain>
-            => GetDomainRole<TDomainRole>().HandleFeatureAsync(this, feature);
+        {
+            _logger.LogTrace("Running feature {@feature}", feature);
+            TResult result;
+            try
+            {
+                result = await GetDomainRole<TDomainRole>().HandleFeatureAsync(this, feature);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error on feature {@feature}", feature);
+                throw;
+            }
+            return result;
+        }
 
-        public virtual Task RunFeatureAsync<TDomainRole>(IAsyncCommandFeature<TDomain> feature)
+        public virtual async Task RunFeatureAsync<TDomainRole>(IAsyncCommandFeature<TDomain> feature)
             where TDomainRole : ICommandDomainRole<TDomain>
-            => GetDomainRole<TDomainRole>().HandleFeatureAsync(this, feature);
+        {
+            try
+            {
+                await GetDomainRole<TDomainRole>().HandleFeatureAsync(this, feature);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error on feature {@feature}", feature);
+                _logger.LogError(ex, "Error details");
+                throw;
+            }
+        }
 
         public virtual async Task<Guid> PublishEventAsync<TEvent>(TEvent domainEvent) where TEvent : IDomainEventBase
         {

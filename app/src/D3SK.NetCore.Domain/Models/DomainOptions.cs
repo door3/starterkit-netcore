@@ -7,5 +7,7 @@
         public bool UseAuthorization { get; set; }
 
         public bool AllowUiTestAuthentication { get; set; }
+
+        public bool ShowExtendedError { get; set; }
     }
 }

@@ -62,11 +62,12 @@ namespace D3SK.NetCore.Infrastructure.Features
                     onPropertyChanged: OnPropertyChangedAsync,
                     options: options);
                 await UpdateDependentsAsync(DbStoreItem);
+                await OnBeforeSaveAsync(DbStoreItem);
                 await CommandContainer.Store.SaveChangesAsync();
                 await OnAfterUpdateAsync();
             });
 
-            await OnTransactionCompleteAsync();
+            await OnTransactionCompleteAsync(domainInstance);
         }
 
         protected virtual UpdateEntityOptions GetUpdateOptions() => new UpdateEntityOptions();
@@ -75,10 +76,12 @@ namespace D3SK.NetCore.Infrastructure.Features
 
         protected virtual Task OnPropertyChangedAsync(EntityPropertyUpdatedEventArgs<T> e) => Task.CompletedTask;
 
+        protected virtual Task OnBeforeSaveAsync(T dbStoreItem) => Task.CompletedTask;
+
         protected virtual Task OnBeforeUpdateAsync(T dbStoreItem) => Task.CompletedTask;
 
         protected virtual Task OnAfterUpdateAsync() => Task.CompletedTask;
 
-        protected virtual Task OnTransactionCompleteAsync() => Task.CompletedTask;
+        protected virtual Task OnTransactionCompleteAsync(IDomainInstance<TDomain> domainInstance) => Task.CompletedTask;
     }
 }

@@ -17,7 +17,7 @@ namespace D3SK.NetCore.Domain
     public interface IDomainFeature<TDomain> : IDomainFeature where TDomain : IDomain
     {
     }
-    
+
     public interface IAsyncQueryFeature<TDomain, TResult> : IDomainFeature<TDomain>, IQueryFeature
         where TDomain : IDomain
     {
