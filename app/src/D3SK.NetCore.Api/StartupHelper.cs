@@ -129,6 +129,9 @@ namespace D3SK.NetCore.Api
             {
                 options.Providers.Add<GzipCompressionProvider>();
             });
+
+            services.AddScoped<IUserClaims, UserClaims>();
+            services.AddScoped<ICurrentUserManager<IUserClaims>, HttpCurrentUserManager<IUserClaims>>();
             
             if (useMultitenancy)
             {
